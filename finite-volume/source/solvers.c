@@ -47,15 +47,15 @@ void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b,
   }
   #endif
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  #ifdef USE_BICGSTAB
-    BiCGStab(level,u_id,f_id,a,b,desired_reduction_in_norm);
-  #elif  USE_CG
-    CG(level,u_id,f_id,a,b,desired_reduction_in_norm);
-  #elif  USE_CABICGSTAB
-    CABiCGStab(level,u_id,f_id,a,b,desired_reduction_in_norm);
-  #elif  USE_CACG
-    CACG(level,u_id,f_id,a,b,desired_reduction_in_norm);
-  #else 
+  //#ifdef USE_BICGSTAB
+  //  BiCGStab(level,u_id,f_id,a,b,desired_reduction_in_norm);
+  //#elif  USE_CG
+  //  CG(level,u_id,f_id,a,b,desired_reduction_in_norm);
+  //#elif  USE_CABICGSTAB
+  //  CABiCGStab(level,u_id,f_id,a,b,desired_reduction_in_norm);
+  //#elif  USE_CACG
+  //  CACG(level,u_id,f_id,a,b,desired_reduction_in_norm);
+  //#else 
     // just point relaxation via multiple smooth()'s
     if(level->must_subtract_mean == 1){
       double mean_of_u = mean(level,u_id);
@@ -64,8 +64,8 @@ void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b,
     residual(level,VECTOR_TEMP,u_id,f_id,a,b);
     //mul_vectors(level,VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
     double norm_of_r0 = norm(level,VECTOR_TEMP);
-    int s=0,maxSmoothsBottom=200,converged=0;
-    while( (s<maxSmoothsBottom) && !converged){
+    int s=0,maxSmoothsBottom=100,converged=0;
+    while( (s<maxSmoothsBottom) ){
       s++;
       level->Krylov_iterations++;
       smooth(level,u_id,f_id,a,b);
@@ -73,13 +73,13 @@ void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b,
         double mean_of_u = mean(level,u_id);
         shift_vector(level,u_id,u_id,-mean_of_u);
       }
-      residual(level,VECTOR_TEMP,u_id,f_id,a,b);
+      //residual(level,VECTOR_TEMP,u_id,f_id,a,b);
       //mul_vectors(level,VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
-      double norm_of_r = norm(level,VECTOR_TEMP);
-      if(norm_of_r == 0.0){converged=1;break;}
-      if(norm_of_r < desired_reduction_in_norm*norm_of_r0){converged=1;break;}
+      //double norm_of_r = norm(level,VECTOR_TEMP);
+      //if(norm_of_r == 0.0){converged=1;break;}
+      //if(norm_of_r < desired_reduction_in_norm*norm_of_r0){converged=1;break;}
     }
-  #endif
+  //#endif
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 }
 

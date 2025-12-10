@@ -49,7 +49,7 @@
 #include "../level.h"
 #include "../operators.h"
 //------------------------------------------------------------------------------------------------------------------------------
-#define STENCIL_VARIABLE_COEFFICIENT
+//#define STENCIL_VARIABLE_COEFFICIENT
 //------------------------------------------------------------------------------------------------------------------------------
 #ifdef STENCIL_FUSE_BC
   #error GPU implementation does not support fusion of the boundary conditions with the operator

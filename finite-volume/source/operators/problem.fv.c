@@ -67,7 +67,7 @@ double evaluateF(double x, double y, double z, double h, int add_Fxx, int add_Fy
   }
   #else
   double a = 2.0*M_PI;
-  double p = 7.0;
+  double p = 1.0;
   double F   =        pow(sin(a*x),p  )*pow(sin(a*y),p  )*pow(sin(a*z),p  );
 //double Fx  =    a*p*pow(sin(a*x),p-1)*pow(sin(a*y),p  )*pow(sin(a*z),p  )*cos(a*x);
 //double Fy  =    a*p*pow(sin(a*x),p  )*pow(sin(a*y),p-1)*pow(sin(a*z),p  )*cos(a*y);

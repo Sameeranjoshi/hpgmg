@@ -475,7 +475,7 @@ void shift_vector(level_type * level, int id_c, int id_a, double shift_a){
   int block;
 
   if (level->use_cuda) {
-    cuda_shift_vector(*level, id_c, id_a, shift_a);
+    cuda_shift_vector(*level, id_c, shift_a, id_a);
   }
   else {
   PRAGMA_THREAD_ACROSS_BLOCKS(level,block,level->num_my_blocks)

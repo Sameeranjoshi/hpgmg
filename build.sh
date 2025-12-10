@@ -7,8 +7,8 @@ NVCC=`which nvcc`
 
 # set gpu architectures to compile for
 #CUDA_ARCH+="-gencode arch=compute_60,code=sm_60 "
-CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
-#CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
+#CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
+CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
@@ -21,7 +21,7 @@ OPTS+="-DBOUNDARY_TILE_J=16 "
 OPTS+="-DBOUNDARY_TILE_K=16 "
 
 # host level threshold: number of grid elements
-OPTS+="-DHOST_LEVEL_SIZE_THRESHOLD=10000 "
+OPTS+="-DHOST_LEVEL_SIZE_THRESHOLD=0 "
 
 # max number of solves after warmup
 OPTS+="-DMAX_SOLVES=10 "
@@ -54,10 +54,16 @@ OPTS+="-DUSE_TEX "
 OPTS+="-DMPICH_IGNORE_CXX_SEEK "
 OPTS+="-DMPICH_SKIP_MPICXX "
 
+OPTS+="-DUSE_PERIODIC_BC "
+
 rm -rf build
+export MPICH_GPU_SUPPORT_ENABLED=1
+export CRAY_ACCEL_TARGET=nvidia80
+export LDFLAGS=-L/opt/nvidia/hpc_sdk/Linux_x86_64/23.9/cuda/12.2/lib64/ 
+export LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.1.28/gtl/lib/:$LD_LIBRARY_PATH
 
 # GSRB smoother (default)
-./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --no-fe
+./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp -L/opt/cray/pe/mpich/8.1.28/gtl/lib/ -lmpi_gtl_cuda $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt  $OPTS" --CUDAARCH="$CUDA_ARCH" --no-fe --fv-cycle="V" --fv-smoother="jacobi"
 
 # Chebyshev smoother
 #./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe

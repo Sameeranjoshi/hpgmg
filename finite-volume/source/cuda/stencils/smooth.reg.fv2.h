@@ -84,28 +84,28 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
   double xc1,xc0,xc2;
   xc1 = X(ijk);
   xc0 = X(ijk-kStride);
-  double bkc1,bkc2;
-  bkc1 = BK(ijk);
+  //double bkc1,bkc2;
+  //bkc1 = BK(ijk);
 
   for(int k=0; k<kdim; k++){
     ijk = threadIdx.x + threadIdx.y*jStride + k*kStride;
     // store k+1 plane into registers
     xc2 = X(ijk+kStride);
-    bkc2 = BK(ijk+kStride);
-
-
+    //bkc2 = BK(ijk+kStride);
+ 
     // apply operator
     const double Ax =
     #ifdef USE_HELMHOLTZ
     a*alpha[ijk]*xc1
     #endif
     -b*h2inv*(
-    + BI(ijk+1      )*( X(ijk+1      ) - xc1 )
-    + BI(ijk        )*( X(ijk-1      ) - xc1 )
-    + BJ(ijk+jStride)*( X(ijk+jStride) - xc1 )
-    + BJ(ijk        )*( X(ijk-jStride) - xc1 )
-    + bkc2           *( xc2            - xc1 )
-    + bkc1           *( xc0            - xc1 )
+    +  X(ijk+1      )
+    +  X(ijk-1      )
+    +  X(ijk+jStride)
+    +  X(ijk-jStride)
+    +  xc2 
+    +  xc0
+    -  xc1*6.0
     );
 
 
@@ -118,7 +118,6 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
     #elif USE_JACOBI
     const double lambda = Dinv_ijk();
     xo[ijk] = xc1 + (0.6666666666666666667)*lambda*(rhs[ijk]-Ax);
-
 
     #elif USE_L1JACOBI
     const double lambda = Dinv_ijk();
@@ -140,7 +139,7 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
     // update k and k-1 planes in registers
     xc0 = xc1;  xc1 = xc2;
-    bkc1 = bkc2;
+    //bkc1 = bkc2;
   }
 }
 //------------------------------------------------------------------------------------------------------------------------------
