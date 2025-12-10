@@ -8,7 +8,10 @@ NVCC=`which nvcc`
 # set gpu architectures to compile for
 #CUDA_ARCH+="-gencode arch=compute_60,code=sm_60 "
 #CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
-CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
+# CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
+CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
+# FOLDER="A100build"
+FOLDER="H100build"
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
@@ -54,19 +57,21 @@ OPTS+="-DUSE_TEX "
 OPTS+="-DMPICH_IGNORE_CXX_SEEK "
 OPTS+="-DMPICH_SKIP_MPICXX "
 
-OPTS+="-DUSE_PERIODIC_BC "
+# OPTS+="-DUSE_PERIODIC_BC "
+OPTS+="-DUSE_DIRICHLET_BC "
 
-rm -rf build
-export MPICH_GPU_SUPPORT_ENABLED=1
-export CRAY_ACCEL_TARGET=nvidia80
-export LDFLAGS=-L/opt/nvidia/hpc_sdk/Linux_x86_64/23.9/cuda/12.2/lib64/ 
-export LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.1.28/gtl/lib/:$LD_LIBRARY_PATH
+rm -rf $FOLDER
+# export MPICH_GPU_SUPPORT_ENABLED=1
+# export CRAY_ACCEL_TARGET=nvidia80
+# export LDFLAGS=-L/opt/nvidia/hpc_sdk/Linux_x86_64/23.9/cuda/12.2/lib64/ 
+# export LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.1.28/gtl/lib/:$LD_LIBRARY_PATH
+LDLIBS+="-ldl"
 
 # GSRB smoother (default)
-./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp -L/opt/cray/pe/mpich/8.1.28/gtl/lib/ -lmpi_gtl_cuda $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt  $OPTS" --CUDAARCH="$CUDA_ARCH" --no-fe --fv-cycle="V" --fv-smoother="jacobi"
+python ./configure --arch="$FOLDER" --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo $OPTS" --CUDAARCH="$CUDA_ARCH" --LDLIBS="$LDLIBS" --no-fe --no-fv-mpi --fv-cycle="V" --fv-smoother="jacobi" --fv-coarse-solver="cg"
 
 # Chebyshev smoother
-#./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe
+# ./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O1 -fopenmp $OPTS" --NVCCFLAGS="-O1 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe
 
 #make clean -C build
-make -j3 -C build
+make -j123 -C $FOLDER V=1

@@ -325,7 +325,7 @@ int main(int argc, char **argv){
   int minCoarseDim = 2; // avoid problems with black box calculation of D^{-1} for poisson with periodic BC's on a 1^3 grid
   #else
   int bc = BC_DIRICHLET;
-  int minCoarseDim = 1; // assumes you can drop order on the boundaries
+  int minCoarseDim = 2; // assumes you can drop order on the boundaries
   #endif
   level_type level_h;
   int ghosts=stencil_get_radius();
