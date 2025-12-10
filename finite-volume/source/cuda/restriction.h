@@ -57,8 +57,8 @@ __global__ void restriction_kernel(level_type level_c, int id_c, level_type leve
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  REAL * __restrict__  read = block.read.ptr;
+  REAL * __restrict__ write = block.write.ptr;
 
   if(block.read.box >=0){
      read = level_f.my_boxes[ block.read.box].vectors[id_f] + level_f.my_boxes[ block.read.box].ghosts*(1+level_f.my_boxes[ block.read.box].jStride+level_f.my_boxes[ block.read.box].kStride);
@@ -76,14 +76,14 @@ __global__ void restriction_kernel(level_type level_c, int id_c, level_type leve
          for(int k=0;k<dim_k;k++){
            int write_ijk = ((i   )+write_i) + ((j   )+write_j)*write_jStride + ((k   )+write_k)*write_kStride;
            int  read_ijk = ((i<<1)+ read_i) + ((j<<1)+ read_j)* read_jStride + ((k<<1)+ read_k)* read_kStride;
-	   double r11 = READ(read_ijk                            );
-	   double r12 = READ(read_ijk+1                          );
-	   double r21 = READ(read_ijk  +read_jStride             );
-	   double r22 = READ(read_ijk+1+read_jStride             );
-	   double r31 = READ(read_ijk               +read_kStride);
-	   double r32 = READ(read_ijk+1             +read_kStride);
-	   double r41 = READ(read_ijk  +read_jStride+read_kStride);
-	   double r42 = READ(read_ijk+1+read_jStride+read_kStride);
+	   REAL r11 = READ(read_ijk                            );
+	   REAL r12 = READ(read_ijk+1                          );
+	   REAL r21 = READ(read_ijk  +read_jStride             );
+	   REAL r22 = READ(read_ijk+1+read_jStride             );
+	   REAL r31 = READ(read_ijk               +read_kStride);
+	   REAL r32 = READ(read_ijk+1             +read_kStride);
+	   REAL r41 = READ(read_ijk  +read_jStride+read_kStride);
+	   REAL r42 = READ(read_ijk+1+read_jStride+read_kStride);
 	   write[write_ijk] = ( r11+r12 + r21+r22 + r31+r32 + r41+r42 ) * 0.125;
            /*write[write_ijk] = ( READ(read_ijk                            )+READ(read_ijk+1                          ) +
                                 READ(read_ijk  +read_jStride             )+READ(read_ijk+1+read_jStride             ) +
@@ -94,10 +94,10 @@ __global__ void restriction_kernel(level_type level_c, int id_c, level_type leve
 	 for(int k=0;k<dim_k;k++){
            int write_ijk = ((i   )+write_i) + ((j   )+write_j)*write_jStride + ((k   )+write_k)*write_kStride;
            int  read_ijk = ((i<<1)+ read_i) + ((j<<1)+ read_j)* read_jStride + ((k<<1)+ read_k)* read_kStride;
-	   double r1 = READ(read_ijk                          );
-	   double r2 = READ(read_ijk+read_jStride             );
-	   double r3 = READ(read_ijk             +read_kStride);
-	   double r4 = READ(read_ijk+read_jStride+read_kStride);
+	   REAL r1 = READ(read_ijk                          );
+	   REAL r2 = READ(read_ijk+read_jStride             );
+	   REAL r3 = READ(read_ijk             +read_kStride);
+	   REAL r4 = READ(read_ijk+read_jStride+read_kStride);
            write[write_ijk] = ( r1 + r2 + r3 + r4 ) * 0.25;
            /*write[write_ijk] = ( READ(read_ijk                          ) +
                                 READ(read_ijk+read_jStride             ) +
@@ -108,10 +108,10 @@ __global__ void restriction_kernel(level_type level_c, int id_c, level_type leve
 	 for(int k=0;k<dim_k;k++){
            int write_ijk = ((i   )+write_i) + ((j   )+write_j)*write_jStride + ((k   )+write_k)*write_kStride;
            int  read_ijk = ((i<<1)+ read_i) + ((j<<1)+ read_j)* read_jStride + ((k<<1)+ read_k)* read_kStride;
-  	   double r1 = READ(read_ijk               );
-	   double r2 = READ(read_ijk+1             );
-	   double r3 = READ(read_ijk  +read_kStride);
-	   double r4 = READ(read_ijk+1+read_kStride);
+  	   REAL r1 = READ(read_ijk               );
+	   REAL r2 = READ(read_ijk+1             );
+	   REAL r3 = READ(read_ijk  +read_kStride);
+	   REAL r4 = READ(read_ijk+1+read_kStride);
 	   write[write_ijk] = ( r1 + r2 + r3 + r4 ) * 0.25;
            /*write[write_ijk] = ( READ(read_ijk               ) +
                                 READ(read_ijk+1             ) +
@@ -122,10 +122,10 @@ __global__ void restriction_kernel(level_type level_c, int id_c, level_type leve
 	 for(int k=0;k<dim_k;k++){
            int write_ijk = ((i   )+write_i) + ((j   )+write_j)*write_jStride + ((k   )+write_k)*write_kStride;
            int  read_ijk = ((i<<1)+ read_i) + ((j<<1)+ read_j)* read_jStride + ((k<<1)+ read_k)* read_kStride;
-	   double r1 = READ(read_ijk               );
-	   double r2 = READ(read_ijk+1             );
-	   double r3 = READ(read_ijk  +read_jStride);
-	   double r4 = READ(read_ijk+1+read_jStride);
+	   REAL r1 = READ(read_ijk               );
+	   REAL r2 = READ(read_ijk+1             );
+	   REAL r3 = READ(read_ijk  +read_jStride);
+	   REAL r4 = READ(read_ijk+1+read_jStride);
 	   write[write_ijk] = ( r1 + r2 + r3 + r4 ) * 0.25;
            /*write[write_ijk] = ( READ(read_ijk               ) +
                                 READ(read_ijk+1             ) +
@@ -150,7 +150,7 @@ void cuda_restriction(level_type level_c, int id_c, level_type level_f, int id_f
   dim3 block = dim3(min(level_c.box_dim,BLOCKCOPY_TILE_I), BLOCKCOPY_TILE_J, 1);
   dim3 grid = dim3((BLOCKCOPY_TILE_I+block.x-1)/block.x,(BLOCKCOPY_TILE_J+block.y-1)/block.y,num_blocks);
 
-  int log_dim = (int)log2((double)level_c.dim.i);
+  int log_dim = (int)log2((REAL)level_c.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim, 0); break;
     case 1: KERNEL_LEVEL(log_dim, 1); break;

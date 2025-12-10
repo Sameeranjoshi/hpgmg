@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #include <math.h>
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void interpolation_v2_block(level_type *level_f, int id_f, double prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
+static inline void interpolation_v2_block(level_type *level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
   // interpolate 3D array from read_i,j,k of read[] to write_i,j,k in write[] using volume averaged quadratic prolongation
   int write_dim_i   = block->dim.i<<1; // calculate the dimensions of the resultant fine block
   int write_dim_j   = block->dim.j<<1;
@@ -23,8 +23,8 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  REAL * __restrict__  read = block->read.ptr;
+  REAL * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read_jStride = level_c->my_boxes[block->read.box ].jStride;
      read_kStride = level_c->my_boxes[block->read.box ].kStride;
@@ -40,10 +40,10 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
   #ifdef USE_NAIVE_INTERP
   // naive 27pt per fine grid cell
   int i,j,k;
-  double c1 = 1.0/8.0;
-  for(k=0;k<write_dim_k;k++){double c1k=c1;if(k&0x1){c1k=-c1;}
-  for(j=0;j<write_dim_j;j++){double c1j=c1;if(j&0x1){c1j=-c1;}
-  for(i=0;i<write_dim_i;i++){double c1i=c1;if(i&0x1){c1i=-c1;}
+  REAL c1 = 1.0/8.0;
+  for(k=0;k<write_dim_k;k++){REAL c1k=c1;if(k&0x1){c1k=-c1;}
+  for(j=0;j<write_dim_j;j++){REAL c1j=c1;if(j&0x1){c1j=-c1;}
+  for(i=0;i<write_dim_i;i++){REAL c1i=c1;if(i&0x1){c1i=-c1;}
     int write_ijk = ((i   )+write_i) + (((j   )+write_j)*write_jStride) + (((k   )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
     //
@@ -64,7 +64,7 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
   }}}
   #else
   int i,j,k;
-  double c1 = 1.0/8.0;
+  REAL c1 = 1.0/8.0;
   for(k=0;k<write_dim_k;k+=2){
   for(j=0;j<write_dim_j;j+=2){
   for(i=0;i<write_dim_i;i+=2){
@@ -77,15 +77,15 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
     //
 
     // grab all coarse grid points...
-    const double c000=read[read_ijk-1-read_jStride-read_kStride], c100=read[read_ijk  -read_jStride-read_kStride], c200=read[read_ijk+1-read_jStride-read_kStride];
-    const double c010=read[read_ijk-1             -read_kStride], c110=read[read_ijk               -read_kStride], c210=read[read_ijk+1             -read_kStride];
-    const double c020=read[read_ijk-1+read_jStride-read_kStride], c120=read[read_ijk  +read_jStride-read_kStride], c220=read[read_ijk+1+read_jStride-read_kStride];
-    const double c001=read[read_ijk-1-read_jStride             ], c101=read[read_ijk  -read_jStride             ], c201=read[read_ijk+1-read_jStride             ];
-    const double c011=read[read_ijk-1                          ], c111=read[read_ijk                            ], c211=read[read_ijk+1                          ];
-    const double c021=read[read_ijk-1+read_jStride             ], c121=read[read_ijk  +read_jStride             ], c221=read[read_ijk+1+read_jStride             ];
-    const double c002=read[read_ijk-1-read_jStride+read_kStride], c102=read[read_ijk  -read_jStride+read_kStride], c202=read[read_ijk+1-read_jStride+read_kStride];
-    const double c012=read[read_ijk-1             +read_kStride], c112=read[read_ijk               +read_kStride], c212=read[read_ijk+1             +read_kStride];
-    const double c022=read[read_ijk-1+read_jStride+read_kStride], c122=read[read_ijk  +read_jStride+read_kStride], c222=read[read_ijk+1+read_jStride+read_kStride];
+    const REAL c000=read[read_ijk-1-read_jStride-read_kStride], c100=read[read_ijk  -read_jStride-read_kStride], c200=read[read_ijk+1-read_jStride-read_kStride];
+    const REAL c010=read[read_ijk-1             -read_kStride], c110=read[read_ijk               -read_kStride], c210=read[read_ijk+1             -read_kStride];
+    const REAL c020=read[read_ijk-1+read_jStride-read_kStride], c120=read[read_ijk  +read_jStride-read_kStride], c220=read[read_ijk+1+read_jStride-read_kStride];
+    const REAL c001=read[read_ijk-1-read_jStride             ], c101=read[read_ijk  -read_jStride             ], c201=read[read_ijk+1-read_jStride             ];
+    const REAL c011=read[read_ijk-1                          ], c111=read[read_ijk                            ], c211=read[read_ijk+1                          ];
+    const REAL c021=read[read_ijk-1+read_jStride             ], c121=read[read_ijk  +read_jStride             ], c221=read[read_ijk+1+read_jStride             ];
+    const REAL c002=read[read_ijk-1-read_jStride+read_kStride], c102=read[read_ijk  -read_jStride+read_kStride], c202=read[read_ijk+1-read_jStride+read_kStride];
+    const REAL c012=read[read_ijk-1             +read_kStride], c112=read[read_ijk               +read_kStride], c212=read[read_ijk+1             +read_kStride];
+    const REAL c022=read[read_ijk-1+read_jStride+read_kStride], c122=read[read_ijk  +read_jStride+read_kStride], c222=read[read_ijk+1+read_jStride+read_kStride];
 
     // interpolate in i to create fine i / coarse jk points...
     //
@@ -103,26 +103,26 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
     // |       |       |       |      :       |   |   |       :
     // +-------+-------+-------+      :.......+---+---+.......:
     //
-    const double f0c00 = ( c100 + c1*(c000-c200) ); // same as original 3pt stencil... f0c00 = ( c1*c000 + c100 - c1*c200 );
-    const double f1c00 = ( c100 - c1*(c000-c200) );
-    const double f0c10 = ( c110 + c1*(c010-c210) );
-    const double f1c10 = ( c110 - c1*(c010-c210) );
-    const double f0c20 = ( c120 + c1*(c020-c220) );
-    const double f1c20 = ( c120 - c1*(c020-c220) );
+    const REAL f0c00 = ( c100 + c1*(c000-c200) ); // same as original 3pt stencil... f0c00 = ( c1*c000 + c100 - c1*c200 );
+    const REAL f1c00 = ( c100 - c1*(c000-c200) );
+    const REAL f0c10 = ( c110 + c1*(c010-c210) );
+    const REAL f1c10 = ( c110 - c1*(c010-c210) );
+    const REAL f0c20 = ( c120 + c1*(c020-c220) );
+    const REAL f1c20 = ( c120 - c1*(c020-c220) );
 
-    const double f0c01 = ( c101 + c1*(c001-c201) );
-    const double f1c01 = ( c101 - c1*(c001-c201) );
-    const double f0c11 = ( c111 + c1*(c011-c211) );
-    const double f1c11 = ( c111 - c1*(c011-c211) );
-    const double f0c21 = ( c121 + c1*(c021-c221) );
-    const double f1c21 = ( c121 - c1*(c021-c221) );
+    const REAL f0c01 = ( c101 + c1*(c001-c201) );
+    const REAL f1c01 = ( c101 - c1*(c001-c201) );
+    const REAL f0c11 = ( c111 + c1*(c011-c211) );
+    const REAL f1c11 = ( c111 - c1*(c011-c211) );
+    const REAL f0c21 = ( c121 + c1*(c021-c221) );
+    const REAL f1c21 = ( c121 - c1*(c021-c221) );
 
-    const double f0c02 = ( c102 + c1*(c002-c202) );
-    const double f1c02 = ( c102 - c1*(c002-c202) );
-    const double f0c12 = ( c112 + c1*(c012-c212) );
-    const double f1c12 = ( c112 - c1*(c012-c212) );
-    const double f0c22 = ( c122 + c1*(c022-c222) );
-    const double f1c22 = ( c122 - c1*(c022-c222) );
+    const REAL f0c02 = ( c102 + c1*(c002-c202) );
+    const REAL f1c02 = ( c102 - c1*(c002-c202) );
+    const REAL f0c12 = ( c112 + c1*(c012-c212) );
+    const REAL f1c12 = ( c112 - c1*(c012-c212) );
+    const REAL f0c22 = ( c122 + c1*(c022-c222) );
+    const REAL f1c22 = ( c122 - c1*(c022-c222) );
 
     // interpolate in j to create fine ij / coarse k points...
     //
@@ -140,30 +140,30 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
     // :       |   |   |       :      :       :       :       :
     // :.......+---+---+.......:      :.......:.......:.......:
     //
-    const double f00c0 = ( f0c10 + c1*(f0c00-f0c20) );
-    const double f10c0 = ( f1c10 + c1*(f1c00-f1c20) );
-    const double f01c0 = ( f0c10 - c1*(f0c00-f0c20) );
-    const double f11c0 = ( f1c10 - c1*(f1c00-f1c20) );
+    const REAL f00c0 = ( f0c10 + c1*(f0c00-f0c20) );
+    const REAL f10c0 = ( f1c10 + c1*(f1c00-f1c20) );
+    const REAL f01c0 = ( f0c10 - c1*(f0c00-f0c20) );
+    const REAL f11c0 = ( f1c10 - c1*(f1c00-f1c20) );
 
-    const double f00c1 = ( f0c11 + c1*(f0c01-f0c21) );
-    const double f10c1 = ( f1c11 + c1*(f1c01-f1c21) );
-    const double f01c1 = ( f0c11 - c1*(f0c01-f0c21) );
-    const double f11c1 = ( f1c11 - c1*(f1c01-f1c21) );
+    const REAL f00c1 = ( f0c11 + c1*(f0c01-f0c21) );
+    const REAL f10c1 = ( f1c11 + c1*(f1c01-f1c21) );
+    const REAL f01c1 = ( f0c11 - c1*(f0c01-f0c21) );
+    const REAL f11c1 = ( f1c11 - c1*(f1c01-f1c21) );
 
-    const double f00c2 = ( f0c12 + c1*(f0c02-f0c22) );
-    const double f10c2 = ( f1c12 + c1*(f1c02-f1c22) );
-    const double f01c2 = ( f0c12 - c1*(f0c02-f0c22) );
-    const double f11c2 = ( f1c12 - c1*(f1c02-f1c22) );
+    const REAL f00c2 = ( f0c12 + c1*(f0c02-f0c22) );
+    const REAL f10c2 = ( f1c12 + c1*(f1c02-f1c22) );
+    const REAL f01c2 = ( f0c12 - c1*(f0c02-f0c22) );
+    const REAL f11c2 = ( f1c12 - c1*(f1c02-f1c22) );
 
     // interpolate in k to create fine ijk points...
-    const double f000 = ( f00c1 + c1*(f00c0-f00c2) );
-    const double f100 = ( f10c1 + c1*(f10c0-f10c2) );
-    const double f010 = ( f01c1 + c1*(f01c0-f01c2) );
-    const double f110 = ( f11c1 + c1*(f11c0-f11c2) );
-    const double f001 = ( f00c1 - c1*(f00c0-f00c2) );
-    const double f101 = ( f10c1 - c1*(f10c0-f10c2) );
-    const double f011 = ( f01c1 - c1*(f01c0-f01c2) );
-    const double f111 = ( f11c1 - c1*(f11c0-f11c2) );
+    const REAL f000 = ( f00c1 + c1*(f00c0-f00c2) );
+    const REAL f100 = ( f10c1 + c1*(f10c0-f10c2) );
+    const REAL f010 = ( f01c1 + c1*(f01c0-f01c2) );
+    const REAL f110 = ( f11c1 + c1*(f11c0-f11c2) );
+    const REAL f001 = ( f00c1 - c1*(f00c0-f00c2) );
+    const REAL f101 = ( f10c1 - c1*(f10c0-f10c2) );
+    const REAL f011 = ( f01c1 - c1*(f01c0-f01c2) );
+    const REAL f111 = ( f11c1 - c1*(f11c0-f11c2) );
 
     // commit to memory...
     write[write_ijk                              ] = prescale_f*write[write_ijk                              ] + f000;
@@ -188,7 +188,7 @@ static inline void interpolation_v2_block(level_type *level_f, int id_f, double 
 // This is a rather bulk synchronous implementation which packs all MPI buffers before initiating any sends
 // Similarly, it waits for all remote data before copying any into local boxes.
 // It does however attempt to overlap local interpolation with MPI
-void interpolation_v2(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){
+void interpolation_v2(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){
     exchange_boundary(level_c,id_c,STENCIL_SHAPE_BOX);
          apply_BCs_v2(level_c,id_c,STENCIL_SHAPE_BOX);
 
@@ -215,7 +215,7 @@ void interpolation_v2(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_f->interpolation.num_recvs;n++){
       MPI_Irecv(level_f->interpolation.recv_buffers[n],
                 level_f->interpolation.recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_f->interpolation.recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -255,7 +255,7 @@ void interpolation_v2(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_c->interpolation.num_sends;n++){
       MPI_Isend(level_c->interpolation.send_buffers[n],
                 level_c->interpolation.send_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_c->interpolation.send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -316,5 +316,5 @@ void interpolation_v2(level_type * level_f, int id_f, double prescale_f, level_t
   #endif 
  
  
-  level_f->timers.interpolation_total += (double)(getTime()-_timeCommunicationStart);
+  level_f->timers.interpolation_total += (REAL)(getTime()-_timeCommunicationStart);
 }

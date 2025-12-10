@@ -8,7 +8,7 @@ export OMP_NUM_THREADS=4
 # export MV2_ENABLE_AFFINITY=0
 
 # Single GPU
-./H100build/bin/hpgmg-fv 8 1
+./H100build_fp64/bin/hpgmg-fv 4 1
 # ./A100build/bin/hpgmg-fv 4 1
 
 # MPI, one rank per GPU

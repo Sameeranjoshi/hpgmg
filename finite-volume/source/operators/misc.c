@@ -35,7 +35,7 @@ void zero_vector(level_type * level, int id_a){
     if(jhi>=dim)jhi+=ghosts; 
     if(khi>=dim)khi+=ghosts; 
 
-    double * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -45,7 +45,7 @@ void zero_vector(level_type * level, int id_a){
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -79,7 +79,7 @@ void initialize_valid_region(level_type * level){
     if(jhi>=dim)jhi+=ghosts; 
     if(khi>=dim)khi+=ghosts; 
 
-    double * __restrict__ valid = level->my_boxes[box].vectors[VECTOR_VALID] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ valid = level->my_boxes[box].vectors[VECTOR_VALID] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -96,12 +96,12 @@ void initialize_valid_region(level_type * level){
       }
     }}}
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void init_vector(level_type * level, int id_a, double scalar){
+void init_vector(level_type * level, int id_a, REAL scalar){
   // initializes the grid to a scalar while zero'ing the ghost zones...
   double _timeStart = getTime();
   int block;
@@ -131,7 +131,7 @@ void init_vector(level_type * level, int id_a, double scalar){
     if(jhi>=dim)jhi+=ghosts; 
     if(khi>=dim)khi+=ghosts; 
 
-    double * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -141,7 +141,7 @@ void init_vector(level_type * level, int id_a, double scalar){
         grid[ijk] = ghostZone ? 0.0 : scalar;
     }}}
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -149,7 +149,7 @@ void init_vector(level_type * level, int id_a, double scalar){
 // add vectors id_a (scaled by scale_a) and id_b (scaled by scale_b) and store the result in vector id_c
 // i.e. c[] = scale_a*a[] + scale_b*b[]
 // note, only non ghost zone values are included in this calculation
-void add_vectors(level_type * level, int id_c, double scale_a, int id_a, double scale_b, int id_b){
+void add_vectors(level_type * level, int id_c, REAL scale_a, int id_a, REAL scale_b, int id_b){
   double _timeStart = getTime();
 
   int block;
@@ -171,9 +171,9 @@ void add_vectors(level_type * level, int id_c, double scale_a, int id_a, double 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -183,7 +183,7 @@ void add_vectors(level_type * level, int id_c, double scale_a, int id_a, double 
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -191,7 +191,7 @@ void add_vectors(level_type * level, int id_c, double scale_a, int id_a, double 
 // multiply each element of vector id_a by vector id_b and scale, and place the result in vector id_c
 // i.e. c[]=scale*a[]*b[]
 // note, only non ghost zone values are included in this calculation
-void mul_vectors(level_type * level, int id_c, double scale, int id_a, int id_b){
+void mul_vectors(level_type * level, int id_c, REAL scale, int id_a, int id_b){
   double _timeStart = getTime();
 
   int block;
@@ -213,9 +213,9 @@ void mul_vectors(level_type * level, int id_c, double scale, int id_a, int id_b)
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -225,7 +225,7 @@ void mul_vectors(level_type * level, int id_c, double scale, int id_a, int id_b)
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -233,7 +233,7 @@ void mul_vectors(level_type * level, int id_c, double scale, int id_a, int id_b)
 // invert each element of vector id_a, scale by scale_a, and place the result in vector id_c
 // i.e. c[]=scale_a/a[]
 // note, only non ghost zone values are included in this calculation
-void invert_vector(level_type * level, int id_c, double scale_a, int id_a){
+void invert_vector(level_type * level, int id_c, REAL scale_a, int id_a){
   double _timeStart = getTime();
 
   int block;
@@ -253,8 +253,8 @@ void invert_vector(level_type * level, int id_c, double scale_a, int id_a){
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -263,7 +263,7 @@ void invert_vector(level_type * level, int id_c, double scale_a, int id_a){
         grid_c[ijk] = scale_a/grid_a[ijk];
     }}}
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -271,7 +271,7 @@ void invert_vector(level_type * level, int id_c, double scale_a, int id_a){
 // scale vector id_a by scale_a and place the result in vector id_c
 // i.e. c[]=scale_a*a[]
 // note, only non ghost zone values are included in this calculation
-void scale_vector(level_type * level, int id_c, double scale_a, int id_a){
+void scale_vector(level_type * level, int id_c, REAL scale_a, int id_a){
   double _timeStart = getTime();
 
   int block;
@@ -293,8 +293,8 @@ void scale_vector(level_type * level, int id_c, double scale_a, int id_a){
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -304,19 +304,19 @@ void scale_vector(level_type * level, int id_c, double scale_a, int id_a){
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------
 // return the dot product of vectors id_a and id_b
 // note, only non ghost zone values are included in this calculation
-double dot(level_type * level, int id_a, int id_b){
+REAL dot(level_type * level, int id_a, int id_b){
   double _timeStart = getTime();
 
 
   int block;
-  double a_dot_b_level =  0.0;
+  REAL a_dot_b_level =  0.0;
 
   if(level->use_cuda) CUCHK( cudaDeviceSynchronize() ); // FIX... no CUDA version... must sync CPU/GPU before using CPU version...
 
@@ -333,9 +333,9 @@ double dot(level_type * level, int id_a, int id_b){
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-    double * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
-    double a_dot_b_block = 0.0;
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL * __restrict__ grid_b = level->my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
+    REAL a_dot_b_block = 0.0;
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -345,14 +345,14 @@ double dot(level_type * level, int id_a, int id_b){
     }}}
     a_dot_b_level+=a_dot_b_block;
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 
   #ifdef USE_MPI
   double _timeStartAllReduce = getTime();
-  double send = a_dot_b_level;
-  MPI_Allreduce(&send,&a_dot_b_level,1,MPI_DOUBLE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
+  REAL send = a_dot_b_level;
+  MPI_Allreduce(&send,&a_dot_b_level,1,MPI_REAL_TYPE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (REAL)(_timeEndAllReduce-_timeStartAllReduce);
   #endif
 
   return(a_dot_b_level);
@@ -361,11 +361,11 @@ double dot(level_type * level, int id_a, int id_b){
 //------------------------------------------------------------------------------------------------------------------------------
 // return the max (infinity) norm of the vector id_a.
 // note, only non ghost zone values are included in this calculation
-double norm(level_type * level, int id_a){ // implements the max norm
+REAL norm(level_type * level, int id_a){ // implements the max norm
   double _timeStart = getTime();
 
   int block;
-  double max_norm =  0.0;
+  REAL max_norm =  0.0;
 
   if (level->use_cuda) {
     max_norm = cuda_max_abs(*level, id_a);
@@ -384,28 +384,28 @@ double norm(level_type * level, int id_a){ // implements the max norm
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid   = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-    double block_norm = 0.0;
+    REAL * __restrict__ grid   = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL block_norm = 0.0;
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
     for(i=ilo;i<ihi;i++){ 
       int ijk = i + j*jStride + k*kStride;
-      double fabs_grid_ijk = fabs(grid[ijk]);
+      REAL fabs_grid_ijk = fabs(grid[ijk]);
       if(fabs_grid_ijk>block_norm){block_norm=fabs_grid_ijk;} // max norm
     }}}
 
     if(block_norm>max_norm){max_norm = block_norm;}
   } // block list
   } // use cuda
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 
   #ifdef USE_MPI
   double _timeStartAllReduce = getTime();
-  double send = max_norm;
-  MPI_Allreduce(&send,&max_norm,1,MPI_DOUBLE,MPI_MAX,level->MPI_COMM_ALLREDUCE);
+  REAL send = max_norm;
+  MPI_Allreduce(&send,&max_norm,1,MPI_REAL_TYPE,MPI_MAX,level->MPI_COMM_ALLREDUCE);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (REAL)(_timeEndAllReduce-_timeStartAllReduce);
   #endif
   return(max_norm);
 }
@@ -415,12 +415,12 @@ double norm(level_type * level, int id_a){ // implements the max norm
 // return the mean (arithmetic average value) of vector id_a
 // essentially, this is a l1 norm by a scaling by the inverse of the total (global) number of cells
 // note, only non ghost zone values are included in this calculation
-double mean(level_type * level, int id_a){
+REAL mean(level_type * level, int id_a){
   double _timeStart = getTime();
 
 
   int block;
-  double sum_level =  0.0;
+  REAL sum_level =  0.0;
 
   if (level->use_cuda) {
     sum_level = cuda_sum(*level, id_a);
@@ -439,8 +439,8 @@ double mean(level_type * level, int id_a){
     int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-    double sum_block = 0.0;
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL sum_block = 0.0;
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -451,18 +451,18 @@ double mean(level_type * level, int id_a){
     sum_level+=sum_block;
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
-  double ncells_level = (double)level->dim.i*(double)level->dim.j*(double)level->dim.k;
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
+  REAL ncells_level = (REAL)level->dim.i*(REAL)level->dim.j*(REAL)level->dim.k;
 
   #ifdef USE_MPI
   double _timeStartAllReduce = getTime();
-  double send = sum_level;
-  MPI_Allreduce(&send,&sum_level,1,MPI_DOUBLE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
+  REAL send = sum_level;
+  MPI_Allreduce(&send,&sum_level,1,MPI_REAL_TYPE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (REAL)(_timeEndAllReduce-_timeStartAllReduce);
   #endif
 
-  double mean_level = sum_level / ncells_level;
+  REAL mean_level = sum_level / ncells_level;
   return(mean_level);
 }
 
@@ -470,7 +470,7 @@ double mean(level_type * level, int id_a){
 //------------------------------------------------------------------------------------------------------------------------------
 // add the scalar value shift_a to each element of vector id_a and store the result in vector id_c
 // note, only non ghost zone values are included in this calculation
-void shift_vector(level_type * level, int id_c, int id_a, double shift_a){
+void shift_vector(level_type * level, int id_c, int id_a, REAL shift_a){
   double _timeStart = getTime();
   int block;
 
@@ -491,8 +491,8 @@ void shift_vector(level_type * level, int id_c, int id_a, double shift_a){
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-    double * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL * __restrict__ grid_c = level->my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
 
 
     for(k=klo;k<khi;k++){
@@ -503,17 +503,17 @@ void shift_vector(level_type * level, int id_c, int id_a, double shift_a){
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------
 // calculate the error between two vectors (id_a and id_b) using either the max (infinity) norm or the L2 norm
 // note, only non ghost zone values are included in this calculation
-double error(level_type * level, int id_a, int id_b){
-  double h3 = level->h * level->h * level->h;
+REAL error(level_type * level, int id_a, int id_b){
+  REAL h3 = level->h * level->h * level->h;
                add_vectors(level,VECTOR_TEMP,1.0,id_a,-1.0,id_b);            // VECTOR_TEMP = id_a - id_b
-  double   max =      norm(level,VECTOR_TEMP);                return(max);   // max norm of error function
-  double    L2 = sqrt( dot(level,VECTOR_TEMP,VECTOR_TEMP)*h3);return( L2);   // normalized L2 error ?
+  REAL max =      norm(level,VECTOR_TEMP);                return(max);   // max norm of error function
+  REAL L2 = sqrt( dot(level,VECTOR_TEMP,VECTOR_TEMP)*h3);return( L2);   // normalized L2 error ?
 }
 
 
@@ -553,18 +553,18 @@ void color_vector(level_type * level, int id_a, int colors_in_each_dim, int icol
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
     int i,j,k;
 
-    for(k=klo;k<khi;k++){double sk=0.0;if( ((k+boxlowk+kcolor)%colors_in_each_dim) == 0 )sk=1.0; // if colors_in_each_dim==1 (don't color), all cells are set to 1.0
-    for(j=jlo;j<jhi;j++){double sj=0.0;if( ((j+boxlowj+jcolor)%colors_in_each_dim) == 0 )sj=1.0;
-    for(i=ilo;i<ihi;i++){double si=0.0;if( ((i+boxlowi+icolor)%colors_in_each_dim) == 0 )si=1.0;
+    for(k=klo;k<khi;k++){REAL sk=0.0;if( ((k+boxlowk+kcolor)%colors_in_each_dim) == 0 )sk=1.0; // if colors_in_each_dim==1 (don't color), all cells are set to 1.0
+    for(j=jlo;j<jhi;j++){REAL sj=0.0;if( ((j+boxlowj+jcolor)%colors_in_each_dim) == 0 )sj=1.0;
+    for(i=ilo;i<ihi;i++){REAL si=0.0;if( ((i+boxlowi+icolor)%colors_in_each_dim) == 0 )si=1.0;
       int ijk = i + j*jStride + k*kStride;
       grid[ijk] = si*sj*sk;
     }}}
   }
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 
@@ -590,7 +590,7 @@ void random_vector(level_type * level, int id_a){
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+    REAL * __restrict__ grid = level->my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
     int i,j,k;
 
     for(k=klo;k<khi;k++){
@@ -600,7 +600,7 @@ void random_vector(level_type * level, int id_a){
       grid[ijk] = -1.000 + 2.0*(i^j^k^0x1);
     }}}
   }
-  level->timers.blas1 += (double)(getTime()-_timeStart);
+  level->timers.blas1 += (REAL)(getTime()-_timeStart);
 }
 
 

@@ -72,10 +72,10 @@ int cudaCheckPeerToPeer(int rank){
   return ndev;
 }
 
-void bench_hpgmg(mg_type *all_grids, int onLevel, double a, double b, double dtol, double rtol){
+void bench_hpgmg(mg_type *all_grids, int onLevel, REAL a, REAL b, REAL dtol, REAL rtol){
      int     doTiming;
      int    minSolves = 10; // do at least minSolves MGSolves
-  double timePerSolve = 0;
+  REAL timePerSolve = 0;
 
   for(doTiming=0;doTiming<=1;doTiming++){ // first pass warms up, second pass times
 
@@ -84,8 +84,8 @@ void bench_hpgmg(mg_type *all_grids, int onLevel, double a, double b, double dto
     #endif
 
     #ifdef USE_MPI
-    double minTime   = 60.0; // minimum time in seconds that the benchmark should run
-    double startTime = MPI_Wtime();
+    REAL minTime   = 60.0; // minimum time in seconds that the benchmark should run
+    REAL startTime = MPI_Wtime();
     if(doTiming==1){
       if((minTime/timePerSolve)>minSolves)minSolves=(minTime/timePerSolve); // if one needs to do more than minSolves to run for minTime, change minSolves
       #ifdef MAX_SOLVES
@@ -116,9 +116,9 @@ void bench_hpgmg(mg_type *all_grids, int onLevel, double a, double b, double dto
 
     #ifdef USE_MPI
     if(doTiming==0){
-      double endTime = MPI_Wtime();
+      REAL endTime = MPI_Wtime();
       timePerSolve = (endTime-startTime)/numSolves;
-      MPI_Bcast(&timePerSolve,1,MPI_DOUBLE,0,MPI_COMM_WORLD); // after warmup, process 0 broadcasts the average time per solve (consensus)
+      MPI_Bcast(&timePerSolve,1,MPI_REAL_TYPE,0,MPI_COMM_WORLD); // after warmup, process 0 broadcasts the average time per solve (consensus)
     }
     #endif
 
@@ -332,17 +332,17 @@ int main(int argc, char **argv){
   create_level(&level_h,boxes_in_i,box_dim,ghosts,VECTORS_RESERVED,bc,my_rank,num_tasks,NULL);
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   #ifdef USE_HELMHOLTZ
-  double a=1.0;double b=1.0; // Helmholtz
+  REAL a=1.0;REAL b=1.0; // Helmholtz
   if(my_rank==0)fprintf(stdout,"  Creating Helmholtz (a=%f, b=%f) test problem\n",a,b);
   #else
-  double a=0.0;double b=1.0; // Poisson
+  REAL a=0.0;REAL b=1.0; // Poisson
   if(my_rank==0)fprintf(stdout,"  Creating Poisson (a=%f, b=%f) test problem\n",a,b);
   #endif
-  double h=1.0/( (double)boxes_in_i*(double)box_dim );  // [0,1]^3 problem
+  REAL h=1.0/( (REAL)boxes_in_i*(REAL)box_dim );  // [0,1]^3 problem
   initialize_problem(&level_h,h,a,b);                   // initialize VECTOR_ALPHA, VECTOR_BETA*, and VECTOR_F
   rebuild_operator(&level_h,NULL,a,b);                  // calculate Dinv and lambda_max
   if(level_h.boundary_condition.type == BC_PERIODIC){   // remove any constants from the RHS for periodic problems
-    double average_value_of_f = mean(&level_h,VECTOR_F);
+    REAL average_value_of_f = mean(&level_h,VECTOR_F);
     if(average_value_of_f!=0.0){
       if(my_rank==0){fprintf(stderr,"  WARNING... Periodic boundary conditions, but f does not sum to zero... mean(f)=%e\n",average_value_of_f);}
       shift_vector(&level_h,VECTOR_F,VECTOR_F,-average_value_of_f);
@@ -360,16 +360,21 @@ int main(int argc, char **argv){
   // HPGMG-500 benchmark proper
   // evaluate performance on problem sizes of h, 2h, and 4h
   // (i.e. examine dynamic range for problem sizes N, N/8, and N/64)
-//double dtol=1e-15;double rtol=  0.0; // converged if ||D^{-1}(b-Ax)|| < dtol
-  double dtol=  0.0;double rtol=1e-10; // converged if ||b-Ax|| / ||b|| < rtol
+//REAL dtol=1e-15;REAL rtol=  0.0; // converged if ||D^{-1}(b-Ax)|| < dtol
+#ifdef USE_FLOAT32
+  // For float32, use tolerance appropriate for ~7 decimal digits of precision
+  REAL dtol=  0.0;REAL rtol=1e-5; // converged if ||b-Ax|| / ||b|| < rtol
+#else
+  REAL dtol=  0.0;REAL rtol=1e-10; // converged if ||b-Ax|| / ||b|| < rtol
+#endif
   int l;
   #ifndef TEST_ERROR
 
-  double AverageSolveTime[3];
+  REAL AverageSolveTime[3];
   for(l=0;l<3;l++){
     if(l>0)restriction(MG_h.levels[l],VECTOR_F,MG_h.levels[l-1],VECTOR_F,RESTRICT_CELL);
     bench_hpgmg(&MG_h,l,a,b,dtol,rtol);
-    AverageSolveTime[l] = (double)MG_h.timers.MGSolve / (double)MG_h.MGSolves_performed;
+    AverageSolveTime[l] = (REAL)MG_h.timers.MGSolve / (REAL)MG_h.MGSolves_performed;
     if(my_rank==0){fprintf(stdout,"\n\n===== Timing Breakdown =========================================================\n");}
     MGPrintTiming(&MG_h,l);
   }
@@ -377,15 +382,15 @@ int main(int argc, char **argv){
   if(my_rank==0){
     #ifdef CALIBRATE_TIMER
     double _timeStart=getTime();sleep(1);double _timeEnd=getTime();
-    double SecondsPerCycle = (double)1.0/(double)(_timeEnd-_timeStart);
+    REAL SecondsPerCycle = (REAL)1.0/(REAL)(_timeEnd-_timeStart);
     #else
-    double SecondsPerCycle = 1.0;
+    REAL SecondsPerCycle = 1.0;
     #endif
     fprintf(stdout,"\n\n===== Performance Summary ======================================================\n");
     for(l=0;l<3;l++){
-      double DOF = (double)MG_h.levels[l]->dim.i*(double)MG_h.levels[l]->dim.j*(double)MG_h.levels[l]->dim.k;
-      double seconds = SecondsPerCycle*(double)AverageSolveTime[l];
-      double DOFs = DOF / seconds;
+      REAL DOF = (REAL)MG_h.levels[l]->dim.i*(REAL)MG_h.levels[l]->dim.j*(REAL)MG_h.levels[l]->dim.k;
+      REAL seconds = SecondsPerCycle*(REAL)AverageSolveTime[l];
+      REAL DOFs = DOF / seconds;
       fprintf(stdout,"  h=%0.15e  DOF=%0.15e  time=%0.6f  DOF/s=%0.3e  MPI=%d  OMP=%d  ACC=1\n",MG_h.levels[l]->h,DOF,seconds,DOFs,num_tasks,OMP_Threads);
     }
   }

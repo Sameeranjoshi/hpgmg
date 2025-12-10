@@ -8,6 +8,8 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 //------------------------------------------------------------------------------------------------------------------------------
+#include <float.h>  // For FLT_MAX, REAL_MAX, etc.
+//------------------------------------------------------------------------------------------------------------------------------
 #define  VECTOR_TEMP         0 // 
 #define  VECTOR_UTRUE        1 // exact solution used to generate f
 #define  VECTOR_F_MINUS_AV   2 // cell centered residual (f-Av)
@@ -24,5 +26,21 @@
 #define  VECTOR_VALID       11 // cell centered array noting which cells are actually present
 //------------------------------------------------------------------------------------------------------------------
 #define VECTORS_RESERVED    12 // total number of vectors and the starting location for any auxillary bottom solver vectors
+//------------------------------------------------------------------------------------------------------------------------------
+// Floating point precision control
+// Use -DUSE_FLOAT32 to compile with float (fp32) instead of double (fp64)
+#ifdef USE_FLOAT32
+  typedef float REAL;
+  #define MPI_REAL_TYPE MPI_FLOAT
+  #define REAL_MAX FLT_MAX
+  #define REAL_MIN FLT_MIN
+  #define REAL_EPSILON FLT_EPSILON
+#else
+  typedef double REAL;
+  #define MPI_REAL_TYPE MPI_DOUBLE
+  #define REAL_MAX DBL_MAX
+  #define REAL_MIN DBL_MIN
+  #define REAL_EPSILON DBL_EPSILON
+#endif
 //------------------------------------------------------------------------------------------------------------------------------
 #endif

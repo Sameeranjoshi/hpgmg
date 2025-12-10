@@ -17,22 +17,22 @@
 //------------------------------------------------------------------------------------------------------------------------------
 // z[r] = alpha*A[r][c]*x[c]+beta*y[r]   // [row][col]
 // z[r] = alpha*A[r][c]*x[c]+beta*y[r]   // [row][col]
-#define gemv(z,alpha,A,x,beta,y,rows,cols)  {int r,c;double sum;for(r=0;r<(rows);r++){sum=0.0;for(c=0;c<(cols);c++){sum+=(A)[r][c]*(x)[c];}(z)[r]=(alpha)*sum+(beta)*(y)[r];}}
-static inline void axpy(double * z, double alpha, double * x, double beta, double * y, int n){ // z[n] = alpha*x[n]+beta*y[n]
+#define gemv(z,alpha,A,x,beta,y,rows,cols)  {int r,c;REAL sum;for(r=0;r<(rows);r++){sum=0.0;for(c=0;c<(cols);c++){sum+=(A)[r][c]*(x)[c];}(z)[r]=(alpha)*sum+(beta)*(y)[r];}}
+static inline void axpy(REAL * z, REAL alpha, REAL * x, REAL beta, REAL * y, int n){ // z[n] = alpha*x[n]+beta*y[n]
   int nn;
   for(nn=0;nn<n;nn++){
     z[nn] = alpha*x[nn] + beta*y[nn];
   }
 }
-static inline double vdotv(double * x, double * y, int n){ // x[n].y[n]
+static inline REAL vdotv(REAL * x, REAL * y, int n){ // x[n].y[n]
   int nn;
-  double sum = 0.0;
+  REAL sum = 0.0;
   for(nn=0;nn<n;nn++){
     sum += x[nn]*y[nn];
   }
   return(sum);
 }
-static inline void zero(double * z, int n){ // z[n] = 0.0
+static inline void zero(REAL * z, int n){ // z[n] = 0.0
   int nn;
   for(nn=0;nn<n;nn++){
     z[nn] = 0.0;
@@ -41,23 +41,23 @@ static inline void zero(double * z, int n){ // z[n] = 0.0
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void CACG(level_type * level, int e_id, int R_id, double a, double b, double desired_reduction_in_norm){
+void CACG(level_type * level, int e_id, int R_id, REAL a, REAL b, REAL desired_reduction_in_norm){
   // based on Lauren Goodfriend, Yinghui Huang, and David Thorman's derivation in their Spring 2013 CS267 Report
   int    r0_id = VECTORS_RESERVED+0;
   int     r_id = VECTORS_RESERVED+1;
   int     p_id = VECTORS_RESERVED+2;
   int  PRrt_id = VECTORS_RESERVED+3;
 
-  double  temp1[2*CA_KRYLOV_S+1];                                                             //
-  double  temp2[2*CA_KRYLOV_S+1];                                                             //
-  double  temp3[2*CA_KRYLOV_S+1];                                                             //
-  double     aj[2*CA_KRYLOV_S+1];                                                             //
-  double     cj[2*CA_KRYLOV_S+1];                                                             //
-  double     ej[2*CA_KRYLOV_S+1];                                                             //
-  double   Tpaj[2*CA_KRYLOV_S+1];                                                             //
-  double     Tp[2*CA_KRYLOV_S+1][2*CA_KRYLOV_S+1];                                          // T'  indexed as [row][col]
-  double      G[2*CA_KRYLOV_S+1][2*CA_KRYLOV_S+1];                                          // extracted from first 2*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
-  double   Gbuf[(2*CA_KRYLOV_S+1)*(2*CA_KRYLOV_S+1)];                                       // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(2*CA_KRYLOV_S+1) + col]
+  REAL temp1[2*CA_KRYLOV_S+1];                                                             //
+  REAL temp2[2*CA_KRYLOV_S+1];                                                             //
+  REAL temp3[2*CA_KRYLOV_S+1];                                                             //
+  REAL aj[2*CA_KRYLOV_S+1];                                                             //
+  REAL cj[2*CA_KRYLOV_S+1];                                                             //
+  REAL ej[2*CA_KRYLOV_S+1];                                                             //
+  REAL Tpaj[2*CA_KRYLOV_S+1];                                                             //
+  REAL Tp[2*CA_KRYLOV_S+1][2*CA_KRYLOV_S+1];                                          // T'  indexed as [row][col]
+  REAL      G[2*CA_KRYLOV_S+1][2*CA_KRYLOV_S+1];                                          // extracted from first 2*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
+  REAL   Gbuf[(2*CA_KRYLOV_S+1)*(2*CA_KRYLOV_S+1)];                                       // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(2*CA_KRYLOV_S+1) + col]
   int      PR[2*CA_KRYLOV_S+1];                                                               // vector_id's of the concatenation of the S+1 matrix powers of P, and the S matrix powers of R
   int *P = PR+              0;                                                                  // vector_id's of the S+1 Matrix Powers of P.  P[i] is the vector_id of A^i(p)
   int *R = PR+CA_KRYLOV_S+1;                                                                  // vector_id's of the S   Matrix Powers of R.  R[i] is the vector_id of A^i(r)
@@ -68,12 +68,12 @@ void CACG(level_type * level, int e_id, int R_id, double a, double b, double des
   int CGFailed    = 0;
   int CGConverged = 0;
 
-  double aj_dot_GTpaj,cj_dot_Gcj,alpha,cj_dot_Gcj_new,beta,L2_norm_of_r0,L2_norm_of_residual,delta;
+  REAL aj_dot_GTpaj,cj_dot_Gcj,alpha,cj_dot_Gcj_new,beta,L2_norm_of_r0,L2_norm_of_residual,delta;
 
   residual(level,r0_id,e_id,R_id,a,b);                                                            // r0[] = R_id[] - A(e_id)
   scale_vector(level,r_id,1.0,r0_id);                                                                // r[] = r0[]
   scale_vector(level, p_id,1.0,r0_id);                                                                // p[] = r0[]
-  double norm_of_r0 = norm(level,r0_id);                                                          // the norm of the initial residual...
+  REAL norm_of_r0 = norm(level,r0_id);                                                          // the norm of the initial residual...
   if(norm_of_r0 == 0.0){CGConverged=1;}                                                          // entered CG with exact solution
 
   delta = dot(level,r_id,r0_id);                                                                   // delta = dot(r,r0)

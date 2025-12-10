@@ -38,7 +38,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     for(n=0;n<level->exchange_ghosts[shape].num_recvs;n++){
       MPI_Irecv(level->exchange_ghosts[shape].recv_buffers[n],
                 level->exchange_ghosts[shape].recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level->exchange_ghosts[shape].recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -77,7 +77,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     for(n=0;n<level->exchange_ghosts[shape].num_sends;n++){
       MPI_Isend(level->exchange_ghosts[shape].send_buffers[n],
                 level->exchange_ghosts[shape].send_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level->exchange_ghosts[shape].send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -143,6 +143,6 @@ void exchange_boundary(level_type * level, int id, int shape){
   #endif
 
  
-  level->timers.ghostZone_total += (double)(getTime()-_timeCommunicationStart);
+  level->timers.ghostZone_total += (REAL)(getTime()-_timeCommunicationStart);
   NVTX_POP
 }

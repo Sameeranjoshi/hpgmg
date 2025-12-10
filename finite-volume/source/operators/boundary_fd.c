@@ -36,7 +36,7 @@ void apply_BCs_p1(level_type * level, int x_id, int shape){
   else {
   PRAGMA_THREAD_ACROSS_BLOCKS(level,buffer,level->boundary_condition.num_blocks[shape])
   for(buffer=0;buffer<level->boundary_condition.num_blocks[shape];buffer++){
-    double scale = 1.0;
+    REAL scale = 1.0;
     if(  faces[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
     if(  edges[level->boundary_condition.blocks[shape][buffer].subtype])scale= 1.0;
     if(corners[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
@@ -54,7 +54,7 @@ void apply_BCs_p1(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    REAL * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1);
@@ -91,7 +91,7 @@ void apply_BCs_p1(level_type * level, int x_id, int shape){
 
   }
   }
-  level->timers.boundary_conditions += (double)(getTime()-_timeStart);
+  level->timers.boundary_conditions += (REAL)(getTime()-_timeStart);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    REAL * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1)*1;
@@ -206,5 +206,5 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
     }
 
   }
-  level->timers.boundary_conditions += (double)(getTime()-_timeStart);
+  level->timers.boundary_conditions += (REAL)(getTime()-_timeStart);
 }

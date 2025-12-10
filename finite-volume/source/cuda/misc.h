@@ -28,6 +28,22 @@
 
 #define MISC_THREAD_BLOCK_SIZE		256
 
+// Include defines.h for REAL type and macros
+#include "../defines.h"
+
+// Define CUDA type conversion macros based on REAL type
+#ifdef USE_FLOAT32
+  // For float: use int (32-bit) for atomic operations
+  #define __REAL_as_int(x) __float_as_int(x)
+  #define __int_as_REAL(x) __int_as_float(x)
+  typedef unsigned int REAL_int_type;
+#else
+  // For double: use long long (64-bit) for atomic operations
+  #define __REAL_as_int(x) __double_as_longlong(x)
+  #define __int_as_REAL(x) __longlong_as_double(x)
+  typedef unsigned long long int REAL_int_type;
+#endif
+
 // CUB library is used for reductions
 #if __CUDACC_VER_MAJOR__ >= 11
 #include <cub/cub.cuh>
@@ -36,33 +52,33 @@
 #endif
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 600)
-__device__ double atomicAdd(double* address, double val)
+__device__ REAL atomicAdd(REAL* address, REAL val)
 {
-    unsigned long long int* address_as_ull = (unsigned long long int*)address;
-    unsigned long long int old = *address_as_ull, assumed;
+    REAL_int_type* address_as_int = (REAL_int_type*)address;
+    REAL_int_type old = *address_as_int, assumed;
     do {
         assumed = old;
-        old = atomicCAS(address_as_ull, assumed,
-                        __double_as_longlong(val +
-                        __longlong_as_double(assumed)));
+        old = atomicCAS(address_as_int, assumed,
+                        __REAL_as_int(val +
+                        __int_as_REAL(assumed)));
     // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
     } while (assumed != old);
-    return __longlong_as_double(old);
+    return __int_as_REAL(old);
 }
 #endif
 
-__device__ double atomicMax(double* address, double val)
+__device__ REAL atomicMax(REAL* address, REAL val)
 {
-    unsigned long long int* address_as_ull = (unsigned long long int*)address;
-    unsigned long long int old = *address_as_ull, assumed;
+    REAL_int_type* address_as_int = (REAL_int_type*)address;
+    REAL_int_type old = *address_as_int, assumed;
     do {
         assumed = old;
-        old = atomicCAS(address_as_ull, assumed,
-                        __double_as_longlong(max(val,
-                        __longlong_as_double(assumed))));
+        old = atomicCAS(address_as_int, assumed,
+                        __REAL_as_int(max(val,
+                        __int_as_REAL(assumed))));
     // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
     } while (assumed != old);
-    return __longlong_as_double(old);
+    return __int_as_REAL(old);
 }
 
 // this kernel zeros out the grid
@@ -90,7 +106,7 @@ __global__ void zero_vector_kernel(level_type level, int component_id)
     if(jhi>=dim)jhi+=ghosts;
     if(khi>=dim)khi+=ghosts;
 
-    double * __restrict__ grid = level.my_boxes[box].vectors[component_id] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid = level.my_boxes[box].vectors[component_id] + ghosts*(1+jStride+kStride);
 
     // note here that (ihi - ilo) can be greater than dim becasue of ghost blocks
     int dim_i = (ihi - ilo);
@@ -110,7 +126,7 @@ __global__ void zero_vector_kernel(level_type level, int component_id)
 // if mul_vectors = 1: c = scale_a * a * b
 // if mul_vectors = 0: c = scale_a * a + scale_b * b + shift_a
 template <int mul_vectors>
-__global__ void axpy_vector_kernel(level_type level, int id_c, double scale_a, double shift_a, double scale_b, int id_a, int id_b)
+__global__ void axpy_vector_kernel(level_type level, int id_c, REAL scale_a, REAL shift_a, REAL scale_b, int id_a, int id_b)
 {
   int block = blockIdx.x;
 
@@ -124,9 +140,9 @@ __global__ void axpy_vector_kernel(level_type level, int id_c, double scale_a, d
     const int jStride = level.my_boxes[box].jStride;
     const int kStride = level.my_boxes[box].kStride;
     const int  ghosts = level.my_boxes[box].ghosts;
-    double * __restrict__ grid_c = level.my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_a = level.my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
-    double * __restrict__ grid_b = level.my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_c = level.my_boxes[box].vectors[id_c] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_a = level.my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid_b = level.my_boxes[box].vectors[id_b] + ghosts*(1+jStride+kStride);
 
     int dim_i = (ihi - ilo);
     int i = ilo + threadIdx.x % dim_i;
@@ -162,7 +178,7 @@ __global__ void color_vector_kernel(level_type level, int id_a, int colors_in_ea
     const int jStride = level.my_boxes[box].jStride;
     const int kStride = level.my_boxes[box].kStride;
     const int  ghosts = level.my_boxes[box].ghosts;
-    double * __restrict__ grid = level.my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid = level.my_boxes[box].vectors[id_a] + ghosts*(1+jStride+kStride);
 
     int dim_i = (ihi - ilo);
     int i = ilo + threadIdx.x % dim_i;
@@ -172,9 +188,9 @@ __global__ void color_vector_kernel(level_type level, int id_a, int colors_in_ea
 
     for (int j = jlo + threadIdx.x / dim_i; j < jhi; j += j_block_stride)
       for (int k = klo; k < khi; k++) {
-        double sk=0.0;if( ((k+boxlowk+kcolor)%colors_in_each_dim) == 0 )sk=1.0; // if colors_in_each_dim==1 (don't color), all cells are set to 1.0
-        double sj=0.0;if( ((j+boxlowj+jcolor)%colors_in_each_dim) == 0 )sj=1.0;
-        double si=0.0;if( ((i+boxlowi+icolor)%colors_in_each_dim) == 0 )si=1.0;
+        REAL sk=0.0;if( ((k+boxlowk+kcolor)%colors_in_each_dim) == 0 )sk=1.0; // if colors_in_each_dim==1 (don't color), all cells are set to 1.0
+        REAL sj=0.0;if( ((j+boxlowj+jcolor)%colors_in_each_dim) == 0 )sj=1.0;
+        REAL si=0.0;if( ((i+boxlowi+icolor)%colors_in_each_dim) == 0 )si=1.0;
         const int ijk = i + j*jStride + k*kStride;
         grid[ijk] = si*sj*sk;
       }
@@ -182,7 +198,7 @@ __global__ void color_vector_kernel(level_type level, int id_a, int colors_in_ea
 
 // 0: summation, 1: maximum absolute
 template <int red_type>
-__global__ void reduction_kernel(level_type level, int id, double *res)
+__global__ void reduction_kernel(level_type level, int id, REAL *res)
 {
   int block = blockIdx.x;
 
@@ -196,10 +212,10 @@ __global__ void reduction_kernel(level_type level, int id, double *res)
     const int jStride = level.my_boxes[box].jStride;
     const int kStride = level.my_boxes[box].kStride;
     const int  ghosts = level.my_boxes[box].ghosts;
-    double * __restrict__ grid = level.my_boxes[box].vectors[id] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ grid = level.my_boxes[box].vectors[id] + ghosts*(1+jStride+kStride);
 
     // accumulate per thread first (multiple elements)
-    double thread_val = 0.0;
+    REAL thread_val = 0.0;
 
     int dim_i = (ihi - ilo);
     int i = ilo + threadIdx.x % dim_i;
@@ -208,7 +224,7 @@ __global__ void reduction_kernel(level_type level, int id, double *res)
       for (int j = jlo + threadIdx.x / dim_i; j < jhi; j += j_block_stride)
         for (int k = klo; k < khi; k++) {
           const int ijk = i + j*jStride + k*kStride;
-          double val = grid[ijk];
+          REAL val = grid[ijk];
           switch (red_type) {
           case 0: thread_val += val; break;
           case 1: thread_val = max(thread_val, fabs(val)); break;
@@ -216,10 +232,10 @@ __global__ void reduction_kernel(level_type level, int id, double *res)
         }
      }
 
-  typedef cub::BlockReduce<double, MISC_THREAD_BLOCK_SIZE> BlockReduceT;
+  typedef cub::BlockReduce<REAL, MISC_THREAD_BLOCK_SIZE> BlockReduceT;
   __shared__ typename BlockReduceT::TempStorage temp_storage;
 
-  double block_val;
+  REAL block_val;
   switch (red_type) {
   case 0:
     block_val = BlockReduceT(temp_storage).Sum(thread_val);
@@ -244,7 +260,7 @@ void cuda_zero_vector(level_type d_level, int id)
 }
 
 extern "C"
-void cuda_scale_vector(level_type d_level, int id_c, double scale_a, int id_a)
+void cuda_scale_vector(level_type d_level, int id_c, REAL scale_a, int id_a)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
@@ -255,7 +271,7 @@ void cuda_scale_vector(level_type d_level, int id_c, double scale_a, int id_a)
 }
 
 extern "C"
-void cuda_shift_vector(level_type d_level, int id_c, double shift_a, int id_a)
+void cuda_shift_vector(level_type d_level, int id_c, REAL shift_a, int id_a)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
@@ -266,7 +282,7 @@ void cuda_shift_vector(level_type d_level, int id_c, double shift_a, int id_a)
 }
 
 extern "C"
-void cuda_mul_vectors(level_type d_level, int id_c, double scale, int id_a, int id_b)
+void cuda_mul_vectors(level_type d_level, int id_c, REAL scale, int id_a, int id_b)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
@@ -277,7 +293,7 @@ void cuda_mul_vectors(level_type d_level, int id_c, double scale, int id_a, int 
 }
 
 extern "C"
-void cuda_add_vectors(level_type d_level, int id_c, double scale_a, int id_a, double scale_b, int id_b)
+void cuda_add_vectors(level_type d_level, int id_c, REAL scale_a, int id_a, REAL scale_b, int id_b)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
@@ -288,16 +304,16 @@ void cuda_add_vectors(level_type d_level, int id_c, double scale_a, int id_a, do
 }
 
 extern "C"
-double cuda_sum(level_type d_level, int id)
+REAL cuda_sum(level_type d_level, int id)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
   if (grid <= 0) return 0.0;
 
-  double *d_res;
-  double h_res[1];
-  CUCHK( cudaMallocManaged((void**)&d_res, sizeof(double), cudaMemAttachGlobal) )
-  CUCHK( cudaMemsetAsync(d_res, 0, sizeof(double)) )
+  REAL *d_res;
+  REAL h_res[1];
+  CUCHK( cudaMallocManaged((void**)&d_res, sizeof(REAL), cudaMemAttachGlobal) )
+  CUCHK( cudaMemsetAsync(d_res, 0, sizeof(REAL)) )
 
   reduction_kernel<0><<<grid, block>>>(d_level, id, d_res);
   CUDA_ERROR
@@ -311,16 +327,16 @@ double cuda_sum(level_type d_level, int id)
 }
 
 extern "C"
-double cuda_max_abs(level_type d_level, int id)
+REAL cuda_max_abs(level_type d_level, int id)
 {
   int block = MISC_THREAD_BLOCK_SIZE;
   int grid = d_level.num_my_blocks;
   if (grid <= 0) return 0.0;
 
-  double *d_res;
-  double h_res[1];
-  CUCHK( cudaMallocManaged((void**)&d_res, sizeof(double), cudaMemAttachGlobal) )
-  CUCHK( cudaMemsetAsync(d_res, 0, sizeof(double)) )
+  REAL *d_res;
+  REAL h_res[1];
+  CUCHK( cudaMallocManaged((void**)&d_res, sizeof(REAL), cudaMemAttachGlobal) )
+  CUCHK( cudaMemsetAsync(d_res, 0, sizeof(REAL)) )
 
   reduction_kernel<1><<<grid, block>>>(d_level, id, d_res);
   CUDA_ERROR

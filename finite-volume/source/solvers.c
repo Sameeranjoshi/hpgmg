@@ -24,7 +24,7 @@
 #include "solvers/cacg.c"
 #endif
 //------------------------------------------------------------------------------------------------------------------------------
-void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b, double desired_reduction_in_norm){ 
+void IterativeSolver(level_type * level, int u_id, int f_id, REAL a, REAL b, REAL desired_reduction_in_norm){ 
   if(!level->active)return;
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   if(level->must_subtract_mean==-1){
@@ -40,7 +40,7 @@ void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b,
     // u = A^{-1}f == D^{-1}f
     mul_vectors(level,u_id,1.0,VECTOR_DINV,f_id); // u = A^{-1}f = D^{-1}f 
     if(level->must_subtract_mean == 1){
-      double mean_of_u = mean(level,u_id);
+      REAL mean_of_u = mean(level,u_id);
       shift_vector(level,u_id,u_id,-mean_of_u);
     }
     return;
@@ -58,24 +58,24 @@ void IterativeSolver(level_type * level, int u_id, int f_id, double a, double b,
   //#else 
     // just point relaxation via multiple smooth()'s
     if(level->must_subtract_mean == 1){
-      double mean_of_u = mean(level,u_id);
+      REAL mean_of_u = mean(level,u_id);
       shift_vector(level,u_id,u_id,-mean_of_u);
     }
     residual(level,VECTOR_TEMP,u_id,f_id,a,b);
     //mul_vectors(level,VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
-    double norm_of_r0 = norm(level,VECTOR_TEMP);
+    REAL norm_of_r0 = norm(level,VECTOR_TEMP);
     int s=0,maxSmoothsBottom=100,converged=0;
     while( (s<maxSmoothsBottom) ){
       s++;
       level->Krylov_iterations++;
       smooth(level,u_id,f_id,a,b);
       if(level->must_subtract_mean == 1){
-        double mean_of_u = mean(level,u_id);
+        REAL mean_of_u = mean(level,u_id);
         shift_vector(level,u_id,u_id,-mean_of_u);
       }
       //residual(level,VECTOR_TEMP,u_id,f_id,a,b);
       //mul_vectors(level,VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
-      //double norm_of_r = norm(level,VECTOR_TEMP);
+      //REAL norm_of_r = norm(level,VECTOR_TEMP);
       //if(norm_of_r == 0.0){converged=1;break;}
       //if(norm_of_r < desired_reduction_in_norm*norm_of_r0){converged=1;break;}
     }

@@ -11,7 +11,9 @@ NVCC=`which nvcc`
 # CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
 CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
 # FOLDER="A100build"
-FOLDER="H100build"
+FOLDER="H100build_fp64"
+# Floating point precision: use -DUSE_FLOAT32 for float (fp32), otherwise double (fp64)
+# OPTS+="-DUSE_FLOAT32 "
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
@@ -68,7 +70,8 @@ rm -rf $FOLDER
 LDLIBS+="-ldl"
 
 # GSRB smoother (default)
-python ./configure --arch="$FOLDER" --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo $OPTS" --CUDAARCH="$CUDA_ARCH" --LDLIBS="$LDLIBS" --no-fe --no-fv-mpi --fv-cycle="V" --fv-smoother="jacobi" --fv-coarse-solver="cg"
+# Note: CUDA 13.1+ requires C++17 for CUB library --NVCCFLAGS=-std=c++17
+python ./configure --arch="$FOLDER" --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo $OPTS" --CUDAARCH="$CUDA_ARCH" --LDLIBS="$LDLIBS" --no-fe --no-fv-mpi --fv-cycle="V" --fv-smoother="jacobi"
 
 # Chebyshev smoother
 # ./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O1 -fopenmp $OPTS" --NVCCFLAGS="-O1 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe

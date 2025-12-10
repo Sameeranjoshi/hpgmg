@@ -21,7 +21,7 @@
 #define GSRB_STRIDE2 // default implementation
 #endif
 //------------------------------------------------------------------------------------------------------------------------------
-void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
+void smooth(level_type * level, int x_id, int rhs_id, REAL a, REAL b){
   int block,s;
   for(s=0;s<2*NUM_SMOOTHS;s++){ // there are two sweeps per GSRB smooth
 
@@ -52,40 +52,40 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
       const int khi = level->my_blocks[block].dim.k + klo;
 
       int i,j,k;
-      const double h2inv = 1.0/(level->h*level->h);
+      const REAL h2inv = 1.0/(level->h*level->h);
       const int ghosts =  level->box_ghosts;
       const int jStride = level->my_boxes[box].jStride;
       const int kStride = level->my_boxes[box].kStride;
       const int color000 = (level->my_boxes[box].low.i^level->my_boxes[box].low.j^level->my_boxes[box].low.k^s)&1;  // is element 000 red or black on *THIS* sweep
 
-      const double * __restrict__ rhs      = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ alpha    = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_i   = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_j   = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_k   = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ Dinv     = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ valid    = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
+      const REAL * __restrict__ rhs      = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ alpha    = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_i   = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_j   = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_k   = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ Dinv     = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ valid    = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
       #ifdef GSRB_OOP
-      const double * __restrict__ x_n;
-            double * __restrict__ x_np1;
+      const REAL * __restrict__ x_n;
+            REAL * __restrict__ x_np1;
                      if((s&1)==0){x_n      = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);
                                   x_np1    = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);}
                              else{x_n      = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);
                                   x_np1    = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);}
       #else
-      const double * __restrict__ x_n      = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-            double * __restrict__ x_np1    = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+      const REAL * __restrict__ x_n      = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+            REAL * __restrict__ x_np1    = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
       #endif
           
 
       #if defined(GSRB_FP)
-      for(k=klo;k<khi;k++){const double * __restrict__ RedBlack = level->RedBlack_FP + ghosts*(1+jStride) + kStride*((k^color000)&0x1);
+      for(k=klo;k<khi;k++){const REAL * __restrict__ RedBlack = level->RedBlack_FP + ghosts*(1+jStride) + kStride*((k^color000)&0x1);
       for(j=jlo;j<jhi;j++){
       for(i=ilo;i<ihi;i++){
             int ij  = i + j*jStride;
             int ijk = i + j*jStride + k*kStride;
-            double Ax     = apply_op_ijk(x_n);
-            double lambda =     Dinv_ijk();
+            REAL Ax     = apply_op_ijk(x_n);
+            REAL lambda =     Dinv_ijk();
             x_np1[ijk] = x_n[ijk] + RedBlack[ij]*lambda*(rhs[ijk]-Ax);
             //x_np1[ijk] = ((i^j^k^color000)&1) ? x_n[ijk] : x_n[ijk] + lambda*(rhs[ijk]-Ax);
       }}}
@@ -103,8 +103,8 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
         #endif
         for(i=ilo+((ilo^j^k^color000)&1);i<ihi;i+=2){ // stride-2 GSRB
           int ijk = i + j*jStride + k*kStride; 
-          double Ax     = apply_op_ijk(x_n);
-          double lambda =     Dinv_ijk();
+          REAL Ax     = apply_op_ijk(x_n);
+          REAL lambda =     Dinv_ijk();
           x_np1[ijk] = x_n[ijk] + lambda*(rhs[ijk]-Ax);
         }
       }}
@@ -116,8 +116,8 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
       for(i=ilo;i<ihi;i++){
         int ijk = i + j*jStride + k*kStride;
         if((i^j^k^color000^1)&1){ // looks very clean when [0] is i,j,k=0,0,0 
-          double Ax     = apply_op_ijk(x_n);
-          double lambda =     Dinv_ijk();
+          REAL Ax     = apply_op_ijk(x_n);
+          REAL lambda =     Dinv_ijk();
           x_np1[ijk] = x_n[ijk] + lambda*(rhs[ijk]-Ax);
         #ifdef GSRB_OOP
         }else{
@@ -134,7 +134,7 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
 
     } // boxes
     } // use-cuda
-    level->timers.smooth += (double)(getTime()-_timeStart);
+    level->timers.smooth += (REAL)(getTime()-_timeStart);
   } // s-loop
 }
 

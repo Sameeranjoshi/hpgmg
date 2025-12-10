@@ -3,7 +3,7 @@
 // SWWilliams@lbl.gov
 // Lawrence Berkeley National Lab
 //------------------------------------------------------------------------------------------------------------------------------
-void matmul(level_type * level, double *C, int * id_A, int * id_B, int rows, int cols, int A_equals_B_transpose){
+void matmul(level_type * level, REAL *C, int * id_A, int * id_B, int rows, int cols, int A_equals_B_transpose){
   // *id_A = m vector_id's (conceptually pointers to the rows    of a m x level->num_my_boxes*volume matrix)
   // *id_B = n vector_id's (conceptually pointers to the columns of a level->num_my_boxes*volume matrix x n)
   // *C is a mxn matrix where C[rows][cols] = dot(id_A[rows],id_B[cols])
@@ -23,16 +23,16 @@ void matmul(level_type * level, double *C, int * id_A, int * id_B, int rows, int
   for(nn=0;nn<cols;nn++){
   if(nn>=mm){ // upper triangular
     int box;
-    double a_dot_b_level =  0.0;
+    REAL a_dot_b_level =  0.0;
     for(box=0;box<level->num_my_boxes;box++){
       int i,j,k;
       const int jStride = level->my_boxes[box].jStride;
       const int kStride = level->my_boxes[box].kStride;
       const int  ghosts = level->my_boxes[box].ghosts;
       const int     dim = level->my_boxes[box].dim;
-      double * __restrict__ grid_a = level->my_boxes[box].vectors[id_A[mm]] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-      double * __restrict__ grid_b = level->my_boxes[box].vectors[id_B[nn]] + ghosts*(1+jStride+kStride); 
-      double a_dot_b_box = 0.0;
+      REAL * __restrict__ grid_a = level->my_boxes[box].vectors[id_A[mm]] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+      REAL * __restrict__ grid_b = level->my_boxes[box].vectors[id_B[nn]] + ghosts*(1+jStride+kStride); 
+      REAL a_dot_b_box = 0.0;
       for(k=0;k<dim;k++){
       for(j=0;j<dim;j++){
       for(i=0;i<dim;i++){
@@ -45,18 +45,18 @@ void matmul(level_type * level, double *C, int * id_A, int * id_B, int rows, int
     if((mm<cols)&&(nn<rows)){C[nn*cols + mm] = a_dot_b_level;}// C[nn][mm] 
   }
   }}
-  level->timers.blas3 += (double)(getTime()-_timeStart);
+  level->timers.blas3 += (REAL)(getTime()-_timeStart);
 
   #ifdef USE_MPI
-  double *send_buffer = (double*)malloc(rows*cols*sizeof(double));
+  REAL *send_buffer = (REAL*)malloc(rows*cols*sizeof(REAL));
   for(mm=0;mm<rows;mm++){
   for(nn=0;nn<cols;nn++){
     send_buffer[mm*cols + nn] = C[mm*cols + nn];
   }}
   double _timeStartAllReduce = getTime();
-  MPI_Allreduce(send_buffer,C,rows*cols,MPI_DOUBLE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
+  MPI_Allreduce(send_buffer,C,rows*cols,MPI_REAL_TYPE,MPI_SUM,level->MPI_COMM_ALLREDUCE);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (REAL)(_timeEndAllReduce-_timeStartAllReduce);
   free(send_buffer);
   #endif
 

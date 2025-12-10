@@ -22,22 +22,22 @@
 //------------------------------------------------------------------------------------------------------------------------------
 // z[r] = alpha*A[r][c]*x[c]+beta*y[r]   // [row][col]
 // z[r] = alpha*A[r][c]*x[c]+beta*y[r]   // [row][col]
-#define gemv(z,alpha,A,x,beta,y,rows,cols)  {int r,c;double sum;for(r=0;r<(rows);r++){sum=0.0;for(c=0;c<(cols);c++){sum+=(A)[r][c]*(x)[c];}(z)[r]=(alpha)*sum+(beta)*(y)[r];}}
-static inline void axpy(double * z, double alpha, double * x, double beta, double * y, int n){ // z[n] = alpha*x[n]+beta*y[n]
+#define gemv(z,alpha,A,x,beta,y,rows,cols)  {int r,c;REAL sum;for(r=0;r<(rows);r++){sum=0.0;for(c=0;c<(cols);c++){sum+=(A)[r][c]*(x)[c];}(z)[r]=(alpha)*sum+(beta)*(y)[r];}}
+static inline void axpy(REAL * z, REAL alpha, REAL * x, REAL beta, REAL * y, int n){ // z[n] = alpha*x[n]+beta*y[n]
   int nn;
   for(nn=0;nn<n;nn++){
     z[nn] = alpha*x[nn] + beta*y[nn];
   }
 }
-static inline double vdotv(double * x, double * y, int n){ // x[n].y[n]
+static inline REAL vdotv(REAL * x, REAL * y, int n){ // x[n].y[n]
   int nn;
-  double sum = 0.0;
+  REAL sum = 0.0;
   for(nn=0;nn<n;nn++){
     sum += x[nn]*y[nn];
   }
   return(sum);
 }
-static inline void zero(double * z, int n){ // z[n] = 0.0
+static inline void zero(REAL * z, int n){ // z[n] = 0.0
   int nn;
   for(nn=0;nn<n;nn++){
     z[nn] = 0.0;
@@ -47,7 +47,7 @@ static inline void zero(double * z, int n){ // z[n] = 0.0
 
 //------------------------------------------------------------------------------------------------------------------------------
 #ifdef CA_KRYLOV_TELESCOPING
-void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, double desired_reduction_in_norm){
+void CABiCGStab(level_type * level, int e_id, int R_id, REAL a, REAL b, REAL desired_reduction_in_norm){
   // based on Erin Carson/Jim Demmel/Nick Knight's s-Step BiCGStab Algorithm 3.4
   // However, the formation of [P,R] is expensive ~ 4S+1 exchanges.  Moreover, formation of G[][] requires (4S+2)(4S+1) grid operations.
   //   When the required number of iterations is small, this overhead is large and can make the s-step version slower than vanilla BiCGStab
@@ -59,20 +59,20 @@ void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, doub
 
 
   // note: CA_KRYLOV_S should be tiny (2-8?).  As such, 4*CA_KRYLOV_S+1 is also tiny (9-33).  Just allocate on the stack...
-  double  temp1[4*CA_KRYLOV_S+1];                                                               //
-  double  temp2[4*CA_KRYLOV_S+1];                                                               //
-  double  temp3[4*CA_KRYLOV_S+1];                                                               //
-  double     Tp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // T'  indexed as [row][col]
-  double    Tpp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // T'' indexed as [row][col]
-  double     aj[4*CA_KRYLOV_S+1];                                                               //
-  double     cj[4*CA_KRYLOV_S+1];                                                               //
-  double     ej[4*CA_KRYLOV_S+1];                                                               //
-  double   Tpaj[4*CA_KRYLOV_S+1];                                                               //
-  double   Tpcj[4*CA_KRYLOV_S+1];                                                               //
-  double  Tppaj[4*CA_KRYLOV_S+1];                                                               //
-  double      G[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // extracted from first 4*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
-  double      g[4*CA_KRYLOV_S+1];                                                               // extracted from last [4*CA_KRYLOV_S+1] column of Gg[][].
-  double    Gg[(4*CA_KRYLOV_S+1)*(4*CA_KRYLOV_S+2)];                                            // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(4*CA_KRYLOV_S+2) + col]
+  REAL temp1[4*CA_KRYLOV_S+1];                                                               //
+  REAL temp2[4*CA_KRYLOV_S+1];                                                               //
+  REAL temp3[4*CA_KRYLOV_S+1];                                                               //
+  REAL Tp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // T'  indexed as [row][col]
+  REAL    Tpp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // T'' indexed as [row][col]
+  REAL     aj[4*CA_KRYLOV_S+1];                                                               //
+  REAL     cj[4*CA_KRYLOV_S+1];                                                               //
+  REAL     ej[4*CA_KRYLOV_S+1];                                                               //
+  REAL   Tpaj[4*CA_KRYLOV_S+1];                                                               //
+  REAL   Tpcj[4*CA_KRYLOV_S+1];                                                               //
+  REAL  Tppaj[4*CA_KRYLOV_S+1];                                                               //
+  REAL      G[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                                              // extracted from first 4*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
+  REAL      g[4*CA_KRYLOV_S+1];                                                               // extracted from last [4*CA_KRYLOV_S+1] column of Gg[][].
+  REAL    Gg[(4*CA_KRYLOV_S+1)*(4*CA_KRYLOV_S+2)];                                            // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(4*CA_KRYLOV_S+2) + col]
   int      PRrt[4*CA_KRYLOV_S+2];                                                               // vector_id's of the concatenation of the 2S+1 matrix powers of P, 2S matrix powers of R, and rt
 
   int mMax=200;
@@ -80,14 +80,14 @@ void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, doub
   int i,j,k;
   int BiCGStabFailed    = 0;
   int BiCGStabConverged = 0;
-  double g_dot_Tpaj,alpha,omega_numerator,omega_denominator,omega,delta,delta_next,beta;
-  double L2_norm_of_rt,L2_norm_of_residual,cj_dot_Gcj,L2_norm_of_s;
+  REAL g_dot_Tpaj,alpha,omega_numerator,omega_denominator,omega,delta,delta_next,beta;
+  REAL L2_norm_of_rt,L2_norm_of_residual,cj_dot_Gcj,L2_norm_of_s;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   residual(level,rt_id,e_id,R_id,a,b);                                                           // rt[] = R_id[] - A(e_id)... note, if DPC, then rt = R-AD^-1De
   scale_vector(level,r_id,1.0,rt_id);                                                               // r[] = rt[]
   scale_vector(level, p_id,1.0,rt_id);                                                               // p[] = rt[]
-  double norm_of_rt = norm(level,rt_id);                                                         // the norm of the initial residual...
+  REAL norm_of_rt = norm(level,rt_id);                                                         // the norm of the initial residual...
   #ifdef VERBOSE
   if(level->my_rank==0)ffprintf(stderr,stderr,"m=%8d, norm   =%0.20f\n",m,norm_of_rt);
   #endif
@@ -283,7 +283,7 @@ void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, doub
 }
 //------------------------------------------------------------------------------------------------------------------------------
 #else // CA_KRYLOV_TELESCOPING =0
-void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, double desired_reduction_in_norm){
+void CABiCGStab(level_type * level, int e_id, int R_id, REAL a, REAL b, REAL desired_reduction_in_norm){
   // based on Erin Carson/Jim Demmel/Nick Knight's s-Step BiCGStab Algorithm 3.4
   int    rt_id = VECTORS_RESERVED+0;
   int     r_id = VECTORS_RESERVED+1;
@@ -291,20 +291,20 @@ void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, doub
   int  PRrt_id = VECTORS_RESERVED+3;
 
   // note: CA_KRYLOV_S should be tiny (2-8?).  As such, 4*CA_KRYLOV_S+1 is also tiny (9-33).  Just allocate on the stack...
-  double  temp1[4*CA_KRYLOV_S+1];                                               //
-  double  temp2[4*CA_KRYLOV_S+1];                                               //
-  double  temp3[4*CA_KRYLOV_S+1];                                               //
-  double     Tp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // T'  indexed as [row][col]
-  double    Tpp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // T'' indexed as [row][col]
-  double     aj[4*CA_KRYLOV_S+1];                                               //
-  double     cj[4*CA_KRYLOV_S+1];                                               //
-  double     ej[4*CA_KRYLOV_S+1];                                               //
-  double   Tpaj[4*CA_KRYLOV_S+1];                                               //
-  double   Tpcj[4*CA_KRYLOV_S+1];                                               //
-  double  Tppaj[4*CA_KRYLOV_S+1];                                               //
-  double      G[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // extracted from first 4*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
-  double      g[4*CA_KRYLOV_S+1];                                               // extracted from last [4*CA_KRYLOV_S+1] column of Gg[][].
-  double    Gg[(4*CA_KRYLOV_S+1)*(4*CA_KRYLOV_S+2)];                            // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(4*CA_KRYLOV_S+2) + col]
+  REAL  temp1[4*CA_KRYLOV_S+1];                                               //
+  REAL  temp2[4*CA_KRYLOV_S+1];                                               //
+  REAL  temp3[4*CA_KRYLOV_S+1];                                               //
+  REAL     Tp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // T'  indexed as [row][col]
+  REAL Tpp[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // T'' indexed as [row][col]
+  REAL aj[4*CA_KRYLOV_S+1];                                               //
+  REAL cj[4*CA_KRYLOV_S+1];                                               //
+  REAL ej[4*CA_KRYLOV_S+1];                                               //
+  REAL Tpaj[4*CA_KRYLOV_S+1];                                               //
+  REAL Tpcj[4*CA_KRYLOV_S+1];                                               //
+  REAL Tppaj[4*CA_KRYLOV_S+1];                                               //
+  REAL G[4*CA_KRYLOV_S+1][4*CA_KRYLOV_S+1];                              // extracted from first 4*CA_KRYLOV_S+1 columns of Gg[][].  indexed as [row][col]
+  REAL g[4*CA_KRYLOV_S+1];                                               // extracted from last [4*CA_KRYLOV_S+1] column of Gg[][].
+  REAL Gg[(4*CA_KRYLOV_S+1)*(4*CA_KRYLOV_S+2)];                            // buffer to hold the Gram-like matrix produced by matmul().  indexed as [row*(4*CA_KRYLOV_S+2) + col]
   int      PRrt[4*CA_KRYLOV_S+2];                                               // vector_id's of the concatenation of the 2S+1 matrix powers of P, 2S matrix powers of R, and rt
   int *P = PRrt+                0;                                              // vector_id's of the 2S+1 Matrix Powers of P.  P[i] is the vector_id of A^i(p)
   int *R = PRrt+2*CA_KRYLOV_S+1;                                                // vector_id's of the 2S   Matrix Powers of R.  R[i] is the vector_id of A^i(r)
@@ -314,14 +314,14 @@ void CABiCGStab(level_type * level, int e_id, int R_id, double a, double b, doub
   int i,j,k;
   int BiCGStabFailed    = 0;
   int BiCGStabConverged = 0;
-  double g_dot_Tpaj,alpha,omega_numerator,omega_denominator,omega,delta,delta_next,beta;
-  double L2_norm_of_rt,L2_norm_of_residual,cj_dot_Gcj,L2_norm_of_s;
+  REAL g_dot_Tpaj,alpha,omega_numerator,omega_denominator,omega,delta,delta_next,beta;
+  REAL L2_norm_of_rt,L2_norm_of_residual,cj_dot_Gcj,L2_norm_of_s;
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   residual(level,rt_id,e_id,R_id,a,b);                                           // rt[] = R_id[] - A(e_id)... note, if DPC, then rt = R-AD^-1De
   scale_vector(level,r_id,1.0,rt_id);                                               // r[] = rt[]
   scale_vector(level, p_id,1.0,rt_id);                                               // p[] = rt[]
-  double norm_of_rt = norm(level,rt_id);                                         // the norm of the initial residual...
+  REAL norm_of_rt = norm(level,rt_id);                                         // the norm of the initial residual...
   #ifdef VERBOSE
   if(level->my_rank==0)fprintf(stderr,"m=%8d, norm   =%0.20f\n",m,norm_of_rt);
   #endif

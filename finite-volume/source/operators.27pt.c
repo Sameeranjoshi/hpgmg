@@ -95,7 +95,7 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_p2(level,x_id,
 int stencil_get_radius(){return(1);} // 27pt = dense 3^3
 int stencil_get_shape(){return(STENCIL_SHAPE_BOX);} // needs faces, edges, and corners
 //------------------------------------------------------------------------------------------------------------------------------
-void rebuild_operator(level_type * level, level_type *fromLevel, double a, double b){
+void rebuild_operator(level_type * level, level_type *fromLevel, REAL a, REAL b){
   // form restriction of alpha[], beta_*[] coefficients from fromLevel
   if(fromLevel != NULL){
     restriction(level,VECTOR_ALPHA ,fromLevel,VECTOR_ALPHA ,RESTRICT_CELL  );
@@ -154,10 +154,10 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 #include "operators/interpolation_p2.c"
 //#include "operators/interpolation_v2.c"
 //------------------------------------------------------------------------------------------------------------------------------
-void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);} // 27pt uses cell centered, not cell averaged
-void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);}
-//void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
-//void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_vcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);} // 27pt uses cell centered, not cell averaged
+void interpolation_fcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);}
+//void interpolation_vcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+//void interpolation_fcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
 //------------------------------------------------------------------------------------------------------------------------------
 #include "operators/problem.p6.c"
 //------------------------------------------------------------------------------------------------------------------------------

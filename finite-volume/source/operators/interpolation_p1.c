@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #include <math.h>
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void interpolation_p1_block(level_type *level_f, int id_f, double prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
+static inline void interpolation_p1_block(level_type *level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
   // interpolate 3D array from read_i,j,k of read[] to write_i,j,k in write[]
   int write_dim_i   = block->dim.i<<1; // calculate the dimensions of the resultant fine block
   int write_dim_j   = block->dim.j<<1;
@@ -23,8 +23,8 @@ static inline void interpolation_p1_block(level_type *level_f, int id_f, double 
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  REAL * __restrict__  read = block->read.ptr;
+  REAL * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read = level_c->my_boxes[ block->read.box].vectors[id_c] + level_c->my_boxes[ block->read.box].ghosts*(1+level_c->my_boxes[ block->read.box].jStride+level_c->my_boxes[ block->read.box].kStride);
      read_jStride = level_c->my_boxes[block->read.box ].jStride;
@@ -66,7 +66,7 @@ static inline void interpolation_p1_block(level_type *level_f, int id_f, double 
 
 //------------------------------------------------------------------------------------------------------------------------------
 // perform a (inter-level) piecewise linear interpolation
-void interpolation_p1(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){
+void interpolation_p1(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){
   exchange_boundary(level_c,id_c,STENCIL_SHAPE_BOX);
        apply_BCs_p1(level_c,id_c,STENCIL_SHAPE_BOX);
 
@@ -93,7 +93,7 @@ void interpolation_p1(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_f->interpolation.num_recvs;n++){
       MPI_Irecv(level_f->interpolation.recv_buffers[n],
                 level_f->interpolation.recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_f->interpolation.recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -133,7 +133,7 @@ void interpolation_p1(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_c->interpolation.num_sends;n++){
       MPI_Isend(level_c->interpolation.send_buffers[n],
                 level_c->interpolation.send_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_c->interpolation.send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -192,5 +192,5 @@ void interpolation_p1(level_type * level_f, int id_f, double prescale_f, level_t
   #endif 
  
  
-  level_f->timers.interpolation_total += (double)(getTime()-_timeCommunicationStart);
+  level_f->timers.interpolation_total += (REAL)(getTime()-_timeCommunicationStart);
 }

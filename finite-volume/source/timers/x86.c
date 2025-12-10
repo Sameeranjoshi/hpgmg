@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #include <stdint.h>
 #define CALIBRATE_TIMER // mg.c will calibrate the timer to determine seconds per cycle
+// Timer should return double for precision
 double getTime(){
   uint64_t lo, hi;
   __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));

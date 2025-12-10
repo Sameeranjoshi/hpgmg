@@ -31,8 +31,8 @@
 
 //------------------------------------------------------------------------------------------------------------------------------
 template<int LOG_DIM_I, int BLOCK_I, int BLOCK_J, int BLOCK_K>
-__global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, double b, int s, double *c, double *d){
-  __shared__ double sa[2*NUM_ARRAYS][BLOCKCOPY_TILE_J+2*RADIUS][BLOCKCOPY_TILE_I+2*RADIUS];  // double buffering
+__global__ void smooth_kernel(level_type level, int x_id, int rhs_id, REAL a, REAL b, int s, REAL *c, REAL *d){
+  __shared__ REAL sa[2*NUM_ARRAYS][BLOCKCOPY_TILE_J+2*RADIUS][BLOCKCOPY_TILE_I+2*RADIUS];  // REAL buffering
   const int idim = level.my_blocks[blockIdx.x].dim.i;
   const int jdim = level.my_blocks[blockIdx.x].dim.j;
   const int kdim = min(level.my_blocks[blockIdx.x].dim.k, BLOCK_K);
@@ -51,24 +51,24 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
   const int ghosts  = level.my_boxes[box].ghosts;
   const int jStride = level.my_boxes[box].jStride;
   const int kStride = level.my_boxes[box].kStride;
-  const double h2inv = 1.0/(level.h*level.h);
+  const REAL h2inv = 1.0/(level.h*level.h);
 
-  const double * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #ifdef USE_HELMHOLTZ
-  const double * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #endif
-  const double * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #ifdef USE_L1JACOBI
-  const double * __restrict__ Dinv     = level.my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ Dinv     = level.my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #else
-  const double * __restrict__ Dinv     = level.my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ Dinv     = level.my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #endif
 
-        double * __restrict__ xo;
-  const double * __restrict__ xp;
-  const double * __restrict__ x;
+        REAL * __restrict__ xo;
+  const REAL * __restrict__ xp;
+  const REAL * __restrict__ x;
                    if((s&1)==0){x      = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
                                 xp     = level.my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
                                 xo     = level.my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);}
@@ -77,8 +77,8 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
                                 xo     = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);}
 
   #ifdef USE_CHEBY
-  const double c1 = c[s%CHEBYSHEV_DEGREE];
-  const double c2 = d[s%CHEBYSHEV_DEGREE];
+  const REAL c1 = c[s%CHEBYSHEV_DEGREE];
+  const REAL c2 = d[s%CHEBYSHEV_DEGREE];
   #elif USE_GSRB
   const int color000 = (level.my_boxes[box].low.i^level.my_boxes[box].low.j^level.my_boxes[box].low.k^s)&1;
   #endif
@@ -87,13 +87,13 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
   // store k and k-1 planes into registers
   int ijk = threadIdx.x + threadIdx.y*jStride;
-  double xc1,xl1,xr1,xu1,xd1,xc0,xl0,xr0,xu0,xd0,xc2,xl2,xr2,xu2,xd2;
-  double xlu,xld,xru,xrd,xll,xrr,xuu,xdd,xbb,xff;
-  double bkc1,bkl1,bkr1,bku1,bkd1,bkc2,bkl2,bkr2,bku2,bkd2;
-  double bic1,bir1,bic0,bir0,bic2,bir2;
-  double biu,bid,bird,biru;
-  double bjc1,bjd1,bjc0,bjd0,bjc2,bjd2;
-  double bjl,bjr,bjld,bjrd;
+  REAL xc1,xl1,xr1,xu1,xd1,xc0,xl0,xr0,xu0,xd0,xc2,xl2,xr2,xu2,xd2;
+  REAL xlu,xld,xru,xrd,xll,xrr,xuu,xdd,xbb,xff;
+  REAL bkc1,bkl1,bkr1,bku1,bkd1,bkc2,bkl2,bkr2,bku2,bkd2;
+  REAL bic1,bir1,bic0,bir0,bic2,bir2;
+  REAL biu,bid,bird,biru;
+  REAL bjc1,bjd1,bjc0,bjd0,bjc2,bjd2;
+  REAL bjl,bjr,bjld,bjrd;
   if(bounds){
   xc1 = X(ijk);
   xl1 = X(ijk-1);
@@ -135,7 +135,7 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
   for(int k=0; k<kdim; k++){
     ijk = threadIdx.x + threadIdx.y*jStride + k*kStride;
-    int n = (k&0x1)<<1;  // double buffering
+    int n = (k&0x1)<<1;  // REAL buffering
 
     if(bounds){
     // this copies an entire (idim+2*RADIUS) x (jdim+2*RADIUS) tile into smem in fully coalesced fashion
@@ -185,7 +185,7 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
 
     // apply operator
-    const double Ax  =
+    const REAL Ax  =
     #ifdef USE_HELMHOLTZ
     a*alpha[ijk]*xc1
     #endif
@@ -217,17 +217,17 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
     ///////////////////// SMOOTHER /////////////////////
     #ifdef USE_CHEBY
-    const double lambda = Dinv_ijk();
+    const REAL lambda = Dinv_ijk();
     xo[ijk] = xc1 + c1*(xc1-xp[ijk]) + c2*lambda*(rhs[ijk]-Ax);
 
 
     #elif USE_JACOBI
-    const double lambda = Dinv_ijk();
+    const REAL lambda = Dinv_ijk();
     xo[ijk] = X(ijk) + (0.6666666666666666667)*lambda*(rhs[ijk]-Ax);
 
 
     #elif USE_L1JACOBI
-    const double lambda = Dinv_ijk();
+    const REAL lambda = Dinv_ijk();
     xo[ijk] = X(ijk) + lambda*(rhs[ijk]-Ax);
 
 
@@ -236,8 +236,8 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
 
 
     #elif USE_GSRB
-    const double * __restrict__ RedBlack = level.RedBlack_FP + ghosts*(1+jStride) + (((k+klo)^color000)&1)*kStride + (ilo + jlo*jStride);
-    const double lambda = Dinv_ijk();
+    const REAL * __restrict__ RedBlack = level.RedBlack_FP + ghosts*(1+jStride) + (((k+klo)^color000)&1)*kStride + (ilo + jlo*jStride);
+    const REAL lambda = Dinv_ijk();
     const int ij  = threadIdx.x + threadIdx.y*jStride;
     xo[ijk] = xc1 + RedBlack[ij]*lambda*(rhs[ijk]-Ax);
     #endif
@@ -282,10 +282,10 @@ __global__ void smooth_kernel(level_type level, int x_id, int rhs_id, double a, 
   smooth_kernel<log_dim_i, block_i, block_j, block_k><<<num_blocks, dim3(block_i, block_j)>>>(level, x_id, rhs_id, a, b, s, c, d);
 
 extern "C"
-void cuda_smooth(level_type level, int x_id, int rhs_id, double a, double b, int s, double *c, double *d)
+void cuda_smooth(level_type level, int x_id, int rhs_id, REAL a, REAL b, int s, REAL *c, REAL *d)
 {
   int num_blocks = level.num_my_blocks; if(num_blocks<=0) return;
-  int log_dim_i = (int)log2((double)level.dim.i);
+  int log_dim_i = (int)log2((REAL)level.dim.i);
   int block_dim_i = min(level.box_dim, BLOCKCOPY_TILE_I);
   int block_dim_k = min(level.box_dim, BLOCKCOPY_TILE_K);
 

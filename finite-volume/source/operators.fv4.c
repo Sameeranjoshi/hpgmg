@@ -145,7 +145,7 @@ int stencil_get_radius(){return(2);} // stencil reaches out 2 cells
 int stencil_get_shape(){return(STENCIL_SHAPE_STAR);} // needs just faces
 #endif
 //------------------------------------------------------------------------------------------------------------------------------
-void rebuild_operator(level_type * level, level_type *fromLevel, double a, double b){
+void rebuild_operator(level_type * level, level_type *fromLevel, REAL a, REAL b){
   // form restriction of alpha[], beta_*[] coefficients from fromLevel
   if(fromLevel != NULL){
     restriction(level,VECTOR_ALPHA ,fromLevel,VECTOR_ALPHA ,RESTRICT_CELL  );
@@ -207,8 +207,8 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 #include "operators/interpolation_v2.c"
 #include "operators/interpolation_v4.c"
 //------------------------------------------------------------------------------------------------------------------------------
-void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
-void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v4(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_vcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_fcycle(level_type * level_f, int id_f, REAL prescale_f, level_type *level_c, int id_c){interpolation_v4(level_f,id_f,prescale_f,level_c,id_c);}
 //------------------------------------------------------------------------------------------------------------------------------
 #include "operators/problem.fv.c"
 //------------------------------------------------------------------------------------------------------------------------------

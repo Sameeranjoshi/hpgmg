@@ -21,8 +21,8 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  REAL * __restrict__  read = block->read.ptr;
+  REAL * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read_jStride = level_f->my_boxes[block->read.box ].jStride;
      read_kStride = level_f->my_boxes[block->read.box ].kStride;
@@ -116,7 +116,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     for(n=0;n<level_c->restriction[restrictionType].num_recvs;n++){
       MPI_Irecv(level_c->restriction[restrictionType].recv_buffers[n],
                 level_c->restriction[restrictionType].recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_c->restriction[restrictionType].recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -155,7 +155,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     for(n=0;n<level_f->restriction[restrictionType].num_sends;n++){
       MPI_Isend(level_f->restriction[restrictionType].send_buffers[n],
                 level_f->restriction[restrictionType].send_sizes[n],
-                MPI_DOUBLE,
+                MPI_REAL_TYPE,
                 level_f->restriction[restrictionType].send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -218,5 +218,5 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
   #endif
  
  
-  level_f->timers.restriction_total += (double)(getTime()-_timeCommunicationStart);
+  level_f->timers.restriction_total += (REAL)(getTime()-_timeCommunicationStart);
 }

@@ -53,8 +53,8 @@ __global__ void copy_block_kernel(level_type level, int id, communicator_type ex
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  REAL * __restrict__  read = block.read.ptr;
+  REAL * __restrict__ write = block.write.ptr;
     
   int  read_box = block.read.box;
   int write_box = block.write.box;
@@ -76,7 +76,7 @@ __global__ void copy_block_kernel(level_type level, int id, communicator_type ex
 }
 
 template<int log_dim, int block_type>
-__global__ void increment_block_kernel(level_type level, int id, double prescale, communicator_type exchange_ghosts)
+__global__ void increment_block_kernel(level_type level, int id, REAL prescale, communicator_type exchange_ghosts)
 {
   // one CUDA thread block operates on one HPGMG tile/block
   blockCopy_type block = exchange_ghosts.blocks[block_type][blockIdx.x];
@@ -98,8 +98,8 @@ __global__ void increment_block_kernel(level_type level, int id, double prescale
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  REAL * __restrict__  read = block.read.ptr;
+  REAL * __restrict__ write = block.write.ptr;
 
   if(block.read.box >=0){
      read = level.my_boxes[ block.read.box].vectors[id] + level.my_boxes[ block.read.box].ghosts*(1+level.my_boxes[ block.read.box].jStride+level.my_boxes[ block.read.box].kStride);
@@ -133,7 +133,7 @@ void cuda_copy_block(level_type level, int id, communicator_type exchange_ghosts
   int block = COPY_THREAD_BLOCK_SIZE;
   int grid = exchange_ghosts.num_blocks[block_type]; if(grid<=0) return;
 
-  int log_dim = (int)log2((double)level.dim.i);
+  int log_dim = (int)log2((REAL)level.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim,0); CUDA_ERROR break;
     case 1: KERNEL_LEVEL(log_dim,1); CUDA_ERROR break;
@@ -147,12 +147,12 @@ void cuda_copy_block(level_type level, int id, communicator_type exchange_ghosts
   increment_block_kernel<log_dim,block_type><<<grid,block>>>(level,id,prescale,exchange_ghosts);
 
 extern "C"
-void cuda_increment_block(level_type level, int id, double prescale, communicator_type exchange_ghosts, int block_type)
+void cuda_increment_block(level_type level, int id, REAL prescale, communicator_type exchange_ghosts, int block_type)
 {
   int block = INCREMENT_THREAD_BLOCK_SIZE;
   int grid = exchange_ghosts.num_blocks[block_type]; if(grid<=0) return;
 
-  int log_dim = (int)log2((double)level.dim.i);
+  int log_dim = (int)log2((REAL)level.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim,0); CUDA_ERROR break;
     case 1: KERNEL_LEVEL(log_dim,1); CUDA_ERROR break;

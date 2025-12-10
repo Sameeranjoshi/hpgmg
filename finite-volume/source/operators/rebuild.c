@@ -5,14 +5,14 @@
 //------------------------------------------------------------------------------------------------------------------------------
 /*
 // power method for calculating the dominant eigenvalue of D^{-1}A
-double power_method(level_type * level, double a, double b, int max_iterations){
+REAL power_method(level_type * level, REAL a, REAL b, int max_iterations){
   int i;
   int  x_id = VECTOR_U;
   int Ax_id = VECTOR_TEMP;
-  double lambda_max = 0;
+  REAL lambda_max = 0;
 
   #ifdef USE_MPI
-  double lmax_start = MPI_Wtime();
+  REAL lmax_start = MPI_Wtime();
   #endif
   if(level->my_rank==0){fprintf(stdout,"  calculating lambda_max...");fflush(stdout);}
 
@@ -20,10 +20,10 @@ double power_method(level_type * level, double a, double b, int max_iterations){
   for(i=0;i<max_iterations;i++){
    apply_op(level,Ax_id, x_id,a,b);
    mul_vectors(level,Ax_id,1.0,VECTOR_DINV,Ax_id); // D^{-1}Ax
-   double   x_dot_x = dot(level, x_id,x_id);
-   double DAx_dot_x = dot(level,Ax_id,x_id);
+   REAL   x_dot_x = dot(level, x_id,x_id);
+   REAL DAx_dot_x = dot(level,Ax_id,x_id);
    lambda_max = DAx_dot_x / x_dot_x;
-   double Ax_max = norm(level,Ax_id); // renormalize Ax (== new x)
+   REAL Ax_max = norm(level,Ax_id); // renormalize Ax (== new x)
    scale_vector(level,x_id,1.0/Ax_max,Ax_id); 
   }
   #ifdef USE_MPI
@@ -44,7 +44,7 @@ double power_method(level_type * level, double a, double b, int max_iterations){
 // e.g. with quartic BC's, colors_in_each_dim==4 (total of 64 colors in 3D)
 // If using periodic BCs, one should be able to set colors_in_each_dim to stencil_get_radius();
 // NOTE, as this function is not timed, it has not been optimized for performance.
-void rebuild_operator_blackbox(level_type * level, double a, double b, int colors_in_each_dim){
+void rebuild_operator_blackbox(level_type * level, REAL a, REAL b, int colors_in_each_dim){
 
   // trying to color a 1^3 grid with 8 colors won't work... reduce the number of colors...
   if(level->dim.i<colors_in_each_dim)colors_in_each_dim=level->dim.i;
@@ -53,7 +53,7 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
 
   if(level->my_rank==0){fprintf(stdout,"  calculating D^{-1} exactly for level h=%e using %d colors...  ",level->h,colors_in_each_dim*colors_in_each_dim*colors_in_each_dim);fflush(stdout);}
   #ifdef USE_MPI
-  double dinv_start = MPI_Wtime();
+  REAL dinv_start = MPI_Wtime();
   #endif
 
   #if 0 // naive version using existing routines.  Doesn't calculate l1inv or estimate the dominant eigenvalue
@@ -77,7 +77,7 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
   int       Aii_id = VECTOR_DINV;
   int sumAbsAij_id = VECTOR_L1INV;
   int icolor,jcolor,kcolor;
-  double dominant_eigenvalue = -1e9;
+  REAL dominant_eigenvalue = -1e9;
   int block;
 
   // initialize Aii[] = subAbsAij[] = 0's
@@ -112,21 +112,21 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
       const int jStride = level->my_boxes[box].jStride;
       const int kStride = level->my_boxes[box].kStride;
       const int  ghosts = level->my_boxes[box].ghosts;
-      const double h2inv = 1.0/(level->h*level->h);
-      const double * __restrict__         x = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
-      const double * __restrict__     alpha = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__    beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
-      const double * __restrict__    beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
-      const double * __restrict__    beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
-            double * __restrict__       Aii = level->my_boxes[box].vectors[       Aii_id] + ghosts*(1+jStride+kStride);
-            double * __restrict__ sumAbsAij = level->my_boxes[box].vectors[ sumAbsAij_id] + ghosts*(1+jStride+kStride);
+      const REAL h2inv = 1.0/(level->h*level->h);
+      const REAL * __restrict__         x = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); // i.e. [0] = first non ghost zone point
+      const REAL * __restrict__     alpha = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__    beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__    beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__    beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+            REAL * __restrict__       Aii = level->my_boxes[box].vectors[       Aii_id] + ghosts*(1+jStride+kStride);
+            REAL * __restrict__ sumAbsAij = level->my_boxes[box].vectors[ sumAbsAij_id] + ghosts*(1+jStride+kStride);
   
       int i,j,k;
       for(k=klo;k<khi;k++){
       for(j=jlo;j<jhi;j++){
       for(i=ilo;i<ihi;i++){
         int ijk = i + j*jStride + k*kStride;
-        double Ax = apply_op_ijk(x);
+        REAL Ax = apply_op_ijk(x);
               Aii[ijk] +=      (    x[ijk])*Ax; // add the effect of setting one grid point (i) to 1.0 to Aii
         sumAbsAij[ijk] += fabs((1.0-x[ijk])*Ax);
       }}}
@@ -151,11 +151,11 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    const double h2inv = 1.0/(level->h*level->h);
-    double * __restrict__       Aii = level->my_boxes[box].vectors[      Aii_id] + ghosts*(1+jStride+kStride);
-    double * __restrict__ sumAbsAij = level->my_boxes[box].vectors[sumAbsAij_id] + ghosts*(1+jStride+kStride);
+    const REAL h2inv = 1.0/(level->h*level->h);
+    REAL * __restrict__       Aii = level->my_boxes[box].vectors[      Aii_id] + ghosts*(1+jStride+kStride);
+    REAL * __restrict__ sumAbsAij = level->my_boxes[box].vectors[sumAbsAij_id] + ghosts*(1+jStride+kStride);
 
-    double block_eigenvalue = -1e9;
+    REAL block_eigenvalue = -1e9;
     int i,j,k;
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -169,7 +169,7 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
       }
 
       // upper limit to Gershgorin disc == bound on dominant eigenvalue
-      double Di = (Aii[ijk] + sumAbsAij[ijk])/Aii[ijk];if(Di>block_eigenvalue)block_eigenvalue=Di;
+      REAL Di = (Aii[ijk] + sumAbsAij[ijk])/Aii[ijk];if(Di>block_eigenvalue)block_eigenvalue=Di;
 
       // inverse of the L1 row norm... L1inv = ( D+D^{L1} )^{-1}
       // sumAbsAij[ijk] = 1.0/(Aii[ijk]+sumAbsAij[ijk]);
@@ -193,10 +193,10 @@ void rebuild_operator_blackbox(level_type * level, double a, double b, int color
   // Reduce the local estimate of the dominant eigenvalue to a global estimate
   #ifdef USE_MPI
   double _timeStartAllReduce = getTime();
-  double send = dominant_eigenvalue;
-  MPI_Allreduce(&send,&dominant_eigenvalue,1,MPI_DOUBLE,MPI_MAX,MPI_COMM_WORLD);
+  REAL send = dominant_eigenvalue;
+  MPI_Allreduce(&send,&dominant_eigenvalue,1,MPI_REAL_TYPE,MPI_MAX,MPI_COMM_WORLD);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (REAL)(_timeEndAllReduce-_timeStartAllReduce);
   #endif
   if(level->my_rank==0){fprintf(stdout,"  estimating  lambda_max... <%1.15e\n",dominant_eigenvalue);fflush(stdout);}
   level->dominant_eigenvalue_of_DinvA = dominant_eigenvalue;

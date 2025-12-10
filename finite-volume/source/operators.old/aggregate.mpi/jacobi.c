@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "../timer.h"
 //------------------------------------------------------------------------------------------------------------------------------
-void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
+void smooth(level_type * level, int x_id, int rhs_id, REAL a, REAL b){
   if(NUM_SMOOTHS&1){
     printf("error - NUM_SMOOTHS must be even...\n");
     exit(0);
@@ -19,9 +19,9 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
   int communicationAvoiding = ghosts > stencil_get_radius(); 
  
   #ifdef USE_L1JACOBI
-  double weight = 1.0;
+  REAL weight = 1.0;
   #else
-  double weight = 2.0/3.0;
+  REAL weight = 2.0/3.0;
   #endif
  
  
@@ -42,22 +42,22 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
       const int jStride = level->my_boxes[box].jStride;
       const int kStride = level->my_boxes[box].kStride;
       const int     dim = level->my_boxes[box].dim;
-      const double h2inv = 1.0/(level->h*level->h);
-      const double * __restrict__ rhs    = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ alpha  = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ valid  = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
+      const REAL h2inv = 1.0/(level->h*level->h);
+      const REAL * __restrict__ rhs    = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ alpha  = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ valid  = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
       #ifdef USE_L1JACOBI
-      const double * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride);
       #else
-      const double * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
+      const REAL * __restrict__ lambda = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
       #endif
       int ghostsToOperateOn=ghosts-1;
       for(ss=s;ss<s+ghosts;ss++,ghostsToOperateOn--){
-        const double * __restrict__ x_n;
-              double * __restrict__ x_np1;
+        const REAL * __restrict__ x_n;
+              REAL * __restrict__ x_np1;
               if((ss&1)==0){x_n   = level->my_boxes[box].vectors[       x_id] + ghosts*(1+jStride+kStride);
                             x_np1 = level->my_boxes[box].vectors[VECTOR_TEMP] + ghosts*(1+jStride+kStride);}
                        else{x_n   = level->my_boxes[box].vectors[VECTOR_TEMP] + ghosts*(1+jStride+kStride);
@@ -67,7 +67,7 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
         for(j=0-ghostsToOperateOn;j<dim+ghostsToOperateOn;j++){
         for(i=0-ghostsToOperateOn;i<dim+ghostsToOperateOn;i++){
           int ijk = i + j*jStride + k*kStride;
-          double Ax_n = apply_op_ijk(x_n);
+          REAL Ax_n = apply_op_ijk(x_n);
           x_np1[ijk] = x_n[ijk] + weight*lambda[ijk]*(rhs[ijk]-Ax_n);
         }}}
       } // ss-loop

@@ -6,30 +6,30 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846 // in case math.h doesn't define it
 #endif
-void evaluateBeta(double x, double y, double z, double *B, double *Bx, double *By, double *Bz){
-  double Bmin =  1.0;
-  double Bmax = 10.0;
-  double c2 = (Bmax-Bmin)/2; // coefficients to affect this transition
-  double c1 = (Bmax+Bmin)/2;
-  double c3 = 10.0;          // how sharply (B)eta transitions
-  double xcenter = 0.50;
-  double ycenter = 0.50;
-  double zcenter = 0.50;
+void evaluateBeta(REAL x, REAL y, REAL z, REAL *B, REAL *Bx, REAL *By, REAL *Bz){
+  REAL Bmin =  1.0;
+  REAL Bmax = 10.0;
+  REAL c2 = (Bmax-Bmin)/2; // coefficients to affect this transition
+  REAL c1 = (Bmax+Bmin)/2;
+  REAL c3 = 10.0;          // how sharply (B)eta transitions
+  REAL xcenter = 0.50;
+  REAL ycenter = 0.50;
+  REAL zcenter = 0.50;
   // calculate distance from center of the domain (0.5,0.5,0.5)
-  double r2   = pow((x-xcenter),2) +  pow((y-ycenter),2) +  pow((z-zcenter),2);
-  double r2x  = 2.0*(x-xcenter);
-  double r2y  = 2.0*(y-ycenter);
-  double r2z  = 2.0*(z-zcenter);
-//double r2xx = 2.0;
-//double r2yy = 2.0;
-//double r2zz = 2.0;
-  double r    = pow(r2,0.5);
-  double rx   = 0.5*r2x*pow(r2,-0.5);
-  double ry   = 0.5*r2y*pow(r2,-0.5);
-  double rz   = 0.5*r2z*pow(r2,-0.5);
-//double rxx  = 0.5*r2xx*pow(r2,-0.5) - 0.25*r2x*r2x*pow(r2,-1.5);
-//double ryy  = 0.5*r2yy*pow(r2,-0.5) - 0.25*r2y*r2y*pow(r2,-1.5);
-//double rzz  = 0.5*r2zz*pow(r2,-0.5) - 0.25*r2z*r2z*pow(r2,-1.5);
+  REAL r2   = pow((x-xcenter),2) +  pow((y-ycenter),2) +  pow((z-zcenter),2);
+  REAL r2x  = 2.0*(x-xcenter);
+  REAL r2y  = 2.0*(y-ycenter);
+  REAL r2z  = 2.0*(z-zcenter);
+//REAL r2xx = 2.0;
+//REAL r2yy = 2.0;
+//REAL r2zz = 2.0;
+  REAL r    = pow(r2,0.5);
+  REAL rx   = 0.5*r2x*pow(r2,-0.5);
+  REAL ry   = 0.5*r2y*pow(r2,-0.5);
+  REAL rz   = 0.5*r2z*pow(r2,-0.5);
+//REAL rxx  = 0.5*r2xx*pow(r2,-0.5) - 0.25*r2x*r2x*pow(r2,-1.5);
+//REAL ryy  = 0.5*r2yy*pow(r2,-0.5) - 0.25*r2y*r2y*pow(r2,-1.5);
+//REAL rzz  = 0.5*r2zz*pow(r2,-0.5) - 0.25*r2z*r2z*pow(r2,-1.5);
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   *B  =           c1+c2*tanh( c3*(r-0.25) );
   *Bx = c2*c3*rx*(1-pow(tanh( c3*(r-0.25) ),2));
@@ -39,10 +39,10 @@ void evaluateBeta(double x, double y, double z, double *B, double *Bx, double *B
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, double *Uz, double *Uxx, double *Uyy, double *Uzz, int isPeriodic){
-  double c1 = 2.0*M_PI;
-  double c2 = 6.0*M_PI;
-  double p = 13; // must be odd(?) and allows up to p-2 order MG
+void evaluateU(REAL x, REAL y, REAL z, REAL *U, REAL *Ux, REAL *Uy, REAL *Uz, REAL *Uxx, REAL *Uyy, REAL *Uzz, int isPeriodic){
+  REAL c1 = 2.0*M_PI;
+  REAL c2 = 6.0*M_PI;
+  REAL p = 13; // must be odd(?) and allows up to p-2 order MG
         *U    =                                                       pow(sin(c1*x),p  )*pow(sin(c1*y),p)*pow(sin(c1*z),p);
         *Ux   =                                        c1*p*cos(c1*x)*pow(sin(c1*x),p-1)*pow(sin(c1*y),p)*pow(sin(c1*z),p);
         *Uy   =                                        c1*p*cos(c1*y)*pow(sin(c1*y),p-1)*pow(sin(c1*x),p)*pow(sin(c1*z),p);
@@ -62,7 +62,7 @@ void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, 
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void initialize_problem(level_type * level, double hLevel, double a, double b){
+void initialize_problem(level_type * level, REAL hLevel, REAL a, REAL b){
   level->h = hLevel;
 
   int box;
@@ -82,11 +82,11 @@ void initialize_problem(level_type * level, double hLevel, double a, double b){
     for(i=0;i<=dim_i;i++){ // include high face
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       int ijk = (i+ghosts) + (j+ghosts)*jStride + (k+ghosts)*kStride;
-      double x = hLevel*( (double)(i+level->my_boxes[box].low.i) + 0.5 ); // +0.5 to get to the center of cell
-      double y = hLevel*( (double)(j+level->my_boxes[box].low.j) + 0.5 );
-      double z = hLevel*( (double)(k+level->my_boxes[box].low.k) + 0.5 );
-      double A,B,Bx,By,Bz,Bi,Bj,Bk;
-      double U,Ux,Uy,Uz,Uxx,Uyy,Uzz;
+      REAL x = hLevel*( (REAL)(i+level->my_boxes[box].low.i) + 0.5 ); // +0.5 to get to the center of cell
+      REAL y = hLevel*( (REAL)(j+level->my_boxes[box].low.j) + 0.5 );
+      REAL z = hLevel*( (REAL)(k+level->my_boxes[box].low.k) + 0.5 );
+      REAL A,B,Bx,By,Bz,Bi,Bj,Bk;
+      REAL U,Ux,Uy,Uz,Uxx,Uyy,Uzz;
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       A  = 1.0;
       B  = 1.0;
@@ -104,7 +104,7 @@ void initialize_problem(level_type * level, double hLevel, double a, double b){
       #endif
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       evaluateU(x,y,z,&U,&Ux,&Uy,&Uz,&Uxx,&Uyy,&Uzz, (level->boundary_condition.type == BC_PERIODIC) );
-      double F = a*A*U - b*( (Bx*Ux + By*Uy + Bz*Uz)  +  B*(Uxx + Uyy + Uzz) );
+      REAL F = a*A*U - b*( (Bx*Ux + By*Uy + Bz*Uz)  +  B*(Uxx + Uyy + Uzz) );
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       level->my_boxes[box].vectors[VECTOR_BETA_I][ijk] = Bi;
       level->my_boxes[box].vectors[VECTOR_BETA_J][ijk] = Bj;

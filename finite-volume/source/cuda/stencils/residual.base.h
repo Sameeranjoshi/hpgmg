@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------------------------------------------------------
 template<int LOG_DIM_I, int BLOCK_I, int BLOCK_J, int BLOCK_K, int REBUILD>
-__global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_id, double a, double b){
+__global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_id, REAL a, REAL b){
   const int idim = level.my_blocks[blockIdx.x].dim.i;
   const int jdim = level.my_blocks[blockIdx.x].dim.j;
   const int kdim = min(level.my_blocks[blockIdx.x].dim.k, BLOCK_K);
@@ -45,18 +45,18 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
   const int ghosts  = level.my_boxes[box].ghosts;
   const int jStride = level.my_boxes[box].jStride;
   const int kStride = level.my_boxes[box].kStride;
-  const double h2inv = 1.0/(level.h*level.h);
+  const REAL h2inv = 1.0/(level.h*level.h);
 
-        double * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+        REAL * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #ifdef USE_HELMHOLTZ
-  const double * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #endif
-  const double * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
 
-        double * __restrict__ res      = level.my_boxes[box].vectors[       res_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ x        = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+        REAL * __restrict__ res      = level.my_boxes[box].vectors[       res_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const REAL * __restrict__ x        = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   ////////////////////////////////////////////////////
 
 
@@ -64,7 +64,7 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
     const int ijk = threadIdx.x + threadIdx.y*jStride + k*kStride;
 
     // apply operator
-    const double Ax = apply_op_ijk();
+    const REAL Ax = apply_op_ijk();
 
     if (!REBUILD) {
       // residual
@@ -84,10 +84,10 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
   residual_kernel<log_dim_i, block_i, block_j, block_k, 0><<<num_blocks, dim3(block_i, block_j)>>>(level, res_id, x_id, rhs_id, a, b);
 
 extern "C"
-void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, double a, double b)
+void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, REAL a, REAL b)
 {
   int num_blocks = level.num_my_blocks; if(num_blocks<=0) return;
-  int log_dim_i = (int)log2((double)level.dim.i);
+  int log_dim_i = (int)log2((REAL)level.dim.i);
   int block_dim_i = min(level.box_dim, BLOCKCOPY_TILE_I);
   int block_dim_k = min(level.box_dim, BLOCKCOPY_TILE_K);
 
@@ -100,10 +100,10 @@ void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, double a,
   residual_kernel<log_dim_i, block_i, block_j, block_k, 1><<<num_blocks, dim3(block_i, block_j)>>>(level, sumAbsAij_id, x_id, Aii_id, a, b);
 
 extern "C"
-void cuda_rebuild(level_type level, int x_id, int Aii_id, int sumAbsAij_id, double a, double b)
+void cuda_rebuild(level_type level, int x_id, int Aii_id, int sumAbsAij_id, REAL a, REAL b)
 {
   int num_blocks = level.num_my_blocks; if(num_blocks<=0) return;
-  int log_dim_i = (int)log2((double)level.dim.i);
+  int log_dim_i = (int)log2((REAL)level.dim.i);
   int block_dim_i = min(level.box_dim, BLOCKCOPY_TILE_I);
   int block_dim_k = min(level.box_dim, BLOCKCOPY_TILE_K);
 

@@ -26,18 +26,18 @@ typedef struct {
   level_type ** levels;	// array of pointers to levels
 
   struct {
-    double MGBuild; // total time spent building the coefficients...
-    double MGSolve; // total time spent in MGSolve
+    REAL MGBuild; // total time spent building the coefficients...
+    REAL MGSolve; // total time spent in MGSolve
   }timers;
   int MGSolves_performed;
 } mg_type;
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void          MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int minCoarseGridDim);
-void          MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol);
-void         FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol);
-void            MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double b, double dtol, double rtol);
+void          MGBuild(mg_type *all_grids, level_type *fine_grid, REAL a, REAL b, int minCoarseGridDim);
+void          MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, REAL a, REAL b, REAL dtol, REAL rtol);
+void         FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, REAL a, REAL b, REAL dtol, REAL rtol);
+void            MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, REAL a, REAL b, REAL dtol, REAL rtol);
 void        MGDestroy(mg_type *all_grids);
 void    MGPrintTiming(mg_type *all_grids, int fromLevel);
 void    MGResetTimers(mg_type *all_grids);

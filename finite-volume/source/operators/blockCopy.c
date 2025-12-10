@@ -21,8 +21,8 @@ static inline void CopyBlock(level_type *level, int id, blockCopy_type *block){
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  REAL * __restrict__  read = block->read.ptr;
+  REAL * __restrict__ write = block->write.ptr;
 
   if(block->read.box >=0){
      read_jStride = level->my_boxes[block->read.box ].jStride;
@@ -90,7 +90,7 @@ static inline void CopyBlock(level_type *level, int id, blockCopy_type *block){
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void IncrementBlock(level_type *level, int id, double prescale, blockCopy_type *block){
+static inline void IncrementBlock(level_type *level, int id, REAL prescale, blockCopy_type *block){
   // copy 3D array from read_i,j,k of read[] to write_i,j,k in write[]
   int   dim_i       = block->dim.i;
   int   dim_j       = block->dim.j;
@@ -108,8 +108,8 @@ static inline void IncrementBlock(level_type *level, int id, double prescale, bl
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  REAL * __restrict__  read = block->read.ptr;
+  REAL * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read = level->my_boxes[ block->read.box].vectors[id] + level->my_boxes[ block->read.box].ghosts*(1+level->my_boxes[ block->read.box].jStride+level->my_boxes[ block->read.box].kStride);
      read_jStride = level->my_boxes[block->read.box ].jStride;
