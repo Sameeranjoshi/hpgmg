@@ -10,8 +10,8 @@ NVCC=`which nvcc`
 #CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
 CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
 # CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
-FOLDER="A100build"
 # FOLDER="H100build"
+FOLDER="A100build"
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
@@ -57,8 +57,8 @@ OPTS+="-DUSE_TEX "
 OPTS+="-DMPICH_IGNORE_CXX_SEEK "
 OPTS+="-DMPICH_SKIP_MPICXX "
 
-OPTS+="-DUSE_PERIODIC_BC "
-# OPTS+="-DUSE_DIRICHLET_BC "
+# OPTS+="-DUSE_PERIODIC_BC "
+OPTS+="-DUSE_DIRICHLET_BC "
 
 rm -rf $FOLDER
 # export MPICH_GPU_SUPPORT_ENABLED=1
