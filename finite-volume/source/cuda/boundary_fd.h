@@ -43,10 +43,10 @@ __global__ void apply_BCs_v1_kernel(level_type level, int x_id, int shape){
   // one CUDA thread block operates on 'batch_size' HPGMG tiles/blocks
   blockCopy_type block = level.boundary_condition.blocks[shape][batchid];
 
-  double scale = 1.0;
-  if(  faces[block.subtype])scale=-1.0;
-  if(  edges[block.subtype])scale= 1.0;
-  if(corners[block.subtype])scale=-1.0;
+  float scale = 1.0f;
+  if(  faces[block.subtype])scale=-1.0f;
+  if(  edges[block.subtype])scale= 1.0f;
+  if(corners[block.subtype])scale=-1.0f;
 
   int i,j,k;
   const int       box = block.read.box;
@@ -61,7 +61,7 @@ __global__ void apply_BCs_v1_kernel(level_type level, int x_id, int shape){
   // hard code for box to box BC's 
   const int jStride = level.my_boxes[box].jStride;
   const int kStride = level.my_boxes[box].kStride;
-  double * __restrict__  x = level.my_boxes[box].vectors[x_id] + level.my_boxes[box].ghosts*(1+jStride+kStride);
+  float * __restrict__  x = level.my_boxes[box].vectors[x_id] + level.my_boxes[box].ghosts*(1+jStride+kStride);
 
   // convert normal vector into pointer offsets...
   const int di = (((normal % 3)  )-1);
@@ -88,7 +88,7 @@ void cuda_apply_BCs_v1(level_type level, int x_id, int shape)
   int grid = (level.boundary_condition.num_blocks[shape]+NUM_BATCH-1)/NUM_BATCH;
   if (grid <= 0) return;
 
-  int log_dim = (int)log2((double)level.dim.i); 
+  int log_dim = (int)log2f((float)level.dim.i); 
   KERNEL_LEVEL(log_dim, shape);
   CUDA_ERROR
 }

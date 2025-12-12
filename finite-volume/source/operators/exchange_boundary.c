@@ -38,7 +38,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     for(n=0;n<level->exchange_ghosts[shape].num_recvs;n++){
       MPI_Irecv(level->exchange_ghosts[shape].recv_buffers[n],
                 level->exchange_ghosts[shape].recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level->exchange_ghosts[shape].recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -46,7 +46,7 @@ void exchange_boundary(level_type * level, int id, int shape){
       );
     }
     _timeEnd = getTime();
-    level->timers.ghostZone_recv += (_timeEnd-_timeStart);
+    level->timers.ghostZone_recv += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -64,7 +64,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     }
     }
     _timeEnd = getTime();
-    level->timers.ghostZone_pack += (_timeEnd-_timeStart);
+    level->timers.ghostZone_pack += (double)(_timeEnd-_timeStart);
   }
 
  
@@ -77,7 +77,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     for(n=0;n<level->exchange_ghosts[shape].num_sends;n++){
       MPI_Isend(level->exchange_ghosts[shape].send_buffers[n],
                 level->exchange_ghosts[shape].send_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level->exchange_ghosts[shape].send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -85,7 +85,7 @@ void exchange_boundary(level_type * level, int id, int shape){
       ); 
     }
     _timeEnd = getTime();
-    level->timers.ghostZone_send += (_timeEnd-_timeStart);
+    level->timers.ghostZone_send += (double)(_timeEnd-_timeStart);
   }
   #endif
 
@@ -103,7 +103,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     }
     }
     _timeEnd = getTime();
-    level->timers.ghostZone_local += (_timeEnd-_timeStart);
+    level->timers.ghostZone_local += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -118,7 +118,7 @@ void exchange_boundary(level_type * level, int id, int shape){
       CUCHK( cudaDeviceSynchronize() );
   #endif
     _timeEnd = getTime();
-    level->timers.ghostZone_wait += (_timeEnd-_timeStart);
+    level->timers.ghostZone_wait += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -138,7 +138,7 @@ void exchange_boundary(level_type * level, int id, int shape){
     }
     }
     _timeEnd = getTime();
-    level->timers.ghostZone_unpack += (_timeEnd-_timeStart);
+    level->timers.ghostZone_unpack += (double)(_timeEnd-_timeStart);
   }
   #endif
 

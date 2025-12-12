@@ -58,7 +58,7 @@
 typedef struct {
   int subtype;			// e.g. used to calculate normal to domain for BC's
   struct {int i, j, k;}dim;	// dimensions of the block to copy
-  struct {int box, i, j, k, jStride, kStride;double * __restrict__ ptr;}read,write;
+  struct {int box, i, j, k, jStride, kStride;float * __restrict__ ptr;}read,write;
   // coordinates in the read grid to extract data, 
   // coordinates in the write grid to insert data
   // if read/write.box<0, then use write/read.ptr, otherwise use boxes[box].vectors[id]
@@ -74,8 +74,8 @@ typedef struct {
     int     * __restrict__       send_ranks;	//   MPI rank of each neighbor...          send_ranks[neighbor]
     int     * __restrict__       recv_sizes;	//   size of each MPI recv buffer...       recv_sizes[neighbor]
     int     * __restrict__       send_sizes;	//   size of each MPI send buffer...       send_sizes[neighbor]
-    double ** __restrict__     recv_buffers;	//   MPI recv buffer for each neighbor...  recv_buffers[neighbor][ recv_sizes[neighbor] ]
-    double ** __restrict__     send_buffers;	//   MPI send buffer for each neighbor...  send_buffers[neighbor][ send_sizes[neighbor] ]
+    float ** __restrict__     recv_buffers;	//   MPI recv buffer for each neighbor...  recv_buffers[neighbor][ recv_sizes[neighbor] ]
+    float ** __restrict__     send_buffers;	//   MPI send buffer for each neighbor...  send_buffers[neighbor][ send_sizes[neighbor] ]
     int                 allocated_blocks[3];	//   number of blocks allocated (not necessarily used) each list...
     int                       num_blocks[3];	//   number of blocks in each list...        num_blocks[pack,local,unpack]
     blockCopy_type *              blocks[3];	//   list of block copies...                     blocks[pack,local,unpack]
@@ -94,13 +94,13 @@ typedef struct {
   int                                ghosts;	// ghost zone depth
   int                jStride,kStride,volume;	// useful for offsets
   int                            numVectors;	//
-  double   ** __restrict__          vectors;	// vectors[c] = pointer to 3D array for vector c for one box
+  float   ** __restrict__          vectors;	// vectors[c] = pointer to 3D array for vector c for one box
 } box_type;
 
 
 //------------------------------------------------------------------------------------------------------------------------------
 typedef struct {
-  double h;					// grid spacing at this level
+  float h;					// grid spacing at this level
   int active;					// I am an active process (I have work to do on this or subsequent levels)
   int num_ranks;				// total number of MPI ranks
   int my_rank;					// my MPI rank
@@ -117,8 +117,8 @@ typedef struct {
   box_type * my_boxes;				// pointer to array of boxes owned by this rank
 
   // create flattened FP data... useful for CUDA/OpenMP4/OpenACC when you want to copy an entire vector to/from an accelerator
-  double   ** __restrict__          vectors;	// vectors[v][box][k][j][i] = pointer to 5D array for vector v encompasing all boxes on this process... 
-  double    * __restrict__     vectors_base;    // pointer used for malloc/free.  vectors[v] are shifted from this for alignment
+  float   ** __restrict__          vectors;	// vectors[v][box][k][j][i] = pointer to 5D array for vector v encompasing all boxes on this process... 
+  float    * __restrict__     vectors_base;    // pointer used for malloc/free.  vectors[v] are shifted from this for alignment
 
   int       allocated_blocks;			//       number of blocks allocated by this rank (note, this represents a flattening of the box/cell hierarchy to facilitate threading)
   int          num_my_blocks;			//       number of blocks     owned by this rank (note, this represents a flattening of the box/cell hierarchy to facilitate threading)
@@ -137,16 +137,16 @@ typedef struct {
   #ifdef USE_MPI
   MPI_Comm MPI_COMM_ALLREDUCE;			// MPI sub communicator for just the ranks that have boxes on this level or any subsequent level... 
   #endif
-  double dominant_eigenvalue_of_DinvA;		// estimate on the dominate eigenvalue of D^{-1}A
+  float dominant_eigenvalue_of_DinvA;		// estimate on the dominate eigenvalue of D^{-1}A
   int must_subtract_mean;			// e.g. Poisson with Periodic BC's
-  double    * __restrict__ RedBlack_FP;	        // Red/Black Mask (i.e. 0.0 or 1.0) for even/odd planes (2*kStride).  
+  float    * __restrict__ RedBlack_FP;	        // Red/Black Mask (i.e. 0.0f or 1.0f) for even/odd planes (2*kStride).  
 
   int num_threads;
 
   // GPU-related info
   int use_cuda;					// run operators on this level on GPU
   int um_access_policy;				// access hints for GPU memory allocator
-  double *chebyshev_c1, *chebyshev_c2;		// chebyshev coefficients in heap memory
+  float *chebyshev_c1, *chebyshev_c2;		// chebyshev coefficients in heap memory
 
   // statistics information...
   struct {
@@ -198,8 +198,8 @@ void reset_level_timers(level_type *level);
 int qsortInt(const void *a, const void *b);
 void append_block_to_list(blockCopy_type ** blocks, int *allocated_blocks, int *num_blocks,
                           int dim_i, int dim_j, int dim_k,
-                          int  read_box, double*  read_ptr, int  read_i, int  read_j, int  read_k, int  read_jStride, int  read_kStride, int  read_scale,
-                          int write_box, double* write_ptr, int write_i, int write_j, int write_k, int write_jStride, int write_kStride, int write_scale,
+                          int  read_box, float*  read_ptr, int  read_i, int  read_j, int  read_k, int  read_jStride, int  read_kStride, int  read_scale,
+                          int write_box, float* write_ptr, int write_i, int write_j, int write_k, int write_jStride, int write_kStride, int write_scale,
                           int my_blockcopy_tile_i, int my_blockcopy_tile_j, int my_blockcopy_tile_k,
                           int subtype, int um_access_policy
                          );

@@ -58,60 +58,60 @@ void MGPrintTiming(mg_type *all_grids, int fromLevel){
   int level,num_levels = all_grids->num_levels;
   #ifdef CALIBRATE_TIMER
   double _timeStart=getTime();sleep(1);double _timeEnd=getTime();
-  double SecondsPerCycle = (double)1.0/(double)(_timeEnd-_timeStart);
+  float SecondsPerCycle = (float)1.0f/(float)(_timeEnd-_timeStart);
   #else
-  double SecondsPerCycle = 1.0;
+  float SecondsPerCycle = 1.0f;
   #endif
-  double scale = SecondsPerCycle/(double)all_grids->MGSolves_performed; // prints average performance per MGSolve
+  float scale = SecondsPerCycle/(float)all_grids->MGSolves_performed; // prints average performance per MGSolve
 
-  double time,total;
+  float time,total;
           printf("\n\n");
           printf("level                     ");for(level=fromLevel;level<(num_levels  );level++){printf("%12d ",level-fromLevel);}printf("\n");
           printf("level dimension           ");for(level=fromLevel;level<(num_levels  );level++){printf("%10d^3 ",all_grids->levels[level]->dim.i  );}printf("\n");
           printf("box dimension             ");for(level=fromLevel;level<(num_levels  );level++){printf("%10d^3 ",all_grids->levels[level]->box_dim);}printf("       total\n");
   total=0;printf("------------------        ");for(level=fromLevel;level<(num_levels+1);level++){printf("------------ ");}printf("\n");
-  total=0;printf("smooth                    ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.smooth;               total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("residual                  ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.residual;             total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("applyOp                   ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.apply_op;             total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("BLAS1                     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.blas1;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("BLAS3                     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.blas3;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("Boundary Conditions       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.boundary_conditions;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("Restriction               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_total;    total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  local restriction       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_local;    total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("smooth                    ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.smooth;               total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("residual                  ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.residual;             total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("applyOp                   ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.apply_op;             total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("BLAS1                     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.blas1;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("BLAS3                     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.blas3;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("Boundary Conditions       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.boundary_conditions;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("Restriction               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_total;    total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  local restriction       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_local;    total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #ifdef USE_MPI
-  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_pack;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_unpack;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_send;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_recv;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.restriction_wait;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_pack;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_unpack;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_send;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_recv;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.restriction_wait;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #endif
-  total=0;printf("Interpolation             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_total;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  local interpolation     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_local;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("Interpolation             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_total;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  local interpolation     ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_local;  total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #ifdef USE_MPI
-  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_pack;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_unpack; total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_send;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_recv;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.interpolation_wait;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_pack;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_unpack; total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_send;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_recv;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.interpolation_wait;   total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #endif
-  total=0;printf("Ghost Zone Exchange       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_total;      total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  local exchange          ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_local;      total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("Ghost Zone Exchange       ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_total;      total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  local exchange          ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_local;      total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #ifdef USE_MPI
-  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_pack;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_unpack;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_send;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_recv;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
-  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.ghostZone_wait;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  pack MPI buffers        ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_pack;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  unpack MPI buffers      ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_unpack;     total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Isend               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_send;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Irecv               ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_recv;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("  MPI_Waitall             ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.ghostZone_wait;       total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #endif
   #ifdef USE_MPI
-  total=0;printf("MPI_collectives           ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.collectives;          total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("MPI_collectives           ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.collectives;          total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #endif
   total=0;printf("------------------        ");for(level=fromLevel;level<(num_levels+1);level++){printf("------------ ");}printf("\n");
-  total=0;printf("Total by level            ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(double)all_grids->levels[level]->timers.Total;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
+  total=0;printf("Total by level            ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.Total;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
 
   printf("\n");
-  printf( "   Total time in MGBuild  %12.6f seconds\n",SecondsPerCycle*(double)all_grids->timers.MGBuild);
-  printf( "   Total time in MGSolve  %12.6f seconds\n",scale*(double)all_grids->timers.MGSolve);
+  printf( "   Total time in MGBuild  %12.6f seconds\n",SecondsPerCycle*(float)all_grids->timers.MGBuild);
+  printf( "   Total time in MGSolve  %12.6f seconds\n",scale*(float)all_grids->timers.MGSolve);
   printf( "      number of v-cycles  %12d\n"  ,all_grids->levels[fromLevel]->vcycles_from_this_level/all_grids->MGSolves_performed);
   printf( "Bottom solver iterations  %12d\n"  ,all_grids->levels[num_levels-1]->Krylov_iterations/all_grids->MGSolves_performed);
   #if defined(USE_CABICGSTAB) || defined(USE_CACG)
@@ -221,7 +221,7 @@ void build_interpolation(mg_type *all_grids){
     all_grids->levels[level]->interpolation.num_sends     =                         numFineRanks;
     all_grids->levels[level]->interpolation.send_ranks    =            (int*)malloc(numFineRanks*sizeof(int));
     all_grids->levels[level]->interpolation.send_sizes    =            (int*)malloc(numFineRanks*sizeof(int));
-    all_grids->levels[level]->interpolation.send_buffers  =        (double**)malloc(numFineRanks*sizeof(double*));
+    all_grids->levels[level]->interpolation.send_buffers  =        (float**)malloc(numFineRanks*sizeof(float*));
     if(numFineRanks>0){
     if(all_grids->levels[level]->interpolation.send_ranks  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->interpolation.send_ranks\n",level);exit(0);}
     if(all_grids->levels[level]->interpolation.send_sizes  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->interpolation.send_sizes\n",level);exit(0);}
@@ -229,7 +229,7 @@ void build_interpolation(mg_type *all_grids){
     }
 
     int elementSize = all_grids->levels[level-1]->box_dim*all_grids->levels[level-1]->box_dim*all_grids->levels[level-1]->box_dim;
-    //printf("level=%d, rank=%2d, send_buffers=%6d\n",level,all_grids->my_rank,numFineBoxesRemote*elementSize*sizeof(double));
+    //printf("level=%d, rank=%2d, send_buffers=%6d\n",level,all_grids->my_rank,numFineBoxesRemote*elementSize*sizeof(float));
 
     // for each neighbor, construct the pack list and allocate the MPI send buffer... 
     for(neighbor=0;neighbor<numFineRanks;neighbor++){
@@ -237,9 +237,9 @@ void build_interpolation(mg_type *all_grids){
       int offset = 0;
       int malloc_size = 0;
       for(fineBox=0;fineBox<numFineBoxes;fineBox++)if(fineBoxes[fineBox].recvRank==fineRanks[neighbor]){malloc_size+=elementSize;}
-             all_grids->levels[level]->interpolation.send_buffers[neighbor] = (double*)um_malloc(malloc_size*sizeof(double),UM_ACCESS_BOTH);
+             all_grids->levels[level]->interpolation.send_buffers[neighbor] = (float*)um_malloc(malloc_size*sizeof(float),UM_ACCESS_BOTH);
           if(all_grids->levels[level]->interpolation.send_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - interpolation/all_send_buffers\n");exit(0);}
-      memset(all_grids->levels[level]->interpolation.send_buffers[neighbor],0,malloc_size*sizeof(double)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0*NaN and corrupting the solve
+      memset(all_grids->levels[level]->interpolation.send_buffers[neighbor],0,malloc_size*sizeof(float)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0f*NaN and corrupting the solve
       for(fineBox=0;fineBox<numFineBoxes;fineBox++)if(fineBoxes[fineBox].recvRank==fineRanks[neighbor]){
         // pack the MPI send buffer...
         append_block_to_list(&(all_grids->levels[level]->interpolation.blocks[0]),&(all_grids->levels[level]->interpolation.allocated_blocks[0]),&(all_grids->levels[level]->interpolation.num_blocks[0]),
@@ -355,7 +355,7 @@ void build_interpolation(mg_type *all_grids){
     all_grids->levels[level]->interpolation.num_recvs     =                         numCoarseRanks;
     all_grids->levels[level]->interpolation.recv_ranks    =            (int*)malloc(numCoarseRanks*sizeof(int));
     all_grids->levels[level]->interpolation.recv_sizes    =            (int*)malloc(numCoarseRanks*sizeof(int));
-    all_grids->levels[level]->interpolation.recv_buffers  =        (double**)malloc(numCoarseRanks*sizeof(double*));
+    all_grids->levels[level]->interpolation.recv_buffers  =        (float**)malloc(numCoarseRanks*sizeof(float*));
     if(numCoarseRanks>0){
     if(all_grids->levels[level]->interpolation.recv_ranks  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->interpolation.recv_ranks\n",level);exit(0);}
     if(all_grids->levels[level]->interpolation.recv_sizes  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->interpolation.recv_sizes\n",level);exit(0);}
@@ -363,7 +363,7 @@ void build_interpolation(mg_type *all_grids){
     }
 
     int elementSize = all_grids->levels[level]->box_dim*all_grids->levels[level]->box_dim*all_grids->levels[level]->box_dim;
-    //printf("level=%d, rank=%2d, recv_buffers=%6d\n",level,all_grids->my_rank,numCoarseBoxes*elementSize*sizeof(double));
+    //printf("level=%d, rank=%2d, recv_buffers=%6d\n",level,all_grids->my_rank,numCoarseBoxes*elementSize*sizeof(float));
 
     // for each neighbor, construct the unpack list and allocate the MPI recv buffer... 
     for(neighbor=0;neighbor<numCoarseRanks;neighbor++){
@@ -371,9 +371,9 @@ void build_interpolation(mg_type *all_grids){
       int offset = 0;
       int malloc_size = 0;
       for(coarseBox=0;coarseBox<numCoarseBoxes;coarseBox++)if(coarseBoxes[coarseBox].sendRank==coarseRanks[neighbor]){malloc_size+=elementSize;}
-             all_grids->levels[level]->interpolation.recv_buffers[neighbor] = (double*)um_malloc(malloc_size*sizeof(double),UM_ACCESS_BOTH); 
+             all_grids->levels[level]->interpolation.recv_buffers[neighbor] = (float*)um_malloc(malloc_size*sizeof(float),UM_ACCESS_BOTH); 
           if(all_grids->levels[level]->interpolation.recv_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - interpolation/all_recv_buffers\n");exit(0);}
-      memset(all_grids->levels[level]->interpolation.recv_buffers[neighbor],0,malloc_size*sizeof(double)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0*NaN and corrupting the solve
+      memset(all_grids->levels[level]->interpolation.recv_buffers[neighbor],0,malloc_size*sizeof(float)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0f*NaN and corrupting the solve
       for(coarseBox=0;coarseBox<numCoarseBoxes;coarseBox++)if(coarseBoxes[coarseBox].sendRank==coarseRanks[neighbor]){
         // unpack MPI recv buffer...
         append_block_to_list(&(all_grids->levels[level]->interpolation.blocks[2]),&(all_grids->levels[level]->interpolation.allocated_blocks[2]),&(all_grids->levels[level]->interpolation.num_blocks[2]),
@@ -519,7 +519,7 @@ void build_restriction(mg_type *all_grids, int restrictionType){
     all_grids->levels[level]->restriction[restrictionType].num_sends     =                         numCoarseRanks;
     all_grids->levels[level]->restriction[restrictionType].send_ranks    =            (int*)malloc(numCoarseRanks*sizeof(int));
     all_grids->levels[level]->restriction[restrictionType].send_sizes    =            (int*)malloc(numCoarseRanks*sizeof(int));
-    all_grids->levels[level]->restriction[restrictionType].send_buffers  =        (double**)malloc(numCoarseRanks*sizeof(double*));
+    all_grids->levels[level]->restriction[restrictionType].send_buffers  =        (float**)malloc(numCoarseRanks*sizeof(float*));
     if(numCoarseRanks>0){
     if(all_grids->levels[level]->restriction[restrictionType].send_ranks  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->restriction[restrictionType].send_ranks\n",level);exit(0);}
     if(all_grids->levels[level]->restriction[restrictionType].send_sizes  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->restriction[restrictionType].send_sizes\n",level);exit(0);}
@@ -552,9 +552,9 @@ void build_restriction(mg_type *all_grids, int restrictionType){
       int offset = 0;
       int malloc_size=0;
       for(coarseBox=0;coarseBox<numCoarseBoxes;coarseBox++)if(coarseBoxes[coarseBox].recvRank==coarseRanks[neighbor]){malloc_size+=elementSize;}
-             all_grids->levels[level]->restriction[restrictionType].send_buffers[neighbor] = (double*)um_malloc(malloc_size*sizeof(double),UM_ACCESS_BOTH);
+             all_grids->levels[level]->restriction[restrictionType].send_buffers[neighbor] = (float*)um_malloc(malloc_size*sizeof(float),UM_ACCESS_BOTH);
           if(all_grids->levels[level]->restriction[restrictionType].send_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - restriction/all_send_buffers\n");exit(0);}
-      memset(all_grids->levels[level]->restriction[restrictionType].send_buffers[neighbor],0,malloc_size*sizeof(double)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0*NaN and corrupting the solve
+      memset(all_grids->levels[level]->restriction[restrictionType].send_buffers[neighbor],0,malloc_size*sizeof(float)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0f*NaN and corrupting the solve
       for(coarseBox=0;coarseBox<numCoarseBoxes;coarseBox++)if(coarseBoxes[coarseBox].recvRank==coarseRanks[neighbor]){
         // restrict to MPI send buffer...
         append_block_to_list( &(all_grids->levels[level]->restriction[restrictionType].blocks[0]),
@@ -686,7 +686,7 @@ void build_restriction(mg_type *all_grids, int restrictionType){
     all_grids->levels[level]->restriction[restrictionType].num_recvs     =                         numFineRanks;
     all_grids->levels[level]->restriction[restrictionType].recv_ranks    =            (int*)malloc(numFineRanks*sizeof(int));
     all_grids->levels[level]->restriction[restrictionType].recv_sizes    =            (int*)malloc(numFineRanks*sizeof(int));
-    all_grids->levels[level]->restriction[restrictionType].recv_buffers  =        (double**)malloc(numFineRanks*sizeof(double*));
+    all_grids->levels[level]->restriction[restrictionType].recv_buffers  =        (float**)malloc(numFineRanks*sizeof(float*));
     if(numFineRanks>0){
     if(all_grids->levels[level]->restriction[restrictionType].recv_ranks  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->restriction[restrictionType].recv_ranks  \n",level);exit(0);}
     if(all_grids->levels[level]->restriction[restrictionType].recv_sizes  ==NULL){fprintf(stderr,"malloc failed - all_grids->levels[%d]->restriction[restrictionType].recv_sizes  \n",level);exit(0);}
@@ -713,7 +713,7 @@ void build_restriction(mg_type *all_grids, int restrictionType){
     }
     elementSize = restrict_dim_i*restrict_dim_j*restrict_dim_k;
 
-    //printf("level=%d, rank=%2d, recv_buffers=%6d\n",level,all_grids->my_rank,numFineBoxesRemote*elementSize*sizeof(double));
+    //printf("level=%d, rank=%2d, recv_buffers=%6d\n",level,all_grids->my_rank,numFineBoxesRemote*elementSize*sizeof(float));
 
     // for each neighbor, construct the unpack list and allocate the MPI recv buffer... 
     for(neighbor=0;neighbor<numFineRanks;neighbor++){
@@ -721,9 +721,9 @@ void build_restriction(mg_type *all_grids, int restrictionType){
       int offset = 0;
       int malloc_size=0;
       for(fineBox=0;fineBox<numFineBoxesRemote;fineBox++)if(fineBoxes[fineBox].sendRank==fineRanks[neighbor]){malloc_size+=elementSize;}
-             all_grids->levels[level]->restriction[restrictionType].recv_buffers[neighbor] = (double*)um_malloc(malloc_size*sizeof(double),UM_ACCESS_BOTH);
+             all_grids->levels[level]->restriction[restrictionType].recv_buffers[neighbor] = (float*)um_malloc(malloc_size*sizeof(float),UM_ACCESS_BOTH);
           if(all_grids->levels[level]->restriction[restrictionType].recv_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - restriction/all_recv_buffers\n");exit(0);}
-      memset(all_grids->levels[level]->restriction[restrictionType].recv_buffers[neighbor],0,malloc_size*sizeof(double)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0*NaN and corrupting the solve
+      memset(all_grids->levels[level]->restriction[restrictionType].recv_buffers[neighbor],0,malloc_size*sizeof(float)); // DO NOT DELETE... you must initialize to 0 to avoid getting something like 0.0f*NaN and corrupting the solve
       for(fineBox=0;fineBox<numFineBoxesRemote;fineBox++)if(fineBoxes[fineBox].sendRank==fineRanks[neighbor]){
         // unpack MPI recv buffer...
         append_block_to_list( &(all_grids->levels[level]->restriction[restrictionType].blocks[2]),
@@ -794,7 +794,7 @@ void build_restriction(mg_type *all_grids, int restrictionType){
 // add extra vectors to the coarse grid once here instead of on every call to the coarse grid solve
 // NOTE, this routine presumes the fine_grid domain is cubical... fine_grid->dim.i==fine_grid->dim.j==fine_grid->dim.k
 // NOTE, as this function is not timed, it has not been optimzied for performance
-void MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int minCoarseGridDim){
+void MGBuild(mg_type *all_grids, level_type *fine_grid, float a, float b, int minCoarseGridDim){
   int  maxLevels=100; // i.e. maximum problem size is (2^100)^3
   int     nProcs[100];
   int      dim_i[100];
@@ -913,7 +913,7 @@ void MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int 
     all_grids->levels[level] = (level_type*)malloc(sizeof(level_type));
     if(all_grids->levels[level] == NULL){fprintf(stderr,"malloc failed - MGBuild/doRestrict\n");exit(0);}
     create_level(all_grids->levels[level],boxes_in_i[level],box_dim[level],box_ghosts[level],all_grids->levels[level-1]->numVectors,all_grids->levels[level-1]->boundary_condition.type,all_grids->levels[level-1]->my_rank,nProcs[level],all_grids->levels[level-1]);
-    all_grids->levels[level]->h = 2.0*all_grids->levels[level-1]->h;
+    all_grids->levels[level]->h = 2.0f*all_grids->levels[level-1]->h;
   }
 
 
@@ -936,15 +936,15 @@ void MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int 
   #ifdef USE_SUBCOMM
   if(all_grids->my_rank==0){fprintf(stdout,"\n");}
   for(level=1;level<all_grids->num_levels;level++){
-    double comm_split_start = MPI_Wtime();
+    float comm_split_start = MPI_Wtime();
     if(all_grids->my_rank==0){fprintf(stdout,"  Building MPI subcommunicator for level %d... ",level);fflush(stdout);}
     all_grids->levels[level]->active=0;
     int ll;for(ll=level;ll<all_grids->num_levels;ll++)if(all_grids->levels[ll]->num_my_boxes>0)all_grids->levels[level]->active=1;
     MPI_Comm_split(MPI_COMM_WORLD,all_grids->levels[level]->active,all_grids->levels[level]->my_rank,&all_grids->levels[level]->MPI_COMM_ALLREDUCE);
-    double comm_split_end = MPI_Wtime();
-    double comm_split_time_send = comm_split_end-comm_split_start;
-    double comm_split_time = 0;
-    MPI_Allreduce(&comm_split_time_send,&comm_split_time,1,MPI_DOUBLE,MPI_MAX,MPI_COMM_WORLD);
+    float comm_split_end = MPI_Wtime();
+    float comm_split_time_send = comm_split_end-comm_split_start;
+    float comm_split_time = 0;
+    MPI_Allreduce(&comm_split_time_send,&comm_split_time,1,MPI_FLOAT,MPI_MAX,MPI_COMM_WORLD);
     if(all_grids->my_rank==0){fprintf(stdout,"done (%0.6f seconds)\n",comm_split_time);fflush(stdout);}
   }
   #endif
@@ -961,7 +961,7 @@ void MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int 
   // quick tests for Poisson, Neumann, etc...
   for(level=0;level<all_grids->num_levels;level++){
     all_grids->levels[level]->must_subtract_mean = 0;
-    int alpha_is_zero = (dot(all_grids->levels[level],VECTOR_ALPHA,VECTOR_ALPHA) == 0.0);
+    int alpha_is_zero = (dot(all_grids->levels[level],VECTOR_ALPHA,VECTOR_ALPHA) == 0.0f);
     // For Poisson with Periodic Boundary Conditions, by convention we assume the solution sums to zero.  Eliminate any constants from the solution by subtracting the mean.
     if( (all_grids->levels[level]->boundary_condition.type==BC_PERIODIC) && ((a==0) || (alpha_is_zero==1)) )all_grids->levels[level]->must_subtract_mean = 1;
   }
@@ -1050,19 +1050,25 @@ void richardson_error(mg_type *all_grids, int levelh, int u_id){
   //
   restriction(all_grids->levels[levelh+1],VECTOR_TEMP,all_grids->levels[levelh  ],u_id,RESTRICT_CELL); // temp^2h = R u^h
   restriction(all_grids->levels[levelh+2],VECTOR_TEMP,all_grids->levels[levelh+1],u_id,RESTRICT_CELL); // temp^4h = R u^2h
-  add_vectors(all_grids->levels[levelh+1],VECTOR_TEMP,1.0,u_id,-1.0,VECTOR_TEMP);                      // temp^2h = u^2h - temp^2h = u^2h - R u^h
-  add_vectors(all_grids->levels[levelh+2],VECTOR_TEMP,1.0,u_id,-1.0,VECTOR_TEMP);                      // temp^2h = u^4h - temp^4h = u^4h - R u^2h
-  double norm_of_u2h_minus_uh  = norm(all_grids->levels[levelh+1],VECTOR_TEMP); // || u^2h - R u^h  ||max
-  double norm_of_u4h_minus_u2h = norm(all_grids->levels[levelh+2],VECTOR_TEMP); // || u^4h - R u^2h ||max
+  add_vectors(all_grids->levels[levelh+1],VECTOR_TEMP,1.0f,u_id,-1.0f,VECTOR_TEMP);                      // temp^2h = u^2h - temp^2h = u^2h - R u^h
+  add_vectors(all_grids->levels[levelh+2],VECTOR_TEMP,1.0f,u_id,-1.0f,VECTOR_TEMP);                      // temp^2h = u^4h - temp^4h = u^4h - R u^2h
+  float norm_of_u2h_minus_uh  = norm(all_grids->levels[levelh+1],VECTOR_TEMP); // || u^2h - R u^h  ||max
+  float norm_of_u4h_minus_u2h = norm(all_grids->levels[levelh+2],VECTOR_TEMP); // || u^4h - R u^2h ||max
   // estimate the error^h using ||u^2h - R u^h||
   if(all_grids->my_rank==0){fprintf(stdout,"  h=%0.15e  ||error||=%0.15e\n",all_grids->levels[levelh]->h,norm_of_u2h_minus_uh);fflush(stdout);}
   // log( ||u^4h - R u^2h|| / ||u^2h - R u^h|| ) / log(2) is an estimate of the order of the method (e.g. 4th order)
-  if(all_grids->my_rank==0){fprintf(stdout,"  order=%0.3f\n",log(norm_of_u4h_minus_u2h / norm_of_u2h_minus_uh) / log(2) );fflush(stdout);}
+  if(all_grids->my_rank==0){
+    float order = 0.0f;
+    if(norm_of_u2h_minus_uh > 0.0f && norm_of_u4h_minus_u2h > 0.0f){
+      order = logf(norm_of_u4h_minus_u2h / norm_of_u2h_minus_uh) / logf(2.0f);
+    }
+    fprintf(stdout,"  order=%0.3f\n",order);fflush(stdout);
+  }
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void MGVCycle(mg_type *all_grids, int e_id, int R_id, double a, double b, int level){
+void MGVCycle(mg_type *all_grids, int e_id, int R_id, float a, float b, int level){
   if(!all_grids->levels[level]->active)return;
 #ifdef USE_NVTX
   char msg[5];
@@ -1093,7 +1099,7 @@ void MGVCycle(mg_type *all_grids, int e_id, int R_id, double a, double b, int le
 
   // up...
   _LevelStart = getTime();
-  interpolation_vcycle(all_grids->levels[level  ],e_id,1.0,all_grids->levels[level+1],e_id);
+  interpolation_vcycle(all_grids->levels[level  ],e_id,1.0f,all_grids->levels[level+1],e_id);
                 smooth(all_grids->levels[level  ],e_id,R_id,a,b);
 
   all_grids->levels[level]->timers.Total += (double)(getTime()-_LevelStart);
@@ -1102,7 +1108,7 @@ void MGVCycle(mg_type *all_grids, int e_id, int R_id, double a, double b, int le
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol){
+void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float b, float dtol, float rtol){
   // solves Au=f on level 'onLevel'
   all_grids->MGSolves_performed++;
   if(!all_grids->levels[onLevel]->active)return;
@@ -1123,10 +1129,10 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, doub
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   // calculate norm of f for convergence criteria...
-  double norm_of_F     = 1.0;
-  double norm_of_DinvF = 1.0;
+  float norm_of_F     = 1.0f;
+  float norm_of_DinvF = 1.0f;
   if(dtol>0){
-    mul_vectors(all_grids->levels[onLevel],VECTOR_TEMP,1.0,F_id,VECTOR_DINV); // D^{-1}F
+    mul_vectors(all_grids->levels[onLevel],VECTOR_TEMP,1.0f,F_id,VECTOR_DINV); // D^{-1}F
     norm_of_DinvF = norm(all_grids->levels[onLevel],VECTOR_TEMP);		// ||D^{-1}F||
   }
   if(rtol>0)norm_of_F = norm(all_grids->levels[onLevel],F_id);		// ||F||
@@ -1134,7 +1140,7 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, doub
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   // make initial guess for e (=0) and setup the RHS
    zero_vector(all_grids->levels[onLevel],e_id);                  // ee = 0
-  scale_vector(all_grids->levels[onLevel],R_id,1.0,F_id);         // R_id = F_id
+  scale_vector(all_grids->levels[onLevel],R_id,1.0f,F_id);         // R_id = F_id
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   // now do v-cycles to calculate the correction...
@@ -1148,22 +1154,27 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, doub
     // now calculate the norm of the residual...
     double _timeStart = getTime();
     if(all_grids->levels[level]->must_subtract_mean == 1){
-      double average_value_of_e = mean(all_grids->levels[level],e_id);
+      float average_value_of_e = mean(all_grids->levels[level],e_id);
       shift_vector(all_grids->levels[level],e_id,e_id,-average_value_of_e);
     }
     residual(all_grids->levels[level],VECTOR_TEMP,e_id,F_id,a,b);
-    if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
-    double norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
+    if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0f,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
+    float norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
     double _timeNorm = getTime();
     all_grids->levels[level]->timers.Total += (double)(_timeNorm-_timeStart);
     if(all_grids->levels[level]->my_rank==0){
-      double rel = 0.0;
-      if(rtol>0)rel = norm_of_residual/norm_of_F;
-           else rel = norm_of_residual/norm_of_DinvF;
+      float rel = 0.0f;
+      if(rtol>0){
+        if(norm_of_F > 0.0f)rel = norm_of_residual/norm_of_F;
+        else rel = (norm_of_residual == 0.0f) ? 0.0f : 1.0f;
+      } else {
+        if(norm_of_DinvF > 0.0f)rel = norm_of_residual/norm_of_DinvF;
+        else rel = (norm_of_residual == 0.0f) ? 0.0f : 1.0f;
+      }
       if(   v>0){fprintf(stdout,"\n           v-cycle=%2d  norm=%1.15e  rel=%1.15e  ",v+1,norm_of_residual,rel);}
             else{fprintf(stdout,             "v-cycle=%2d  norm=%1.15e  rel=%1.15e  ",v+1,norm_of_residual,rel);}
     }
-    if(norm_of_residual/norm_of_F < rtol)break;
+    if(rtol>0 && norm_of_F > 0.0f && norm_of_residual/norm_of_F < rtol)break;
     if(norm_of_residual           < dtol)break;
   } // maxVCycles
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1180,7 +1191,7 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, doub
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol){
+void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float b, float dtol, float rtol){
   all_grids->MGSolves_performed++;
   if(!all_grids->levels[onLevel]->active)return;
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -1195,9 +1206,9 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
   int R_id = VECTOR_F_MINUS_AV;
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   #ifdef _OPENMP
-  double FMG_Start_Time = omp_get_wtime();
+  float FMG_Start_Time = omp_get_wtime();
   #elif USE_MPI
-  double FMG_Start_Time = MPI_Wtime();
+  float FMG_Start_Time = MPI_Wtime();
   #endif
   if(all_grids->levels[onLevel]->my_rank==0){fprintf(stdout,"FMGSolve... ");fflush(stdout);}
   double _timeStartMGSolve = getTime();
@@ -1206,10 +1217,10 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
   // calculate norm of f...
   NVTX_PUSH("F-norm",1);
   double _LevelStart = getTime();
-  double norm_of_F     = 1.0;
-  double norm_of_DinvF = 1.0;
+  float norm_of_F     = 1.0f;
+  float norm_of_DinvF = 1.0f;
   if(dtol>0){
-    mul_vectors(all_grids->levels[onLevel],VECTOR_TEMP,1.0,F_id,VECTOR_DINV);	// D^{-1}F
+    mul_vectors(all_grids->levels[onLevel],VECTOR_TEMP,1.0f,F_id,VECTOR_DINV);	// D^{-1}F
     norm_of_DinvF = norm(all_grids->levels[onLevel],VECTOR_TEMP);		// ||D^{-1}F||
   }
   if(rtol>0)norm_of_F = norm(all_grids->levels[onLevel],F_id);			// ||F||
@@ -1218,7 +1229,7 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   // initialize the RHS for the f-cycle to f...
   NVTX_PUSH("init",1);
-  scale_vector(all_grids->levels[onLevel],R_id,1.0,F_id);              // R_id = F_id
+  scale_vector(all_grids->levels[onLevel],R_id,1.0f,F_id);              // R_id = F_id
   all_grids->levels[onLevel]->timers.Total += (double)(getTime()-_LevelStart);
   NVTX_POP;
 
@@ -1254,7 +1265,7 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
     // high-order interpolation
     _LevelStart = getTime();
     NVTX_PUSH("interpolation",1);
-    interpolation_fcycle(all_grids->levels[level],e_id,0.0,all_grids->levels[level+1],e_id);
+    interpolation_fcycle(all_grids->levels[level],e_id,0.0f,all_grids->levels[level+1],e_id);
     NVTX_POP;
     all_grids->levels[level]->timers.Total += (double)(getTime()-_LevelStart);
 
@@ -1280,22 +1291,27 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
     // now calculate the norm of the residual...
     double _timeStart = getTime();
     if(all_grids->levels[level]->must_subtract_mean == 1){
-      double average_value_of_e = mean(all_grids->levels[level],e_id);
+      float average_value_of_e = mean(all_grids->levels[level],e_id);
       shift_vector(all_grids->levels[level],e_id,e_id,-average_value_of_e);
     }
     residual(all_grids->levels[level],VECTOR_TEMP,e_id,F_id,a,b);
-    if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
-    double norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
+    if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0f,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
+    float norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
     double _timeNorm = getTime();
     all_grids->levels[level]->timers.Total += (double)(_timeNorm-_timeStart);
     if(all_grids->levels[level]->my_rank==0){
-      double rel = 0.0;
-      if(rtol>0)rel = norm_of_residual/norm_of_F;
-           else rel = norm_of_residual/norm_of_DinvF;
+      float rel = 0.0f;
+      if(rtol>0){
+        if(norm_of_F > 0.0f)rel = norm_of_residual/norm_of_F;
+        else rel = (norm_of_residual == 0.0f) ? 0.0f : 1.0f;
+      } else {
+        if(norm_of_DinvF > 0.0f)rel = norm_of_residual/norm_of_DinvF;
+        else rel = (norm_of_residual == 0.0f) ? 0.0f : 1.0f;
+      }
       if(  v>=0){fprintf(stdout,"\n            v-cycle=%2d  norm=%1.15e  rel=%1.15e  ",v+1,norm_of_residual,rel);fflush(stdout);}
             else{fprintf(stdout,              "f-cycle     norm=%1.15e  rel=%1.15e  ",norm_of_residual,rel);fflush(stdout);}
     }
-    if(norm_of_residual/norm_of_F < rtol)break;
+    if(rtol>0 && norm_of_F > 0.0f && norm_of_residual/norm_of_F < rtol)break;
     if(norm_of_residual           < dtol)break;
   }
   NVTX_POP;
@@ -1314,8 +1330,8 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, dou
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double b, double dtol, double rtol){
-  // Algorithm 9.1 in Iterative Methods for Sparse Linear Systems(Yousef Saad) using a MG V-Cycle as M^{-1}
+void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, float a, float b, float dtol, float rtol){
+  // Algorithm 9.1f in Iterative Methods for Sparse Linear Systems(Yousef Saad) using a MG V-Cycle as M^{-1}
   level_type * level = all_grids->levels[onLevel];
   if(!level->active)return;
 
@@ -1331,7 +1347,7 @@ void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double
   for(l=0;l<all_grids->num_levels;l++){
     if(all_grids->levels[l]->must_subtract_mean==-1){
       all_grids->levels[l]->must_subtract_mean=0;
-      int alpha_is_zero = (dot(all_grids->levels[l],VECTOR_ALPHA,VECTOR_ALPHA) == 0.0);
+      int alpha_is_zero = (dot(all_grids->levels[l],VECTOR_ALPHA,VECTOR_ALPHA) == 0.0f);
       if( (all_grids->levels[l]->boundary_condition.type==BC_PERIODIC) && ((a==0) || (alpha_is_zero)) )all_grids->levels[l]->must_subtract_mean = 1;
     }
   }
@@ -1344,9 +1360,9 @@ void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   #ifdef _OPENMP
-  double MGPCG_Start_Time = omp_get_wtime();
+  float MGPCG_Start_Time = omp_get_wtime();
   #elif USE_MPI
-  double MGPCG_Start_Time = MPI_Wtime();
+  float MGPCG_Start_Time = MPI_Wtime();
   #endif
   if(all_grids->levels[onLevel]->my_rank==0){fprintf(stdout,"MGPCG...  ");}
   double _timeStartMGSolve = getTime();
@@ -1361,36 +1377,36 @@ void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double
   residual(level,r_id,x_id,F_id,a,b);                                           // r[] = F_id[] - A(x_id)
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if(level->must_subtract_mean == 1){
-    double mean_of_r = mean(level,r_id);
+    float mean_of_r = mean(level,r_id);
     shift_vector(level,r_id,r_id,-mean_of_r);
   }
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  double norm_of_r0 = norm(level,r_id);                                         // the norm of the initial residual...
-  if(norm_of_r0 == 0.0){CGConverged=1;}                                         // entered CG with exact solution
+  float norm_of_r0 = norm(level,r_id);                                         // the norm of the initial residual...
+  if(norm_of_r0 == 0.0f){CGConverged=1;}                                         // entered CG with exact solution
   level->vcycles_from_this_level++;                                             //
   zero_vector(level,z_id);                                                      // z[] = 0
   MGVCycle(all_grids,z_id,r_id,a,b,onLevel);                                    // z[] = M^{-1}r[]
-  scale_vector(level,p_id,1.0,z_id);                                            // p[] = z[]
-  double r_dot_z = dot(level,r_id,z_id);                                        // r_dot_z = dot(r,z)
+  scale_vector(level,p_id,1.0f,z_id);                                            // p[] = z[]
+  float r_dot_z = dot(level,r_id,z_id);                                        // r_dot_z = dot(r,z)
   while( (j<jMax) && (!CGFailed) && (!CGConverged) ){                           // while(not done){
     j++;level->Krylov_iterations++;                                             //
     apply_op(level,Ap_id,p_id,a,b);                                             //   Ap[] = A(p)
-    double Ap_dot_p = dot(level,Ap_id,p_id);                                    //   Ap_dot_p = dot(Ap,p)
-    if(Ap_dot_p == 0.0){CGFailed=1;break;}                                      //   pivot breakdown ???
-    double alpha = r_dot_z / Ap_dot_p;                                          //   alpha = r_dot_z / Ap_dot_p
+    float Ap_dot_p = dot(level,Ap_id,p_id);                                    //   Ap_dot_p = dot(Ap,p)
+    if(Ap_dot_p == 0.0f){CGFailed=1;break;}                                      //   pivot breakdown ???
+    float alpha = r_dot_z / Ap_dot_p;                                          //   alpha = r_dot_z / Ap_dot_p
     if(isinf(alpha)){CGFailed=1;break;}                                         //   ???
-    add_vectors(level,x_id,1.0,x_id, alpha,p_id );                              //   x_id[] = x_id[] + alpha*p[]
-    add_vectors(level,r_id,1.0,r_id,-alpha,Ap_id);                              //   r[]    = r[]    - alpha*Ap[]   (intermediate residual?)
+    add_vectors(level,x_id,1.0f,x_id, alpha,p_id );                              //   x_id[] = x_id[] + alpha*p[]
+    add_vectors(level,r_id,1.0f,r_id,-alpha,Ap_id);                              //   r[]    = r[]    - alpha*Ap[]   (intermediate residual?)
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     if(level->must_subtract_mean == 1){
-      double mean_of_r = mean(level,r_id);
+      float mean_of_r = mean(level,r_id);
       shift_vector(level,r_id,r_id,-mean_of_r);
     }
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //double norm_of_r = norm(level,r_id);                                        //   norm of intermediate residual (delusional convergence)
+  //float norm_of_r = norm(level,r_id);                                        //   norm of intermediate residual (delusional convergence)
     residual(level,VECTOR_TEMP,x_id,F_id,a,b);                                  //   true residual
-    double norm_of_r = norm(level,VECTOR_TEMP);                                 //   norm of true residual (true convergence test)
-    if(norm_of_r == 0.0){CGConverged=1;break;}                                  //
+    float norm_of_r = norm(level,VECTOR_TEMP);                                 //   norm of true residual (true convergence test)
+    if(norm_of_r == 0.0f){CGConverged=1;break;}                                  //
     if(level->my_rank==0){
       if(   j>1){fprintf(stdout,"\n          ");}
       if(rtol>0){fprintf(stdout,"iter=%3d  norm=%1.15e  rel=%1.15e  ",j,norm_of_r,norm_of_r/norm_of_r0    );}
@@ -1399,11 +1415,11 @@ void MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double
     level->vcycles_from_this_level++;                                           //
     zero_vector(level,z_id);                                                    //   z[] = 0
     MGVCycle(all_grids,z_id,r_id,a,b,onLevel);                                  //   z[] = M^{-1}r[]
-    double r_dot_z_new = dot(level,r_id,z_id);                                  //   r_dot_z_new = dot(r_{j+1},z_{j+1})
-    if(r_dot_z_new == 0.0){CGFailed=1;break;}                                   //   Lanczos breakdown ???
-    double beta = (r_dot_z_new/r_dot_z);                                        //   beta = (r_dot_z_new/r_dot_z)
+    float r_dot_z_new = dot(level,r_id,z_id);                                  //   r_dot_z_new = dot(r_{j+1},z_{j+1})
+    if(r_dot_z_new == 0.0f){CGFailed=1;break;}                                   //   Lanczos breakdown ???
+    float beta = (r_dot_z_new/r_dot_z);                                        //   beta = (r_dot_z_new/r_dot_z)
     if(isinf(beta)){CGFailed=1;break;}                                          //   ???
-    add_vectors(level,p_id,1.0,z_id,beta,p_id );                                //   p[] = z[] + beta*p[]
+    add_vectors(level,p_id,1.0f,z_id,beta,p_id );                                //   p[] = z[] + beta*p[]
     r_dot_z = r_dot_z_new;                                                      //   r_dot_r = r_dot_r_new   (save old r_dot_r)
     // FIX... need to test for stalled convergence...
   }                                                                             // }

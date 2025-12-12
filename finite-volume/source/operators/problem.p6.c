@@ -3,45 +3,45 @@
 // SWWilliams@lbl.gov
 // Lawrence Berkeley National Lab
 //------------------------------------------------------------------------------------------------------------------------------
-void evaluateBeta(double x, double y, double z, double *B, double *Bx, double *By, double *Bz){
-  double Bmin =  1.0;
-  double Bmax = 10.0;
-  double c2 = (Bmax-Bmin)/2; // coefficients to affect this transition
-  double c1 = (Bmax+Bmin)/2;
-  double c3 = 10.0;          // how sharply (B)eta transitions
-  double xcenter = 0.50;
-  double ycenter = 0.50;
-  double zcenter = 0.50;
-  // calculate distance from center of the domain (0.5,0.5,0.5)
-  double r2   = pow((x-xcenter),2) +  pow((y-ycenter),2) +  pow((z-zcenter),2);
-  double r2x  = 2.0*(x-xcenter);
-  double r2y  = 2.0*(y-ycenter);
-  double r2z  = 2.0*(z-zcenter);
-//double r2xx = 2.0;
-//double r2yy = 2.0;
-//double r2zz = 2.0;
-  double r    = pow(r2,0.5);
-  double rx   = 0.5*r2x*pow(r2,-0.5);
-  double ry   = 0.5*r2y*pow(r2,-0.5);
-  double rz   = 0.5*r2z*pow(r2,-0.5);
-//double rxx  = 0.5*r2xx*pow(r2,-0.5) - 0.25*r2x*r2x*pow(r2,-1.5);
-//double ryy  = 0.5*r2yy*pow(r2,-0.5) - 0.25*r2y*r2y*pow(r2,-1.5);
-//double rzz  = 0.5*r2zz*pow(r2,-0.5) - 0.25*r2z*r2z*pow(r2,-1.5);
+void evaluateBeta(float x, float y, float z, float *B, float *Bx, float *By, float *Bz){
+  float Bmin = 1.0f;
+  float Bmax = 10.0f;
+  float c2 = (Bmax-Bmin)/2; // coefficients to affect this transition
+  float c1 = (Bmax+Bmin)/2;
+  float c3 = 10.0f;          // how sharply (B)eta transitions
+  float xcenter = 0.50f;
+  float ycenter = 0.50f;
+  float zcenter = 0.50f;
+  // calculate distance from center of the domain (0.5f,0.5f,0.5f)
+  float r2   = powf((x-xcenter),2) +  powf((y-ycenter),2) +  powf((z-zcenter),2);
+  float r2x  = 2.0f*(x-xcenter);
+  float r2y  = 2.0f*(y-ycenter);
+  float r2z  = 2.0f*(z-zcenter);
+//float r2xx = 2.0f;
+//float r2yy = 2.0f;
+//float r2zz = 2.0f;
+  float r    = powf(r2,0.5f);
+  float rx   = 0.5f*r2x*powf(r2,-0.5f);
+  float ry   = 0.5f*r2y*powf(r2,-0.5f);
+  float rz   = 0.5f*r2z*powf(r2,-0.5f);
+//float rxx  = 0.5f*r2xx*powf(r2,-0.5f) - 0.25f*r2x*r2x*powf(r2,-1.5f);
+//float ryy  = 0.5f*r2yy*powf(r2,-0.5f) - 0.25f*r2y*r2y*powf(r2,-1.5f);
+//float rzz  = 0.5f*r2zz*powf(r2,-0.5f) - 0.25f*r2z*r2z*powf(r2,-1.5f);
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  *B  =           c1+c2*tanh( c3*(r-0.25) );
-  *Bx = c2*c3*rx*(1-pow(tanh( c3*(r-0.25) ),2));
-  *By = c2*c3*ry*(1-pow(tanh( c3*(r-0.25) ),2));
-  *Bz = c2*c3*rz*(1-pow(tanh( c3*(r-0.25) ),2));
+  *B  =           c1+c2*tanh( c3*(r-0.25f) );
+  *Bx = c2*c3*rx*(1-powf(tanh( c3*(r-0.25f) ),2));
+  *By = c2*c3*ry*(1-powf(tanh( c3*(r-0.25f) ),2));
+  *Bz = c2*c3*rz*(1-powf(tanh( c3*(r-0.25f) ),2));
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, double *Uz, double *Uxx, double *Uyy, double *Uzz, int isPeriodic){
+void evaluateU(float x, float y, float z, float *U, float *Ux, float *Uy, float *Uz, float *Uxx, float *Uyy, float *Uzz, int isPeriodic){
   // should be continuous in u, u', u'', u''', and u'''' to guarantee high order and periodic boundaries
   // v(w) = ???
   // u(x,y,z) = v(x)v(y)v(z)
   // If Periodic, then the integral of the RHS should sum to zero.
-  //   Setting shift=1.0 should ensure that the integrals of X, Y, or Z should sum to zero... 
+  //   Setting shift=1.0f should ensure that the integrals of X, Y, or Z should sum to zero... 
   //   That should(?) make the integrals of u,ux,uy,uz,uxx,uyy,uzz sum to zero and thus make the integral of f sum to zero
   // If dirichlet, then w(0)=w(1) = 0.0
   //   Setting shift to 0 should ensure that U(x,y,z) = 0 on boundary
@@ -55,16 +55,16 @@ void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, 
   // e =  -21.0
   // f =    0.0
   // g =    1.0
-  double shift = 0.0;if(isPeriodic)shift= 1.0/21.0;
-  double X     =  2.0*pow(x,6) -   6.0*pow(x,5) +  5.0*pow(x,4) - 1.0*pow(x,2) + shift;
-  double Y     =  2.0*pow(y,6) -   6.0*pow(y,5) +  5.0*pow(y,4) - 1.0*pow(y,2) + shift;
-  double Z     =  2.0*pow(z,6) -   6.0*pow(z,5) +  5.0*pow(z,4) - 1.0*pow(z,2) + shift;
-  double Xx    = 12.0*pow(x,5) -  30.0*pow(x,4) + 20.0*pow(x,3) - 2.0*x;
-  double Yy    = 12.0*pow(y,5) -  30.0*pow(y,4) + 20.0*pow(y,3) - 2.0*y;
-  double Zz    = 12.0*pow(z,5) -  30.0*pow(z,4) + 20.0*pow(z,3) - 2.0*z;
-  double Xxx   = 60.0*pow(x,4) - 120.0*pow(x,3) + 60.0*pow(x,2) - 2.0;
-  double Yyy   = 60.0*pow(y,4) - 120.0*pow(y,3) + 60.0*pow(y,2) - 2.0;
-  double Zzz   = 60.0*pow(z,4) - 120.0*pow(z,3) + 60.0*pow(z,2) - 2.0;
+  float shift = 0.0f;if(isPeriodic)shift= 1.0f/21.0f;
+  float X     =  2.0f*powf(x,6) -   6.0f*powf(x,5) +  5.0f*powf(x,4) - 1.0f*powf(x,2) + shift;
+  float Y     =  2.0f*powf(y,6) -   6.0f*powf(y,5) +  5.0f*powf(y,4) - 1.0f*powf(y,2) + shift;
+  float Z     =  2.0f*powf(z,6) -   6.0f*powf(z,5) +  5.0f*powf(z,4) - 1.0f*powf(z,2) + shift;
+  float Xx    = 12.0f*powf(x,5) -  30.0f*powf(x,4) + 20.0f*powf(x,3) - 2.0f*x;
+  float Yy    = 12.0f*powf(y,5) -  30.0f*powf(y,4) + 20.0f*powf(y,3) - 2.0f*y;
+  float Zz    = 12.0f*powf(z,5) -  30.0f*powf(z,4) + 20.0f*powf(z,3) - 2.0f*z;
+  float Xxx   = 60.0f*powf(x,4) - 120.0f*powf(x,3) + 60.0f*powf(x,2) - 2.0f;
+  float Yyy   = 60.0f*powf(y,4) - 120.0f*powf(y,3) + 60.0f*powf(y,2) - 2.0f;
+  float Zzz   = 60.0f*powf(z,4) - 120.0f*powf(z,3) + 60.0f*powf(z,2) - 2.0f;
         *U     = X   * Y   * Z;
         *Ux    = Xx  * Y   * Z;
         *Uy    = X   * Yy  * Z;
@@ -76,7 +76,7 @@ void evaluateU(double x, double y, double z, double *U, double *Ux, double *Uy, 
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void initialize_problem(level_type * level, double hLevel, double a, double b){
+void initialize_problem(level_type * level, float hLevel, float a, float b){
   level->h = hLevel;
 
   int box;
@@ -98,29 +98,29 @@ void initialize_problem(level_type * level, double hLevel, double a, double b){
     for(i=0;i<=dim_i;i++){ // include high face
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       int ijk = (i+ghosts) + (j+ghosts)*jStride + (k+ghosts)*kStride;
-      double x = hLevel*( (double)(i+level->my_boxes[box].low.i) + 0.5 ); // +0.5 to get to the center of cell
-      double y = hLevel*( (double)(j+level->my_boxes[box].low.j) + 0.5 );
-      double z = hLevel*( (double)(k+level->my_boxes[box].low.k) + 0.5 );
-      double A,B,Bx,By,Bz,Bi,Bj,Bk;
-      double U,Ux,Uy,Uz,Uxx,Uyy,Uzz;
+      float x = hLevel*( (float)(i+level->my_boxes[box].low.i) + 0.5f ); // +0.5f to get to the center of cell
+      float y = hLevel*( (float)(j+level->my_boxes[box].low.j) + 0.5f );
+      float z = hLevel*( (float)(k+level->my_boxes[box].low.k) + 0.5f );
+      float A,B,Bx,By,Bz,Bi,Bj,Bk;
+      float U,Ux,Uy,Uz,Uxx,Uyy,Uzz;
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-      A  = 1.0;
-      B  = 1.0;
-      Bx = 0.0;
-      By = 0.0;
-      Bz = 0.0; 
-      Bi = 1.0;
-      Bj = 1.0;
-      Bk = 1.0;
+      A  = 1.0f;
+      B  = 1.0f;
+      Bx = 0.0f;
+      By = 0.0f;
+      Bz = 0.0f; 
+      Bi = 1.0f;
+      Bj = 1.0f;
+      Bk = 1.0f;
       #ifdef STENCIL_VARIABLE_COEFFICIENT // variable coefficient problem...
-      evaluateBeta(x-hLevel*0.5,y           ,z           ,&Bi,&Bx,&By,&Bz); // face-centered value of Beta for beta_i
-      evaluateBeta(x           ,y-hLevel*0.5,z           ,&Bj,&Bx,&By,&Bz); // face-centered value of Beta for beta_j
-      evaluateBeta(x           ,y           ,z-hLevel*0.5,&Bk,&Bx,&By,&Bz); // face-centered value of Beta for beta_k
+      evaluateBeta(x-hLevel*0.5f,y           ,z           ,&Bi,&Bx,&By,&Bz); // face-centered value of Beta for beta_i
+      evaluateBeta(x           ,y-hLevel*0.5f,z           ,&Bj,&Bx,&By,&Bz); // face-centered value of Beta for beta_j
+      evaluateBeta(x           ,y           ,z-hLevel*0.5f,&Bk,&Bx,&By,&Bz); // face-centered value of Beta for beta_k
       evaluateBeta(x           ,y           ,z           ,&B ,&Bx,&By,&Bz); // cell-centered value of Beta
       #endif
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       evaluateU(x,y,z,&U,&Ux,&Uy,&Uz,&Uxx,&Uyy,&Uzz, (level->boundary_condition.type == BC_PERIODIC) );
-      double F = a*A*U - b*( (Bx*Ux + By*Uy + Bz*Uz)  +  B*(Uxx + Uyy + Uzz) );
+      float F = a*A*U - b*( (Bx*Ux + By*Uy + Bz*Uz)  +  B*(Uxx + Uyy + Uzz) );
       //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
       level->my_boxes[box].vectors[VECTOR_BETA_I][ijk] = Bi;
       level->my_boxes[box].vectors[VECTOR_BETA_J][ijk] = Bj;

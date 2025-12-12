@@ -21,8 +21,8 @@ static inline void CopyBlock(level_type *level, int id, blockCopy_type *block){
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  float * __restrict__  read = block->read.ptr;
+  float * __restrict__ write = block->write.ptr;
 
   if(block->read.box >=0){
      read_jStride = level->my_boxes[block->read.box ].jStride;
@@ -90,7 +90,7 @@ static inline void CopyBlock(level_type *level, int id, blockCopy_type *block){
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void IncrementBlock(level_type *level, int id, double prescale, blockCopy_type *block){
+static inline void IncrementBlock(level_type *level, int id, float prescale, blockCopy_type *block){
   // copy 3D array from read_i,j,k of read[] to write_i,j,k in write[]
   int   dim_i       = block->dim.i;
   int   dim_j       = block->dim.j;
@@ -108,8 +108,8 @@ static inline void IncrementBlock(level_type *level, int id, double prescale, bl
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  float * __restrict__  read = block->read.ptr;
+  float * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read = level->my_boxes[ block->read.box].vectors[id] + level->my_boxes[ block->read.box].ghosts*(1+level->my_boxes[ block->read.box].jStride+level->my_boxes[ block->read.box].kStride);
      read_jStride = level->my_boxes[block->read.box ].jStride;
@@ -127,7 +127,7 @@ static inline void IncrementBlock(level_type *level, int id, double prescale, bl
   for(i=0;i<dim_i;i++){
     int  read_ijk = (i+ read_i) + (j+ read_j)* read_jStride + (k+ read_k)* read_kStride;
     int write_ijk = (i+write_i) + (j+write_j)*write_jStride + (k+write_k)*write_kStride;
-    write[write_ijk] = prescale*write[write_ijk] + read[read_ijk]; // CAREFUL !!!  you must guarantee you zero'd the MPI buffers(write[]) and destination boxes at some point to avoid 0.0*NaN or 0.0*inf
+    write[write_ijk] = prescale*write[write_ijk] + read[read_ijk]; // CAREFUL !!!  you must guarantee you zero'd the MPI buffers(write[]) and destination boxes at some point to avoid 0.0f*NaN or 0.0f*inf
   }}}
 
 }

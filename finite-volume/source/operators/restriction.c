@@ -21,8 +21,8 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  float * __restrict__  read = block->read.ptr;
+  float * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read_jStride = level_f->my_boxes[block->read.box ].jStride;
      read_kStride = level_f->my_boxes[block->read.box ].kStride;
@@ -47,7 +47,7 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
            write[write_ijk] = ( read[read_ijk                            ]+read[read_ijk+1                          ] +
                                 read[read_ijk  +read_jStride             ]+read[read_ijk+1+read_jStride             ] +
                                 read[read_ijk               +read_kStride]+read[read_ijk+1             +read_kStride] +
-                                read[read_ijk  +read_jStride+read_kStride]+read[read_ijk+1+read_jStride+read_kStride] ) * 0.125;
+                                read[read_ijk  +read_jStride+read_kStride]+read[read_ijk+1+read_jStride+read_kStride] ) * 0.125f;
          }}}break;
     case RESTRICT_FACE_I:
          for(k=0;k<dim_k;k++){
@@ -58,7 +58,7 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
            write[write_ijk] = ( read[read_ijk                          ] +
                                 read[read_ijk+read_jStride             ] +
                                 read[read_ijk             +read_kStride] +
-                                read[read_ijk+read_jStride+read_kStride] ) * 0.25;
+                                read[read_ijk+read_jStride+read_kStride] ) * 0.25f;
          }}}break;
     case RESTRICT_FACE_J:
          for(k=0;k<dim_k;k++){
@@ -69,7 +69,7 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
            write[write_ijk] = ( read[read_ijk               ] +
                                 read[read_ijk+1             ] +
                                 read[read_ijk  +read_kStride] +
-                                read[read_ijk+1+read_kStride] ) * 0.25;
+                                read[read_ijk+1+read_kStride] ) * 0.25f;
          }}}break;
     case RESTRICT_FACE_K:
          for(k=0;k<dim_k;k++){
@@ -80,7 +80,7 @@ static inline void restriction_pc_block(level_type *level_c, int id_c, level_typ
            write[write_ijk] = ( read[read_ijk               ] +
                                 read[read_ijk+1             ] +
                                 read[read_ijk  +read_jStride] +
-                                read[read_ijk+1+read_jStride] ) * 0.25;
+                                read[read_ijk+1+read_jStride] ) * 0.25f;
          }}}break;
   }
 
@@ -116,7 +116,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     for(n=0;n<level_c->restriction[restrictionType].num_recvs;n++){
       MPI_Irecv(level_c->restriction[restrictionType].recv_buffers[n],
                 level_c->restriction[restrictionType].recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_c->restriction[restrictionType].recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -124,7 +124,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
       );
     }
     _timeEnd = getTime();
-    level_f->timers.restriction_recv += (_timeEnd-_timeStart);
+    level_f->timers.restriction_recv += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -142,7 +142,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     }
     }
     _timeEnd = getTime();
-    level_f->timers.restriction_pack += (_timeEnd-_timeStart);
+    level_f->timers.restriction_pack += (double)(_timeEnd-_timeStart);
   }
 
  
@@ -155,7 +155,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     for(n=0;n<level_f->restriction[restrictionType].num_sends;n++){
       MPI_Isend(level_f->restriction[restrictionType].send_buffers[n],
                 level_f->restriction[restrictionType].send_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_f->restriction[restrictionType].send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -163,7 +163,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
       );
     }
     _timeEnd = getTime();
-    level_f->timers.restriction_send += (_timeEnd-_timeStart);
+    level_f->timers.restriction_send += (double)(_timeEnd-_timeStart);
   }
   #endif
 
@@ -182,7 +182,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     }
     }
     _timeEnd = getTime();
-    level_f->timers.restriction_local += (_timeEnd-_timeStart);
+    level_f->timers.restriction_local += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -195,7 +195,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     CUCHK( cudaDeviceSynchronize() );
   #endif
     _timeEnd = getTime();
-    level_f->timers.restriction_wait += (_timeEnd-_timeStart);
+    level_f->timers.restriction_wait += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -213,7 +213,7 @@ void restriction(level_type * level_c, int id_c, level_type *level_f, int id_f, 
     }
     }
     _timeEnd = getTime();
-    level_f->timers.restriction_unpack += (_timeEnd-_timeStart);
+    level_f->timers.restriction_unpack += (double)(_timeEnd-_timeStart);
   }
   #endif
  

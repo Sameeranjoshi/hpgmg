@@ -19,7 +19,7 @@
   #else
     // user must provide a function getTime and include it in timers.c
     // if calibration is necesary, then the user must #define CALIBRATE_TIMER
-    double getTime();
+    float getTime();
   #endif
 
 #endif

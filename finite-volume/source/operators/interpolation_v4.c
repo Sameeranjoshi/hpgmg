@@ -5,7 +5,7 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #include <math.h>
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void interpolation_v4_block(level_type *level_f, int id_f, double prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
+static inline void interpolation_v4_block(level_type *level_f, int id_f, float prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
   // interpolate 3D array from read_i,j,k of read[] to write_i,j,k in write[] using volume averaged quartic prolongation
   int write_dim_i   = block->dim.i<<1; // calculate the dimensions of the resultant fine block
   int write_dim_j   = block->dim.j<<1;
@@ -23,8 +23,8 @@ static inline void interpolation_v4_block(level_type *level_f, int id_f, double 
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  float * __restrict__  read = block->read.ptr;
+  float * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read_jStride = level_c->my_boxes[block->read.box ].jStride;
      read_kStride = level_c->my_boxes[block->read.box ].kStride;
@@ -40,19 +40,19 @@ static inline void interpolation_v4_block(level_type *level_f, int id_f, double 
   #ifdef USE_NAIVE_INTERP
   // naive 125pt per fine grid cell
   int i,j,k;
-  double c2 = -3.0/128.0;
-  double c1 = 22.0/128.0;
+  float c2 = -3.0f/128.0f;
+  float c1 = 22.0f/128.0f;
   int dj  =   read_jStride;
   int dk  =   read_kStride;
   int dj2 = 2*read_jStride;
   int dk2 = 2*read_kStride;
-  for(k=0;k<write_dim_k;k++){double sk1=c1,sk2=c2;if(k&0x1){sk1=-c1;sk2=-c2;}
-  for(j=0;j<write_dim_j;j++){double sj1=c1,sj2=c2;if(j&0x1){sj1=-c1;sj2=-c2;}
-  for(i=0;i<write_dim_i;i++){double si1=c1,si2=c2;if(i&0x1){si1=-c1;si2=-c2;}
+  for(k=0;k<write_dim_k;k++){float sk1=c1,sk2=c2;if(k&0x1){sk1=-c1;sk2=-c2;}
+  for(j=0;j<write_dim_j;j++){float sj1=c1,sj2=c2;if(j&0x1){sj1=-c1;sj2=-c2;}
+  for(i=0;i<write_dim_i;i++){float si1=c1,si2=c2;if(i&0x1){si1=-c1;si2=-c2;}
     int write_ijk = ((i   )+write_i) + (((j   )+write_j)*write_jStride) + (((k   )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
     //
-    // |   -3/128  |  +22/128  |    1.0    |  -22/128  |   +3/128  | coarse grid
+    // |   -3/128  |  +22/128  |    1.0f    |  -22/128  |   +3/128  | coarse grid
     // |-----+-----|-----+-----|-----+-----|-----+-----|-----+-----|
     // |     |     |     |     |?????|     |     |     |     |     | fine grid
     //
@@ -91,8 +91,8 @@ static inline void interpolation_v4_block(level_type *level_f, int id_f, double 
   // ----------------
   //   78 x 5pt for 8 cells (vs 8x125pt = 200x5pt in naive)
   int i,j,k;
-  double c2 = -3.0/128.0;
-  double c1 = 22.0/128.0;
+  float c2 = -3.0f/128.0f;
+  float c1 = 22.0f/128.0f;
   int dj  =   read_jStride;
   int dk  =   read_kStride;
   int dj2 = 2*read_jStride;
@@ -103,133 +103,133 @@ static inline void interpolation_v4_block(level_type *level_f, int id_f, double 
     int write_ijk = ((i   )+write_i) + (((j   )+write_j)*write_jStride) + (((k   )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
     //
-    // |   -3/128  |  +22/128  |    1.0    |  -22/128  |   +3/128  | coarse grid
+    // |   -3/128  |  +22/128  |    1.0f    |  -22/128  |   +3/128  | coarse grid
     // |-----+-----|-----+-----|-----+-----|-----+-----|-----+-----|
     // |     |     |     |     |?????|     |     |     |     |     | fine grid
     //
 
     // grab all coarse grid points...
-    const double c000=read[read_ijk-2-dj2-dk2], c100=read[read_ijk-1-dj2-dk2], c200=read[read_ijk-dj2-dk2], c300=read[read_ijk+1-dj2-dk2], c400=read[read_ijk+2-dj2-dk2];
-    const double c010=read[read_ijk-2-dj -dk2], c110=read[read_ijk-1-dj -dk2], c210=read[read_ijk-dj -dk2], c310=read[read_ijk+1-dj -dk2], c410=read[read_ijk+2-dj -dk2];
-    const double c020=read[read_ijk-2    -dk2], c120=read[read_ijk-1    -dk2], c220=read[read_ijk    -dk2], c320=read[read_ijk+1    -dk2], c420=read[read_ijk+2    -dk2];
-    const double c030=read[read_ijk-2+dj -dk2], c130=read[read_ijk-1+dj -dk2], c230=read[read_ijk+dj -dk2], c330=read[read_ijk+1+dj -dk2], c430=read[read_ijk+2+dj -dk2];
-    const double c040=read[read_ijk-2+dj2-dk2], c140=read[read_ijk-1+dj2-dk2], c240=read[read_ijk+dj2-dk2], c340=read[read_ijk+1+dj2-dk2], c440=read[read_ijk+2+dj2-dk2];
+    const float c000=read[read_ijk-2-dj2-dk2], c100=read[read_ijk-1-dj2-dk2], c200=read[read_ijk-dj2-dk2], c300=read[read_ijk+1-dj2-dk2], c400=read[read_ijk+2-dj2-dk2];
+    const float c010=read[read_ijk-2-dj -dk2], c110=read[read_ijk-1-dj -dk2], c210=read[read_ijk-dj -dk2], c310=read[read_ijk+1-dj -dk2], c410=read[read_ijk+2-dj -dk2];
+    const float c020=read[read_ijk-2    -dk2], c120=read[read_ijk-1    -dk2], c220=read[read_ijk    -dk2], c320=read[read_ijk+1    -dk2], c420=read[read_ijk+2    -dk2];
+    const float c030=read[read_ijk-2+dj -dk2], c130=read[read_ijk-1+dj -dk2], c230=read[read_ijk+dj -dk2], c330=read[read_ijk+1+dj -dk2], c430=read[read_ijk+2+dj -dk2];
+    const float c040=read[read_ijk-2+dj2-dk2], c140=read[read_ijk-1+dj2-dk2], c240=read[read_ijk+dj2-dk2], c340=read[read_ijk+1+dj2-dk2], c440=read[read_ijk+2+dj2-dk2];
 
-    const double c001=read[read_ijk-2-dj2-dk ], c101=read[read_ijk-1-dj2-dk ], c201=read[read_ijk-dj2-dk ], c301=read[read_ijk+1-dj2-dk ], c401=read[read_ijk+2-dj2-dk ];
-    const double c011=read[read_ijk-2-dj -dk ], c111=read[read_ijk-1-dj -dk ], c211=read[read_ijk-dj -dk ], c311=read[read_ijk+1-dj -dk ], c411=read[read_ijk+2-dj -dk ];
-    const double c021=read[read_ijk-2    -dk ], c121=read[read_ijk-1    -dk ], c221=read[read_ijk    -dk ], c321=read[read_ijk+1    -dk ], c421=read[read_ijk+2    -dk ];
-    const double c031=read[read_ijk-2+dj -dk ], c131=read[read_ijk-1+dj -dk ], c231=read[read_ijk+dj -dk ], c331=read[read_ijk+1+dj -dk ], c431=read[read_ijk+2+dj -dk ];
-    const double c041=read[read_ijk-2+dj2-dk ], c141=read[read_ijk-1+dj2-dk ], c241=read[read_ijk+dj2-dk ], c341=read[read_ijk+1+dj2-dk ], c441=read[read_ijk+2+dj2-dk ];
+    const float c001=read[read_ijk-2-dj2-dk ], c101=read[read_ijk-1-dj2-dk ], c201=read[read_ijk-dj2-dk ], c301=read[read_ijk+1-dj2-dk ], c401=read[read_ijk+2-dj2-dk ];
+    const float c011=read[read_ijk-2-dj -dk ], c111=read[read_ijk-1-dj -dk ], c211=read[read_ijk-dj -dk ], c311=read[read_ijk+1-dj -dk ], c411=read[read_ijk+2-dj -dk ];
+    const float c021=read[read_ijk-2    -dk ], c121=read[read_ijk-1    -dk ], c221=read[read_ijk    -dk ], c321=read[read_ijk+1    -dk ], c421=read[read_ijk+2    -dk ];
+    const float c031=read[read_ijk-2+dj -dk ], c131=read[read_ijk-1+dj -dk ], c231=read[read_ijk+dj -dk ], c331=read[read_ijk+1+dj -dk ], c431=read[read_ijk+2+dj -dk ];
+    const float c041=read[read_ijk-2+dj2-dk ], c141=read[read_ijk-1+dj2-dk ], c241=read[read_ijk+dj2-dk ], c341=read[read_ijk+1+dj2-dk ], c441=read[read_ijk+2+dj2-dk ];
 
-    const double c002=read[read_ijk-2-dj2    ], c102=read[read_ijk-1-dj2    ], c202=read[read_ijk-dj2    ], c302=read[read_ijk+1-dj2    ], c402=read[read_ijk+2-dj2    ];
-    const double c012=read[read_ijk-2-dj     ], c112=read[read_ijk-1-dj     ], c212=read[read_ijk-dj     ], c312=read[read_ijk+1-dj     ], c412=read[read_ijk+2-dj     ];
-    const double c022=read[read_ijk-2        ], c122=read[read_ijk-1        ], c222=read[read_ijk        ], c322=read[read_ijk+1        ], c422=read[read_ijk+2        ];
-    const double c032=read[read_ijk-2+dj     ], c132=read[read_ijk-1+dj     ], c232=read[read_ijk+dj     ], c332=read[read_ijk+1+dj     ], c432=read[read_ijk+2+dj     ];
-    const double c042=read[read_ijk-2+dj2    ], c142=read[read_ijk-1+dj2    ], c242=read[read_ijk+dj2    ], c342=read[read_ijk+1+dj2    ], c442=read[read_ijk+2+dj2    ];
+    const float c002=read[read_ijk-2-dj2    ], c102=read[read_ijk-1-dj2    ], c202=read[read_ijk-dj2    ], c302=read[read_ijk+1-dj2    ], c402=read[read_ijk+2-dj2    ];
+    const float c012=read[read_ijk-2-dj     ], c112=read[read_ijk-1-dj     ], c212=read[read_ijk-dj     ], c312=read[read_ijk+1-dj     ], c412=read[read_ijk+2-dj     ];
+    const float c022=read[read_ijk-2        ], c122=read[read_ijk-1        ], c222=read[read_ijk        ], c322=read[read_ijk+1        ], c422=read[read_ijk+2        ];
+    const float c032=read[read_ijk-2+dj     ], c132=read[read_ijk-1+dj     ], c232=read[read_ijk+dj     ], c332=read[read_ijk+1+dj     ], c432=read[read_ijk+2+dj     ];
+    const float c042=read[read_ijk-2+dj2    ], c142=read[read_ijk-1+dj2    ], c242=read[read_ijk+dj2    ], c342=read[read_ijk+1+dj2    ], c442=read[read_ijk+2+dj2    ];
 
-    const double c003=read[read_ijk-2-dj2+dk ], c103=read[read_ijk-1-dj2+dk ], c203=read[read_ijk-dj2+dk ], c303=read[read_ijk+1-dj2+dk ], c403=read[read_ijk+2-dj2+dk ];
-    const double c013=read[read_ijk-2-dj +dk ], c113=read[read_ijk-1-dj +dk ], c213=read[read_ijk-dj +dk ], c313=read[read_ijk+1-dj +dk ], c413=read[read_ijk+2-dj +dk ];
-    const double c023=read[read_ijk-2    +dk ], c123=read[read_ijk-1    +dk ], c223=read[read_ijk    +dk ], c323=read[read_ijk+1    +dk ], c423=read[read_ijk+2    +dk ];
-    const double c033=read[read_ijk-2+dj +dk ], c133=read[read_ijk-1+dj +dk ], c233=read[read_ijk+dj +dk ], c333=read[read_ijk+1+dj +dk ], c433=read[read_ijk+2+dj +dk ];
-    const double c043=read[read_ijk-2+dj2+dk ], c143=read[read_ijk-1+dj2+dk ], c243=read[read_ijk+dj2+dk ], c343=read[read_ijk+1+dj2+dk ], c443=read[read_ijk+2+dj2+dk ];
+    const float c003=read[read_ijk-2-dj2+dk ], c103=read[read_ijk-1-dj2+dk ], c203=read[read_ijk-dj2+dk ], c303=read[read_ijk+1-dj2+dk ], c403=read[read_ijk+2-dj2+dk ];
+    const float c013=read[read_ijk-2-dj +dk ], c113=read[read_ijk-1-dj +dk ], c213=read[read_ijk-dj +dk ], c313=read[read_ijk+1-dj +dk ], c413=read[read_ijk+2-dj +dk ];
+    const float c023=read[read_ijk-2    +dk ], c123=read[read_ijk-1    +dk ], c223=read[read_ijk    +dk ], c323=read[read_ijk+1    +dk ], c423=read[read_ijk+2    +dk ];
+    const float c033=read[read_ijk-2+dj +dk ], c133=read[read_ijk-1+dj +dk ], c233=read[read_ijk+dj +dk ], c333=read[read_ijk+1+dj +dk ], c433=read[read_ijk+2+dj +dk ];
+    const float c043=read[read_ijk-2+dj2+dk ], c143=read[read_ijk-1+dj2+dk ], c243=read[read_ijk+dj2+dk ], c343=read[read_ijk+1+dj2+dk ], c443=read[read_ijk+2+dj2+dk ];
 
-    const double c004=read[read_ijk-2-dj2+dk2], c104=read[read_ijk-1-dj2+dk2], c204=read[read_ijk-dj2+dk2], c304=read[read_ijk+1-dj2+dk2], c404=read[read_ijk+2-dj2+dk2];
-    const double c014=read[read_ijk-2-dj +dk2], c114=read[read_ijk-1-dj +dk2], c214=read[read_ijk-dj +dk2], c314=read[read_ijk+1-dj +dk2], c414=read[read_ijk+2-dj +dk2];
-    const double c024=read[read_ijk-2    +dk2], c124=read[read_ijk-1    +dk2], c224=read[read_ijk    +dk2], c324=read[read_ijk+1    +dk2], c424=read[read_ijk+2    +dk2];
-    const double c034=read[read_ijk-2+dj +dk2], c134=read[read_ijk-1+dj +dk2], c234=read[read_ijk+dj +dk2], c334=read[read_ijk+1+dj +dk2], c434=read[read_ijk+2+dj +dk2];
-    const double c044=read[read_ijk-2+dj2+dk2], c144=read[read_ijk-1+dj2+dk2], c244=read[read_ijk+dj2+dk2], c344=read[read_ijk+1+dj2+dk2], c444=read[read_ijk+2+dj2+dk2];
+    const float c004=read[read_ijk-2-dj2+dk2], c104=read[read_ijk-1-dj2+dk2], c204=read[read_ijk-dj2+dk2], c304=read[read_ijk+1-dj2+dk2], c404=read[read_ijk+2-dj2+dk2];
+    const float c014=read[read_ijk-2-dj +dk2], c114=read[read_ijk-1-dj +dk2], c214=read[read_ijk-dj +dk2], c314=read[read_ijk+1-dj +dk2], c414=read[read_ijk+2-dj +dk2];
+    const float c024=read[read_ijk-2    +dk2], c124=read[read_ijk-1    +dk2], c224=read[read_ijk    +dk2], c324=read[read_ijk+1    +dk2], c424=read[read_ijk+2    +dk2];
+    const float c034=read[read_ijk-2+dj +dk2], c134=read[read_ijk-1+dj +dk2], c234=read[read_ijk+dj +dk2], c334=read[read_ijk+1+dj +dk2], c434=read[read_ijk+2+dj +dk2];
+    const float c044=read[read_ijk-2+dj2+dk2], c144=read[read_ijk-1+dj2+dk2], c244=read[read_ijk+dj2+dk2], c344=read[read_ijk+1+dj2+dk2], c444=read[read_ijk+2+dj2+dk2];
 
     // interpolate in i to create fine i / coarse jk points...
-    const double f0c00 = ( c200 + c1*(c100-c300) + c2*(c000-c400) ); // same as original 5pt stencil...  f0c00 = ( c2*c000 + c1*c100 + c200 - c1*c300 - c2*c400 )
-    const double f1c00 = ( c200 - c1*(c100-c300) - c2*(c000-c400) );
-    const double f0c10 = ( c210 + c1*(c110-c310) + c2*(c010-c410) );
-    const double f1c10 = ( c210 - c1*(c110-c310) - c2*(c010-c410) );
-    const double f0c20 = ( c220 + c1*(c120-c320) + c2*(c020-c420) );
-    const double f1c20 = ( c220 - c1*(c120-c320) - c2*(c020-c420) );
-    const double f0c30 = ( c230 + c1*(c130-c330) + c2*(c030-c430) );
-    const double f1c30 = ( c230 - c1*(c130-c330) - c2*(c030-c430) );
-    const double f0c40 = ( c240 + c1*(c140-c340) + c2*(c040-c440) );
-    const double f1c40 = ( c240 - c1*(c140-c340) - c2*(c040-c440) );
+    const float f0c00 = ( c200 + c1*(c100-c300) + c2*(c000-c400) ); // same as original 5pt stencil...  f0c00 = ( c2*c000 + c1*c100 + c200 - c1*c300 - c2*c400 )
+    const float f1c00 = ( c200 - c1*(c100-c300) - c2*(c000-c400) );
+    const float f0c10 = ( c210 + c1*(c110-c310) + c2*(c010-c410) );
+    const float f1c10 = ( c210 - c1*(c110-c310) - c2*(c010-c410) );
+    const float f0c20 = ( c220 + c1*(c120-c320) + c2*(c020-c420) );
+    const float f1c20 = ( c220 - c1*(c120-c320) - c2*(c020-c420) );
+    const float f0c30 = ( c230 + c1*(c130-c330) + c2*(c030-c430) );
+    const float f1c30 = ( c230 - c1*(c130-c330) - c2*(c030-c430) );
+    const float f0c40 = ( c240 + c1*(c140-c340) + c2*(c040-c440) );
+    const float f1c40 = ( c240 - c1*(c140-c340) - c2*(c040-c440) );
 
-    const double f0c01 = ( c201 + c1*(c101-c301) + c2*(c001-c401) );
-    const double f1c01 = ( c201 - c1*(c101-c301) - c2*(c001-c401) );
-    const double f0c11 = ( c211 + c1*(c111-c311) + c2*(c011-c411) );
-    const double f1c11 = ( c211 - c1*(c111-c311) - c2*(c011-c411) );
-    const double f0c21 = ( c221 + c1*(c121-c321) + c2*(c021-c421) );
-    const double f1c21 = ( c221 - c1*(c121-c321) - c2*(c021-c421) );
-    const double f0c31 = ( c231 + c1*(c131-c331) + c2*(c031-c431) );
-    const double f1c31 = ( c231 - c1*(c131-c331) - c2*(c031-c431) );
-    const double f0c41 = ( c241 + c1*(c141-c341) + c2*(c041-c441) );
-    const double f1c41 = ( c241 - c1*(c141-c341) - c2*(c041-c441) );
+    const float f0c01 = ( c201 + c1*(c101-c301) + c2*(c001-c401) );
+    const float f1c01 = ( c201 - c1*(c101-c301) - c2*(c001-c401) );
+    const float f0c11 = ( c211 + c1*(c111-c311) + c2*(c011-c411) );
+    const float f1c11 = ( c211 - c1*(c111-c311) - c2*(c011-c411) );
+    const float f0c21 = ( c221 + c1*(c121-c321) + c2*(c021-c421) );
+    const float f1c21 = ( c221 - c1*(c121-c321) - c2*(c021-c421) );
+    const float f0c31 = ( c231 + c1*(c131-c331) + c2*(c031-c431) );
+    const float f1c31 = ( c231 - c1*(c131-c331) - c2*(c031-c431) );
+    const float f0c41 = ( c241 + c1*(c141-c341) + c2*(c041-c441) );
+    const float f1c41 = ( c241 - c1*(c141-c341) - c2*(c041-c441) );
 
-    const double f0c02 = ( c202 + c1*(c102-c302) + c2*(c002-c402) );
-    const double f1c02 = ( c202 - c1*(c102-c302) - c2*(c002-c402) );
-    const double f0c12 = ( c212 + c1*(c112-c312) + c2*(c012-c412) );
-    const double f1c12 = ( c212 - c1*(c112-c312) - c2*(c012-c412) );
-    const double f0c22 = ( c222 + c1*(c122-c322) + c2*(c022-c422) );
-    const double f1c22 = ( c222 - c1*(c122-c322) - c2*(c022-c422) );
-    const double f0c32 = ( c232 + c1*(c132-c332) + c2*(c032-c432) );
-    const double f1c32 = ( c232 - c1*(c132-c332) - c2*(c032-c432) );
-    const double f0c42 = ( c242 + c1*(c142-c342) + c2*(c042-c442) );
-    const double f1c42 = ( c242 - c1*(c142-c342) - c2*(c042-c442) );
+    const float f0c02 = ( c202 + c1*(c102-c302) + c2*(c002-c402) );
+    const float f1c02 = ( c202 - c1*(c102-c302) - c2*(c002-c402) );
+    const float f0c12 = ( c212 + c1*(c112-c312) + c2*(c012-c412) );
+    const float f1c12 = ( c212 - c1*(c112-c312) - c2*(c012-c412) );
+    const float f0c22 = ( c222 + c1*(c122-c322) + c2*(c022-c422) );
+    const float f1c22 = ( c222 - c1*(c122-c322) - c2*(c022-c422) );
+    const float f0c32 = ( c232 + c1*(c132-c332) + c2*(c032-c432) );
+    const float f1c32 = ( c232 - c1*(c132-c332) - c2*(c032-c432) );
+    const float f0c42 = ( c242 + c1*(c142-c342) + c2*(c042-c442) );
+    const float f1c42 = ( c242 - c1*(c142-c342) - c2*(c042-c442) );
 
-    const double f0c03 = ( c203 + c1*(c103-c303) + c2*(c003-c403) );
-    const double f1c03 = ( c203 - c1*(c103-c303) - c2*(c003-c403) );
-    const double f0c13 = ( c213 + c1*(c113-c313) + c2*(c013-c413) );
-    const double f1c13 = ( c213 - c1*(c113-c313) - c2*(c013-c413) );
-    const double f0c23 = ( c223 + c1*(c123-c323) + c2*(c023-c423) );
-    const double f1c23 = ( c223 - c1*(c123-c323) - c2*(c023-c423) );
-    const double f0c33 = ( c233 + c1*(c133-c333) + c2*(c033-c433) );
-    const double f1c33 = ( c233 - c1*(c133-c333) - c2*(c033-c433) );
-    const double f0c43 = ( c243 + c1*(c143-c343) + c2*(c043-c443) );
-    const double f1c43 = ( c243 - c1*(c143-c343) - c2*(c043-c443) );
+    const float f0c03 = ( c203 + c1*(c103-c303) + c2*(c003-c403) );
+    const float f1c03 = ( c203 - c1*(c103-c303) - c2*(c003-c403) );
+    const float f0c13 = ( c213 + c1*(c113-c313) + c2*(c013-c413) );
+    const float f1c13 = ( c213 - c1*(c113-c313) - c2*(c013-c413) );
+    const float f0c23 = ( c223 + c1*(c123-c323) + c2*(c023-c423) );
+    const float f1c23 = ( c223 - c1*(c123-c323) - c2*(c023-c423) );
+    const float f0c33 = ( c233 + c1*(c133-c333) + c2*(c033-c433) );
+    const float f1c33 = ( c233 - c1*(c133-c333) - c2*(c033-c433) );
+    const float f0c43 = ( c243 + c1*(c143-c343) + c2*(c043-c443) );
+    const float f1c43 = ( c243 - c1*(c143-c343) - c2*(c043-c443) );
 
-    const double f0c04 = ( c204 + c1*(c104-c304) + c2*(c004-c404) );
-    const double f1c04 = ( c204 - c1*(c104-c304) - c2*(c004-c404) );
-    const double f0c14 = ( c214 + c1*(c114-c314) + c2*(c014-c414) );
-    const double f1c14 = ( c214 - c1*(c114-c314) - c2*(c014-c414) );
-    const double f0c24 = ( c224 + c1*(c124-c324) + c2*(c024-c424) );
-    const double f1c24 = ( c224 - c1*(c124-c324) - c2*(c024-c424) );
-    const double f0c34 = ( c234 + c1*(c134-c334) + c2*(c034-c434) );
-    const double f1c34 = ( c234 - c1*(c134-c334) - c2*(c034-c434) );
-    const double f0c44 = ( c244 + c1*(c144-c344) + c2*(c044-c444) );
-    const double f1c44 = ( c244 - c1*(c144-c344) - c2*(c044-c444) );
+    const float f0c04 = ( c204 + c1*(c104-c304) + c2*(c004-c404) );
+    const float f1c04 = ( c204 - c1*(c104-c304) - c2*(c004-c404) );
+    const float f0c14 = ( c214 + c1*(c114-c314) + c2*(c014-c414) );
+    const float f1c14 = ( c214 - c1*(c114-c314) - c2*(c014-c414) );
+    const float f0c24 = ( c224 + c1*(c124-c324) + c2*(c024-c424) );
+    const float f1c24 = ( c224 - c1*(c124-c324) - c2*(c024-c424) );
+    const float f0c34 = ( c234 + c1*(c134-c334) + c2*(c034-c434) );
+    const float f1c34 = ( c234 - c1*(c134-c334) - c2*(c034-c434) );
+    const float f0c44 = ( c244 + c1*(c144-c344) + c2*(c044-c444) );
+    const float f1c44 = ( c244 - c1*(c144-c344) - c2*(c044-c444) );
 
     // interpolate in j to create fine ij / coarse k points...
-    const double f00c0 = (f0c20 + c1*(f0c10-f0c30) + c2*(f0c00-f0c40) );
-    const double f10c0 = (f1c20 + c1*(f1c10-f1c30) + c2*(f1c00-f1c40) );
-    const double f01c0 = (f0c20 - c1*(f0c10-f0c30) - c2*(f0c00-f0c40) );
-    const double f11c0 = (f1c20 - c1*(f1c10-f1c30) - c2*(f1c00-f1c40) );
+    const float f00c0 = (f0c20 + c1*(f0c10-f0c30) + c2*(f0c00-f0c40) );
+    const float f10c0 = (f1c20 + c1*(f1c10-f1c30) + c2*(f1c00-f1c40) );
+    const float f01c0 = (f0c20 - c1*(f0c10-f0c30) - c2*(f0c00-f0c40) );
+    const float f11c0 = (f1c20 - c1*(f1c10-f1c30) - c2*(f1c00-f1c40) );
 
-    const double f00c1 = (f0c21 + c1*(f0c11-f0c31) + c2*(f0c01-f0c41) );
-    const double f10c1 = (f1c21 + c1*(f1c11-f1c31) + c2*(f1c01-f1c41) );
-    const double f01c1 = (f0c21 - c1*(f0c11-f0c31) - c2*(f0c01-f0c41) );
-    const double f11c1 = (f1c21 - c1*(f1c11-f1c31) - c2*(f1c01-f1c41) );
+    const float f00c1 = (f0c21 + c1*(f0c11-f0c31) + c2*(f0c01-f0c41) );
+    const float f10c1 = (f1c21 + c1*(f1c11-f1c31) + c2*(f1c01-f1c41) );
+    const float f01c1 = (f0c21 - c1*(f0c11-f0c31) - c2*(f0c01-f0c41) );
+    const float f11c1 = (f1c21 - c1*(f1c11-f1c31) - c2*(f1c01-f1c41) );
 
-    const double f00c2 = (f0c22 + c1*(f0c12-f0c32) + c2*(f0c02-f0c42) );
-    const double f10c2 = (f1c22 + c1*(f1c12-f1c32) + c2*(f1c02-f1c42) );
-    const double f01c2 = (f0c22 - c1*(f0c12-f0c32) - c2*(f0c02-f0c42) );
-    const double f11c2 = (f1c22 - c1*(f1c12-f1c32) - c2*(f1c02-f1c42) );
+    const float f00c2 = (f0c22 + c1*(f0c12-f0c32) + c2*(f0c02-f0c42) );
+    const float f10c2 = (f1c22 + c1*(f1c12-f1c32) + c2*(f1c02-f1c42) );
+    const float f01c2 = (f0c22 - c1*(f0c12-f0c32) - c2*(f0c02-f0c42) );
+    const float f11c2 = (f1c22 - c1*(f1c12-f1c32) - c2*(f1c02-f1c42) );
 
-    const double f00c3 = (f0c23 + c1*(f0c13-f0c33) + c2*(f0c03-f0c43) );
-    const double f10c3 = (f1c23 + c1*(f1c13-f1c33) + c2*(f1c03-f1c43) );
-    const double f01c3 = (f0c23 - c1*(f0c13-f0c33) - c2*(f0c03-f0c43) );
-    const double f11c3 = (f1c23 - c1*(f1c13-f1c33) - c2*(f1c03-f1c43) );
+    const float f00c3 = (f0c23 + c1*(f0c13-f0c33) + c2*(f0c03-f0c43) );
+    const float f10c3 = (f1c23 + c1*(f1c13-f1c33) + c2*(f1c03-f1c43) );
+    const float f01c3 = (f0c23 - c1*(f0c13-f0c33) - c2*(f0c03-f0c43) );
+    const float f11c3 = (f1c23 - c1*(f1c13-f1c33) - c2*(f1c03-f1c43) );
 
-    const double f00c4 = (f0c24 + c1*(f0c14-f0c34) + c2*(f0c04-f0c44) );
-    const double f10c4 = (f1c24 + c1*(f1c14-f1c34) + c2*(f1c04-f1c44) );
-    const double f01c4 = (f0c24 - c1*(f0c14-f0c34) - c2*(f0c04-f0c44) );
-    const double f11c4 = (f1c24 - c1*(f1c14-f1c34) - c2*(f1c04-f1c44) );
+    const float f00c4 = (f0c24 + c1*(f0c14-f0c34) + c2*(f0c04-f0c44) );
+    const float f10c4 = (f1c24 + c1*(f1c14-f1c34) + c2*(f1c04-f1c44) );
+    const float f01c4 = (f0c24 - c1*(f0c14-f0c34) - c2*(f0c04-f0c44) );
+    const float f11c4 = (f1c24 - c1*(f1c14-f1c34) - c2*(f1c04-f1c44) );
 
     // interpolate in k to create fine ijk points...
-    const double f000 = (f00c2 + c1*(f00c1-f00c3) + c2*(f00c0-f00c4) );
-    const double f100 = (f10c2 + c1*(f10c1-f10c3) + c2*(f10c0-f10c4) );
-    const double f010 = (f01c2 + c1*(f01c1-f01c3) + c2*(f01c0-f01c4) );
-    const double f110 = (f11c2 + c1*(f11c1-f11c3) + c2*(f11c0-f11c4) );
-    const double f001 = (f00c2 - c1*(f00c1-f00c3) - c2*(f00c0-f00c4) );
-    const double f101 = (f10c2 - c1*(f10c1-f10c3) - c2*(f10c0-f10c4) );
-    const double f011 = (f01c2 - c1*(f01c1-f01c3) - c2*(f01c0-f01c4) );
-    const double f111 = (f11c2 - c1*(f11c1-f11c3) - c2*(f11c0-f11c4) );
+    const float f000 = (f00c2 + c1*(f00c1-f00c3) + c2*(f00c0-f00c4) );
+    const float f100 = (f10c2 + c1*(f10c1-f10c3) + c2*(f10c0-f10c4) );
+    const float f010 = (f01c2 + c1*(f01c1-f01c3) + c2*(f01c0-f01c4) );
+    const float f110 = (f11c2 + c1*(f11c1-f11c3) + c2*(f11c0-f11c4) );
+    const float f001 = (f00c2 - c1*(f00c1-f00c3) - c2*(f00c0-f00c4) );
+    const float f101 = (f10c2 - c1*(f10c1-f10c3) - c2*(f10c0-f10c4) );
+    const float f011 = (f01c2 - c1*(f01c1-f01c3) - c2*(f01c0-f01c4) );
+    const float f111 = (f11c2 - c1*(f11c1-f11c3) - c2*(f11c0-f11c4) );
 
     // commit to memory...
     write[write_ijk                              ] = prescale_f*write[write_ijk                              ] + f000;
@@ -250,12 +250,12 @@ static inline void interpolation_v4_block(level_type *level_f, int id_f, double 
 //------------------------------------------------------------------------------------------------------------------------------
 // perform a (inter-level) volumetric quartic interpolation on vector id_c of the coarse level and increments prescale_f*vector id_f on the fine level by the result
 // i.e. id_f = prescale_f*id_f + P*id_c
-// prescale_f is nominally 1.0 or 0.0
+// prescale_f is nominally 1.0f or 0.0
 // quartic interpolation requires a full ghost zone exchange and boundary condition
 // This is a rather bulk synchronous implementation which packs all MPI buffers before initiating any sends
 // Similarly, it waits for all remote data before copying any into local boxes.
 // It does however attempt to overlap local interpolation with MPI
-void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){
+void interpolation_v4(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){
     exchange_boundary(level_c,id_c,STENCIL_SHAPE_BOX);
          apply_BCs_v4(level_c,id_c,STENCIL_SHAPE_BOX);
 
@@ -282,7 +282,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_f->interpolation.num_recvs;n++){
       MPI_Irecv(level_f->interpolation.recv_buffers[n],
                 level_f->interpolation.recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_f->interpolation.recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -290,7 +290,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
       );
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_recv += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_recv += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -298,18 +298,18 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
   if(level_c->interpolation.num_blocks[0]>0){
     _timeStart = getTime();
     if(level_c->use_cuda) {
-      cuda_interpolation_v4(*level_f,id_f,0.0,*level_c,id_c,level_c->interpolation,0);
+      cuda_interpolation_v4(*level_f,id_f,0.0f,*level_c,id_c,level_c->interpolation,0);
       CUCHK( cudaDeviceSynchronize() );  // synchronize so that CPU can see updated buffers
     }
     else {
     PRAGMA_THREAD_ACROSS_BLOCKS(level_f,buffer,level_c->interpolation.num_blocks[0])
     for(buffer=0;buffer<level_c->interpolation.num_blocks[0];buffer++){
       // !!! prescale==0 because you don't want to increment the MPI buffer
-      interpolation_v4_block(level_f,id_f,0.0,level_c,id_c,&level_c->interpolation.blocks[0][buffer]);
+      interpolation_v4_block(level_f,id_f,0.0f,level_c,id_c,&level_c->interpolation.blocks[0][buffer]);
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_pack += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_pack += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -322,7 +322,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_c->interpolation.num_sends;n++){
       MPI_Isend(level_c->interpolation.send_buffers[n],
                 level_c->interpolation.send_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_c->interpolation.send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -330,7 +330,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
       );
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_send += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_send += (double)(_timeEnd-_timeStart);
   }
   #endif
 
@@ -348,7 +348,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_local += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_local += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -361,7 +361,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
     CUCHK( cudaDeviceSynchronize() );
   #endif
     _timeEnd = getTime();
-    level_f->timers.interpolation_wait += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_wait += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -378,7 +378,7 @@ void interpolation_v4(level_type * level_f, int id_f, double prescale_f, level_t
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_unpack += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_unpack += (double)(_timeEnd-_timeStart);
   }
   #endif 
  

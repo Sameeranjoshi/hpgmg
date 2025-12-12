@@ -3,14 +3,14 @@
 // SWWilliams@lbl.gov
 // Lawrence Berkeley National Lab
 //------------------------------------------------------------------------------------------------------------------------------
-// Based on Yousef Saad's Iterative Methods for Sparse Linear Algebra, Algorithm 12.1, page 399
+// Based on Yousef Saad's Iterative Methods for Sparse Linear Algebra, Algorithm 12.1f, page 399
 //------------------------------------------------------------------------------------------------------------------------------
-void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
+void smooth(level_type * level, int x_id, int rhs_id, float a, float b){
   if((CHEBYSHEV_DEGREE*NUM_SMOOTHS)&1){
     fprintf(stderr,"error... CHEBYSHEV_DEGREE*NUM_SMOOTHS must be even for the chebyshev smoother...\n");
     exit(0);
   }
-  if( (level->dominant_eigenvalue_of_DinvA<=0.0) && (level->my_rank==0) )fprintf(stderr,"dominant_eigenvalue_of_DinvA <= 0.0 !\n");
+  if( (level->dominant_eigenvalue_of_DinvA<=0.0f) && (level->my_rank==0) )fprintf(stderr,"dominant_eigenvalue_of_DinvA <= 0.0f !\n");
 
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -19,38 +19,38 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
 
   int compute_c1_c2 = 0;
   // allocate heap memory for coefficients
-  if (level->chebyshev_c1 == NULL) { level->chebyshev_c1 = (double*)um_malloc(CHEBYSHEV_DEGREE * sizeof(double), level->um_access_policy); compute_c1_c2 = 1; }
-  if (level->chebyshev_c2 == NULL) { level->chebyshev_c2 = (double*)um_malloc(CHEBYSHEV_DEGREE * sizeof(double), level->um_access_policy); compute_c1_c2 = 1; }
+  if (level->chebyshev_c1 == NULL) { level->chebyshev_c1 = (float*)um_malloc(CHEBYSHEV_DEGREE * sizeof(float), level->um_access_policy); compute_c1_c2 = 1; }
+  if (level->chebyshev_c2 == NULL) { level->chebyshev_c2 = (float*)um_malloc(CHEBYSHEV_DEGREE * sizeof(float), level->um_access_policy); compute_c1_c2 = 1; }
 
   // compute the Chebyshev coefficients...
-  double beta     = 1.000*level->dominant_eigenvalue_of_DinvA;
-//double alpha    = 0.300000*beta;
-//double alpha    = 0.250000*beta;
-//double alpha    = 0.166666*beta;
-  double alpha    = 0.125000*beta;
-  double theta    = 0.5*(beta+alpha);		// center of the spectral ellipse
-  double delta    = 0.5*(beta-alpha);		// major axis?
-  double sigma = theta/delta;
-  double rho_n = 1/sigma;			// rho_0
+  float beta     = 1.000f*level->dominant_eigenvalue_of_DinvA;
+//float alpha    = 0.300000f*beta;
+//float alpha    = 0.250000f*beta;
+//float alpha    = 0.166666f*beta;
+  float alpha    = 0.125000f*beta;
+  float theta    = 0.5f*(beta+alpha);		// center of the spectral ellipse
+  float delta    = 0.5f*(beta-alpha);		// major axis?
+  float sigma = theta/delta;
+  float rho_n = 1/sigma;			// rho_0
 #ifdef CUDA_UM_ALLOC
-  double *chebyshev_c1 = level->chebyshev_c1;	// + c1*(x_n-x_nm1) == rho_n*rho_nm1
-  double *chebyshev_c2 = level->chebyshev_c2;	// + c2*(b-Ax_n)
+  float *chebyshev_c1 = level->chebyshev_c1;	// + c1*(x_n-x_nm1) == rho_n*rho_nm1
+  float *chebyshev_c2 = level->chebyshev_c2;	// + c2*(b-Ax_n)
 #else
-  double chebyshev_c1[CHEBYSHEV_DEGREE];	// + c1*(x_n-x_nm1) == rho_n*rho_nm1
-  double chebyshev_c2[CHEBYSHEV_DEGREE];	// + c2*(b-Ax_n)
+  float chebyshev_c1[CHEBYSHEV_DEGREE];	// + c1*(x_n-x_nm1) == rho_n*rho_nm1
+  float chebyshev_c2[CHEBYSHEV_DEGREE];	// + c2*(b-Ax_n)
 #endif
   // compute coefficients only once if using gpu for this level
   if (!level->use_cuda || compute_c1_c2) {
     // make sure GPU is not running any tasks, as we cannot access managed memory concurrently on Kepler
     CUCHK( cudaDeviceSynchronize() );  			
     // now compute coefficients on cpu
-    chebyshev_c1[0] = 0.0;
+    chebyshev_c1[0] = 0.0f;
     chebyshev_c2[0] = 1/theta;
     for(s=1;s<CHEBYSHEV_DEGREE;s++){
-      double rho_nm1 = rho_n;
-      rho_n = 1.0/(2.0*sigma - rho_nm1);
+      float rho_nm1 = rho_n;
+      rho_n = 1.0f/(2.0f*sigma - rho_nm1);
       chebyshev_c1[s] = rho_n*rho_nm1;
-      chebyshev_c2[s] = rho_n*2.0/delta;
+      chebyshev_c2[s] = rho_n*2.0f/delta;
     }
   }
 
@@ -80,26 +80,26 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
       const int ghosts = level->box_ghosts;
       const int jStride = level->my_boxes[box].jStride;
       const int kStride = level->my_boxes[box].kStride;
-      const double h2inv = 1.0/(level->h*level->h);
-      const double * __restrict__ rhs      = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ alpha    = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_i   = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_j   = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ beta_k   = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ Dinv     = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
-      const double * __restrict__ valid    = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
+      const float h2inv = 1.0f/(level->h*level->h);
+      const float * __restrict__ rhs      = level->my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ alpha    = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ beta_i   = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ beta_j   = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ beta_k   = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ Dinv     = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
+      const float * __restrict__ valid    = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride); // cell is inside the domain
 
-            double * __restrict__ x_np1;
-      const double * __restrict__ x_n;
-      const double * __restrict__ x_nm1;
+            float * __restrict__ x_np1;
+      const float * __restrict__ x_n;
+      const float * __restrict__ x_nm1;
                        if((s&1)==0){x_n    = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);
                                     x_nm1  = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride); 
                                     x_np1  = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);}
                                else{x_n    = level->my_boxes[box].vectors[VECTOR_TEMP  ] + ghosts*(1+jStride+kStride);
                                     x_nm1  = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride); 
                                     x_np1  = level->my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride);}
-      const double c1 = chebyshev_c1[s%CHEBYSHEV_DEGREE]; // limit polynomial to degree CHEBYSHEV_DEGREE.
-      const double c2 = chebyshev_c2[s%CHEBYSHEV_DEGREE]; // limit polynomial to degree CHEBYSHEV_DEGREE.
+      const float c1 = chebyshev_c1[s%CHEBYSHEV_DEGREE]; // limit polynomial to degree CHEBYSHEV_DEGREE.
+      const float c2 = chebyshev_c2[s%CHEBYSHEV_DEGREE]; // limit polynomial to degree CHEBYSHEV_DEGREE.
 
       for(k=klo;k<khi;k++){
       for(j=jlo;j<jhi;j++){
@@ -108,8 +108,8 @@ void smooth(level_type * level, int x_id, int rhs_id, double a, double b){
         // According to Saad... but his was missing a Dinv[ijk] == D^{-1} !!!
         //  x_{n+1} = x_{n} + rho_{n} [ rho_{n-1}(x_{n} - x_{n-1}) + (2/delta)(b-Ax_{n}) ]
         //  x_temp[ijk] = x_n[ijk] + c1*(x_n[ijk]-x_temp[ijk]) + c2*Dinv[ijk]*(rhs[ijk]-Ax_n);
-        const double Ax_n   = apply_op_ijk(x_n);
-        const double lambda =     Dinv_ijk();
+        const float Ax_n   = apply_op_ijk(x_n);
+        const float lambda =     Dinv_ijk();
         x_np1[ijk] = x_n[ijk] + c1*(x_n[ijk]-x_nm1[ijk]) + c2*lambda*(rhs[ijk]-Ax_n);
       }}}
 

@@ -29,7 +29,7 @@
 #define READ(i)	__ldg(&read[i])
 
 template<int log_dim, int block_type>
-__global__ void interpolation_p0_kernel(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation)
+__global__ void interpolation_p0_kernel(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation)
 {
   // one CUDA thread block operates on one HPGMG tile/block
   blockCopy_type block = interpolation.blocks[block_type][blockIdx.z];
@@ -56,8 +56,8 @@ __global__ void interpolation_p0_kernel(level_type level_f, int id_f, double pre
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  float * __restrict__  read = block.read.ptr;
+  float * __restrict__ write = block.write.ptr;
 
   if(block.read.box >=0){
      read = level_c.my_boxes[ block.read.box].vectors[id_c] + level_c.my_boxes[ block.read.box].ghosts*(1+level_c.my_boxes[ block.read.box].jStride+level_c.my_boxes[ block.read.box].kStride);
@@ -74,7 +74,7 @@ __global__ void interpolation_p0_kernel(level_type level_f, int id_f, double pre
     int write_ijk = ((i  )+write_i) + (((j  )+write_j)*write_jStride) + (((k  )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
 
-    double rval = READ(read_ijk);
+    float rval = READ(read_ijk);
 
     write[write_ijk] = prescale_f*write[write_ijk] + rval;
     
@@ -90,7 +90,7 @@ __global__ void interpolation_p0_kernel(level_type level_f, int id_f, double pre
 }
 
 template<int log_dim, int block_type>
-__global__ void interpolation_p1_kernel(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation)
+__global__ void interpolation_p1_kernel(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation)
 {
   // one CUDA thread block operates on one HPGMG tile/block
   blockCopy_type block = interpolation.blocks[block_type][blockIdx.z];
@@ -117,8 +117,8 @@ __global__ void interpolation_p1_kernel(level_type level_f, int id_f, double pre
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  float * __restrict__  read = block.read.ptr;
+  float * __restrict__ write = block.write.ptr;
 
   if(block.read.box >=0){
      read = level_c.my_boxes[ block.read.box].vectors[id_c] + level_c.my_boxes[ block.read.box].ghosts*(1+level_c.my_boxes[ block.read.box].jStride+level_c.my_boxes[ block.read.box].kStride);
@@ -139,37 +139,37 @@ __global__ void interpolation_p1_kernel(level_type level_f, int id_f, double pre
     int delta_j=-read_jStride;//if(j&0x1)delta_j=read_jStride;
     int delta_k=-read_kStride;//if(k&0x1)delta_k=read_kStride;
 
-    double r1 = READ(read_ijk                        );
-    double r2 = READ(read_ijk                +delta_k);
-    double r3 = READ(read_ijk        +delta_j        );
-    double r4 = READ(read_ijk        +delta_j+delta_k);
-    double r5 = READ(read_ijk+delta_i                );
-    double r6 = READ(read_ijk+delta_i        +delta_k);
-    double r7 = READ(read_ijk+delta_i+delta_j        );
-    double r8 = READ(read_ijk+delta_i+delta_j+delta_k);
+    float r1 = READ(read_ijk                        );
+    float r2 = READ(read_ijk                +delta_k);
+    float r3 = READ(read_ijk        +delta_j        );
+    float r4 = READ(read_ijk        +delta_j+delta_k);
+    float r5 = READ(read_ijk+delta_i                );
+    float r6 = READ(read_ijk+delta_i        +delta_k);
+    float r7 = READ(read_ijk+delta_i+delta_j        );
+    float r8 = READ(read_ijk+delta_i+delta_j+delta_k);
 
     // i  j  k
-    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875*r1 + 0.140625*r2 + 0.140625*r3 + 0.046875*r4 + 0.140625*r5 + 0.046875*r6 + 0.046875*r7 + 0.015625*r8;
+    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875f*r1 + 0.140625f*r2 + 0.140625f*r3 + 0.046875f*r4 + 0.140625f*r5 + 0.046875f*r6 + 0.046875f*r7 + 0.015625f*r8;
 
     // i  j  k+1
     write_ijk = ((i  )+write_i) + (((j  )+write_j)*write_jStride) + (((k+1)+write_k)*write_kStride);
     delta_j=-read_jStride;
     delta_k=read_kStride;
-    double r2k = READ(read_ijk                +delta_k);
+    float r2k = READ(read_ijk                +delta_k);
             r4 = READ(read_ijk        +delta_j+delta_k);
-    double r6k = READ(read_ijk+delta_i        +delta_k);
+    float r6k = READ(read_ijk+delta_i        +delta_k);
             r8 = READ(read_ijk+delta_i+delta_j+delta_k);
-    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875*r1 + 0.140625*r2k+ 0.140625*r3 + 0.046875*r4 + 0.140625*r5 + 0.046875*r6k+ 0.046875*r7 + 0.015625*r8;
+    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875f*r1 + 0.140625f*r2k+ 0.140625f*r3 + 0.046875f*r4 + 0.140625f*r5 + 0.046875f*r6k+ 0.046875f*r7 + 0.015625f*r8;
 
     // i  j+1  k
     write_ijk = ((i  )+write_i) + (((j+1)+write_j)*write_jStride) + (((k  )+write_k)*write_kStride);
     delta_j=read_jStride;
     delta_k=-read_kStride;
-    double r3j = READ(read_ijk        +delta_j        );
+    float r3j = READ(read_ijk        +delta_j        );
             r4 = READ(read_ijk        +delta_j+delta_k);
-    double r7j = READ(read_ijk+delta_i+delta_j        );
+    float r7j = READ(read_ijk+delta_i+delta_j        );
             r8 = READ(read_ijk+delta_i+delta_j+delta_k);
-    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875*r1 + 0.140625*r2 + 0.140625*r3j+ 0.046875*r4 + 0.140625*r5 + 0.046875*r6 + 0.046875*r7j+ 0.015625*r8;
+    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875f*r1 + 0.140625f*r2 + 0.140625f*r3j+ 0.046875f*r4 + 0.140625f*r5 + 0.046875f*r6 + 0.046875f*r7j+ 0.015625f*r8;
 
     // i  j+1  k+1
     write_ijk = ((i  )+write_i) + (((j+1)+write_j)*write_jStride) + (((k+1)+write_k)*write_kStride);
@@ -177,7 +177,7 @@ __global__ void interpolation_p1_kernel(level_type level_f, int id_f, double pre
     delta_k=read_kStride;
             r4 = READ(read_ijk        +delta_j+delta_k);
             r8 = READ(read_ijk+delta_i+delta_j+delta_k);
-    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875*r1 + 0.140625*r2k+ 0.140625*r3j+ 0.046875*r4 + 0.140625*r5 + 0.046875*r6k+ 0.046875*r7j+ 0.015625*r8;
+    write[write_ijk] = prescale_f*write[write_ijk] + 0.421875f*r1 + 0.140625f*r2k+ 0.140625f*r3j+ 0.046875f*r4 + 0.140625f*r5 + 0.046875f*r6k+ 0.046875f*r7j+ 0.015625f*r8;
   }
 }
 #undef  KERNEL
@@ -185,13 +185,13 @@ __global__ void interpolation_p1_kernel(level_type level_f, int id_f, double pre
   interpolation_p0_kernel<log_dim,block_type><<<grid,block>>>(level_f,id_f,prescale_f,level_c,id_c,interpolation);
 
 extern "C"
-void cuda_interpolation_p0(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
+void cuda_interpolation_p0(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
 {
   int num_blocks = interpolation.num_blocks[block_type]; if(num_blocks<=0) return;
   dim3 block = dim3(min(level_f.box_dim,BLOCKCOPY_TILE_I), BLOCKCOPY_TILE_J, 1);
   dim3 grid = dim3((level_f.box_dim+block.x-1)/block.x, 1, num_blocks);
 
-  int log_dim = (int)log2((double)level_f.dim.i);
+  int log_dim = (int)log2f((float)level_f.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim,0); CUDA_ERROR break;
     case 1: KERNEL_LEVEL(log_dim,1); CUDA_ERROR break;
@@ -204,13 +204,13 @@ void cuda_interpolation_p0(level_type level_f, int id_f, double prescale_f, leve
   interpolation_p1_kernel<log_dim,block_type><<<grid,block>>>(level_f,id_f,prescale_f,level_c,id_c,interpolation);
 
 extern "C"
-void cuda_interpolation_pl(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
+void cuda_interpolation_pl(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
 {
   int num_blocks = interpolation.num_blocks[block_type]; if(num_blocks<=0) return;
   dim3 block = dim3(min(level_f.box_dim,BLOCKCOPY_TILE_I), BLOCKCOPY_TILE_J, 1);
   dim3 grid = dim3((level_f.box_dim+block.x-1)/block.x, 1, num_blocks);
 
-  int log_dim = (int)log2((double)level_f.dim.i);
+  int log_dim = (int)log2f((float)level_f.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim,0); CUDA_ERROR break;
     case 1: KERNEL_LEVEL(log_dim,1); CUDA_ERROR break;

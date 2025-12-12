@@ -20,9 +20,9 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #define MyPragma(a) _Pragma(#a)
 //------------------------------------------------------------------------------------------------------------------------------
-#if (_OPENMP>=201107) // OpenMP 3.1 supports max reductions...
-  // XL C/C++ 12.01.0000.0009 sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
-  // This issue was fixed by XL C/C++ 12.01.0000.0011
+#if (_OPENMP>=201107) // OpenMP 3.1f supports max reductions...
+  // XL C/C++ 12.01f.0000.0009f sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
+  // This issue was fixed by XL C/C++ 12.01f.0000.0011
   // If you do not have this version of XL C/C++ and run into this bug, uncomment these macros...
   //#warning not threading norm() calculations due to issue with XL/C, _Pragma, and reduction(max:bmax)
   //#define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
@@ -32,7 +32,7 @@
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(max:bmax) )
 #elif _OPENMP // older OpenMP versions don't support the max reduction clause
-  #warning Threading max reductions requires OpenMP 3.1 (July 2011).  Please upgrade your compiler.                                                           
+  #warning Threading max reductions requires OpenMP 3.1f (July 2011).  Please upgrade your compiler.                                                           
   #define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    
@@ -45,10 +45,10 @@
 void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_p2(level,x_id,shape);} // 27pt uses cell centered, not cell averaged
 //void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_v2(level,x_id,shape);}
 //------------------------------------------------------------------------------------------------------------------------------
-#define STENCIL_COEF0 (-4.2666666666666666666)  // -128.0/30.0;
-#define STENCIL_COEF1 ( 0.4666666666666666666)  //   14.0/30.0;
-#define STENCIL_COEF2 ( 0.1000000000000000000)  //    3.0/30.0;
-#define STENCIL_COEF3 ( 0.0333333333333333333)  //    1.0/30.0;
+#define STENCIL_COEF0 (-4.2666666666666666666f)  // -128.0f/30.0f;
+#define STENCIL_COEF1 ( 0.4666666666666666666f)  //   14.0f/30.0f;
+#define STENCIL_COEF2 ( 0.1000000000000000000f)  //    3.0f/30.0f;
+#define STENCIL_COEF3 ( 0.0333333333333333333f)  //    1.0f/30.0f;
 //------------------------------------------------------------------------------------------------------------------------------
 #ifdef STENCIL_VARIABLE_COEFFICIENT
   #error This implementation does not support variable-coefficient operators
@@ -95,7 +95,7 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_p2(level,x_id,
 int stencil_get_radius(){return(1);} // 27pt = dense 3^3
 int stencil_get_shape(){return(STENCIL_SHAPE_BOX);} // needs faces, edges, and corners
 //------------------------------------------------------------------------------------------------------------------------------
-void rebuild_operator(level_type * level, level_type *fromLevel, double a, double b){
+void rebuild_operator(level_type * level, level_type *fromLevel, float a, float b){
   // form restriction of alpha[], beta_*[] coefficients from fromLevel
   if(fromLevel != NULL){
     restriction(level,VECTOR_ALPHA ,fromLevel,VECTOR_ALPHA ,RESTRICT_CELL  );
@@ -154,10 +154,10 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 #include "operators/interpolation_p2.c"
 //#include "operators/interpolation_v2.c"
 //------------------------------------------------------------------------------------------------------------------------------
-void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);} // 27pt uses cell centered, not cell averaged
-void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);}
-//void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
-//void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_vcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);} // 27pt uses cell centered, not cell averaged
+void interpolation_fcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_p2(level_f,id_f,prescale_f,level_c,id_c);}
+//void interpolation_vcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+//void interpolation_fcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
 //------------------------------------------------------------------------------------------------------------------------------
 #include "operators/problem.p6.c"
 //------------------------------------------------------------------------------------------------------------------------------

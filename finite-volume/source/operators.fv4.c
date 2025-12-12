@@ -23,9 +23,9 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #define MyPragma(a) _Pragma(#a)
 //------------------------------------------------------------------------------------------------------------------------------
-#if (_OPENMP>=201107) // OpenMP 3.1 supports max reductions...
-  // XL C/C++ 12.01.0000.0009 sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
-  // This issue was fixed by XL C/C++ 12.01.0000.0011
+#if (_OPENMP>=201107) // OpenMP 3.1f supports max reductions...
+  // XL C/C++ 12.01f.0000.0009f sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
+  // This issue was fixed by XL C/C++ 12.01f.0000.0011
   // If you do not have this version of XL C/C++ and run into this bug, uncomment these macros...
   //#warning not threading norm() calculations due to issue with XL/C, _Pragma, and reduction(max:bmax)
   //#define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
@@ -35,7 +35,7 @@
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(max:bmax) )
 #elif _OPENMP // older OpenMP versions don't support the max reduction clause
-  #warning Threading max reductions requires OpenMP 3.1 (July 2011).  Please upgrade your compiler.                                                           
+  #warning Threading max reductions requires OpenMP 3.1f (July 2011).  Please upgrade your compiler.                                                           
   #define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    
@@ -53,7 +53,7 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_v4(level,x_id,
 //------------------------------------------------------------------------------------------------------------------------------
 #define Dinv_ijk() Dinv[ijk]        // simply retrieve it rather than recalculating it
 //------------------------------------------------------------------------------------------------------------------------------
-#define STENCIL_TWELFTH ( 0.0833333333333333333)  // 1.0/12.0;
+#define STENCIL_TWELFTH ( 0.0833333333333333333f)  // 1.0f/12.0f;
 //------------------------------------------------------------------------------------------------------------------------------
 #ifdef STENCIL_VARIABLE_COEFFICIENT
   #ifdef USE_HELMHOLTZ
@@ -62,14 +62,14 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_v4(level,x_id,
     a*alpha[ijk]*x[ijk]                                                                                                                              \
    -b*h2inv*(                                                                                                                                        \
       STENCIL_TWELFTH*(                                                                                                                              \
-        + beta_i[ijk        ]*( 15.0*(x[ijk-1      ]-x[ijk]) - (x[ijk-2        ]-x[ijk+1      ]) )                                                   \
-        + beta_i[ijk+1      ]*( 15.0*(x[ijk+1      ]-x[ijk]) - (x[ijk+2        ]-x[ijk-1      ]) )                                                   \
-        + beta_j[ijk        ]*( 15.0*(x[ijk-jStride]-x[ijk]) - (x[ijk-2*jStride]-x[ijk+jStride]) )                                                   \
-        + beta_j[ijk+jStride]*( 15.0*(x[ijk+jStride]-x[ijk]) - (x[ijk+2*jStride]-x[ijk-jStride]) )                                                   \
-        + beta_k[ijk        ]*( 15.0*(x[ijk-kStride]-x[ijk]) - (x[ijk-2*kStride]-x[ijk+kStride]) )                                                   \
-        + beta_k[ijk+kStride]*( 15.0*(x[ijk+kStride]-x[ijk]) - (x[ijk+2*kStride]-x[ijk-kStride]) )                                                   \
+        + beta_i[ijk        ]*( 15.0f*(x[ijk-1      ]-x[ijk]) - (x[ijk-2        ]-x[ijk+1      ]) )                                                   \
+        + beta_i[ijk+1      ]*( 15.0f*(x[ijk+1      ]-x[ijk]) - (x[ijk+2        ]-x[ijk-1      ]) )                                                   \
+        + beta_j[ijk        ]*( 15.0f*(x[ijk-jStride]-x[ijk]) - (x[ijk-2*jStride]-x[ijk+jStride]) )                                                   \
+        + beta_j[ijk+jStride]*( 15.0f*(x[ijk+jStride]-x[ijk]) - (x[ijk+2*jStride]-x[ijk-jStride]) )                                                   \
+        + beta_k[ijk        ]*( 15.0f*(x[ijk-kStride]-x[ijk]) - (x[ijk-2*kStride]-x[ijk+kStride]) )                                                   \
+        + beta_k[ijk+kStride]*( 15.0f*(x[ijk+kStride]-x[ijk]) - (x[ijk+2*kStride]-x[ijk-kStride]) )                                                   \
       )                                                                                                                                              \
-      + 0.25*STENCIL_TWELFTH*(                                                                                                                       \
+      + 0.25f*STENCIL_TWELFTH*(                                                                                                                       \
         + (beta_i[ijk        +jStride]-beta_i[ijk        -jStride]) * (x[ijk-1      +jStride]-x[ijk+jStride]-x[ijk-1      -jStride]+x[ijk-jStride])  \
         + (beta_i[ijk        +kStride]-beta_i[ijk        -kStride]) * (x[ijk-1      +kStride]-x[ijk+kStride]-x[ijk-1      -kStride]+x[ijk-kStride])  \
         + (beta_j[ijk        +1      ]-beta_j[ijk        -1      ]) * (x[ijk-jStride+1      ]-x[ijk+1      ]-x[ijk-jStride-1      ]+x[ijk-1      ])  \
@@ -91,14 +91,14 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_v4(level,x_id,
   (                                                                                                                                                  \
    -b*h2inv*(                                                                                                                                        \
       STENCIL_TWELFTH*(                                                                                                                              \
-        + beta_i[ijk        ]*( 15.0*(x[ijk-1      ]-x[ijk]) - (x[ijk-2        ]-x[ijk+1      ]) )                                                   \
-        + beta_i[ijk+1      ]*( 15.0*(x[ijk+1      ]-x[ijk]) - (x[ijk+2        ]-x[ijk-1      ]) )                                                   \
-        + beta_j[ijk        ]*( 15.0*(x[ijk-jStride]-x[ijk]) - (x[ijk-2*jStride]-x[ijk+jStride]) )                                                   \
-        + beta_j[ijk+jStride]*( 15.0*(x[ijk+jStride]-x[ijk]) - (x[ijk+2*jStride]-x[ijk-jStride]) )                                                   \
-        + beta_k[ijk        ]*( 15.0*(x[ijk-kStride]-x[ijk]) - (x[ijk-2*kStride]-x[ijk+kStride]) )                                                   \
-        + beta_k[ijk+kStride]*( 15.0*(x[ijk+kStride]-x[ijk]) - (x[ijk+2*kStride]-x[ijk-kStride]) )                                                   \
+        + beta_i[ijk        ]*( 15.0f*(x[ijk-1      ]-x[ijk]) - (x[ijk-2        ]-x[ijk+1      ]) )                                                   \
+        + beta_i[ijk+1      ]*( 15.0f*(x[ijk+1      ]-x[ijk]) - (x[ijk+2        ]-x[ijk-1      ]) )                                                   \
+        + beta_j[ijk        ]*( 15.0f*(x[ijk-jStride]-x[ijk]) - (x[ijk-2*jStride]-x[ijk+jStride]) )                                                   \
+        + beta_j[ijk+jStride]*( 15.0f*(x[ijk+jStride]-x[ijk]) - (x[ijk+2*jStride]-x[ijk-jStride]) )                                                   \
+        + beta_k[ijk        ]*( 15.0f*(x[ijk-kStride]-x[ijk]) - (x[ijk-2*kStride]-x[ijk+kStride]) )                                                   \
+        + beta_k[ijk+kStride]*( 15.0f*(x[ijk+kStride]-x[ijk]) - (x[ijk+2*kStride]-x[ijk-kStride]) )                                                   \
       )                                                                                                                                              \
-      + 0.25*STENCIL_TWELFTH*(                                                                                                                       \
+      + 0.25f*STENCIL_TWELFTH*(                                                                                                                       \
         + (beta_i[ijk        +jStride]-beta_i[ijk        -jStride]) * (x[ijk-1      +jStride]-x[ijk+jStride]-x[ijk-1      -jStride]+x[ijk-jStride])  \
         + (beta_i[ijk        +kStride]-beta_i[ijk        -kStride]) * (x[ijk-1      +kStride]-x[ijk+kStride]-x[ijk-1      -kStride]+x[ijk-kStride])  \
         + (beta_j[ijk        +1      ]-beta_j[ijk        -1      ]) * (x[ijk-jStride+1      ]-x[ijk+1      ]-x[ijk-jStride-1      ]+x[ijk-1      ])  \
@@ -120,19 +120,19 @@ void apply_BCs(level_type * level, int x_id, int shape){apply_BCs_v4(level,x_id,
   #define apply_op_ijk(x)                 \
   (                                       \
     a*x[ijk] - b*h2inv*STENCIL_TWELFTH*(  \
-       - 1.0*(x[ijk-2*kStride] +          \
+       - 1.0f*(x[ijk-2*kStride] +          \
               x[ijk-2*jStride] +          \
               x[ijk-2        ] +          \
               x[ijk+2        ] +          \
               x[ijk+2*jStride] +          \
               x[ijk+2*kStride] )          \
-       +16.0*(x[ijk  -kStride] +          \
+       +16.0f*(x[ijk  -kStride] +          \
               x[ijk  -jStride] +          \
               x[ijk  -1      ] +          \
               x[ijk  +1      ] +          \
               x[ijk  +jStride] +          \
               x[ijk  +kStride] )          \
-       -90.0*(x[ijk          ] )          \
+       -90.0f*(x[ijk          ] )          \
     )                                     \
   )
 #endif
@@ -145,7 +145,7 @@ int stencil_get_radius(){return(2);} // stencil reaches out 2 cells
 int stencil_get_shape(){return(STENCIL_SHAPE_STAR);} // needs just faces
 #endif
 //------------------------------------------------------------------------------------------------------------------------------
-void rebuild_operator(level_type * level, level_type *fromLevel, double a, double b){
+void rebuild_operator(level_type * level, level_type *fromLevel, float a, float b){
   // form restriction of alpha[], beta_*[] coefficients from fromLevel
   if(fromLevel != NULL){
     restriction(level,VECTOR_ALPHA ,fromLevel,VECTOR_ALPHA ,RESTRICT_CELL  );
@@ -207,8 +207,8 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 #include "operators/interpolation_v2.c"
 #include "operators/interpolation_v4.c"
 //------------------------------------------------------------------------------------------------------------------------------
-void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
-void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_v4(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_vcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_v2(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_fcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_v4(level_f,id_f,prescale_f,level_c,id_c);}
 //------------------------------------------------------------------------------------------------------------------------------
 #include "operators/problem.fv.c"
 //------------------------------------------------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@
 #define READ(i)	__ldg(&read[i])
 
 template<int log_dim, int block_type>
-__global__ void interpolation_v4_kernel(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation){
+__global__ void interpolation_v4_kernel(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation){
   // one CUDA thread block operates on one HPGMG tile/block
   blockCopy_type block = interpolation.blocks[block_type][blockIdx.z];
 
@@ -55,8 +55,8 @@ __global__ void interpolation_v4_kernel(level_type level_f, int id_f, double pre
   int write_jStride = block.write.jStride;
   int write_kStride = block.write.kStride;
 
-  double * __restrict__  read = block.read.ptr;
-  double * __restrict__ write = block.write.ptr;
+  float * __restrict__  read = block.read.ptr;
+  float * __restrict__ write = block.write.ptr;
   if(block.read.box >=0){
      read_jStride = level_c.my_boxes[block.read.box ].jStride;
      read_kStride = level_c.my_boxes[block.read.box ].kStride;
@@ -72,50 +72,50 @@ __global__ void interpolation_v4_kernel(level_type level_f, int id_f, double pre
 //  #ifdef USE_NAIVE_INTERP
   // naive 125pt per fine grid cell
   //int i,j,k;
-  double c2 = -3.0/128.0;
-  double c1 = 22.0/128.0;
+  float c2 = -3.0f/128.0f;
+  float c1 = 22.0f/128.0f;
   int dj  =   read_jStride;
   int dk  =   read_kStride;
   int dj2 = 2*read_jStride;
   int dk2 = 2*read_kStride;
   for(int k=0;k<write_dim_k;k+=2){
-    double sk1=c1,sk2=c2;//if(k&0x1){sk1=-c1;sk2=-c2;}
-    double sj1=c1,sj2=c2;//if(j&0x1){sj1=-c1;sj2=-c2;}
-    double si1=c1,si2=c2;if(i&0x1){si1=-c1;si2=-c2;}
+    float sk1=c1,sk2=c2;//if(k&0x1){sk1=-c1;sk2=-c2;}
+    float sj1=c1,sj2=c2;//if(j&0x1){sj1=-c1;sj2=-c2;}
+    float si1=c1,si2=c2;if(i&0x1){si1=-c1;si2=-c2;}
 
     int write_ijk = ((i   )+write_i) + (((j   )+write_j)*write_jStride) + (((k   )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
     //
-    // |   -3/128  |  +22/128  |    1.0    |  -22/128  |   +3/128  | coarse grid
+    // |   -3/128  |  +22/128  |    1.0f    |  -22/128  |   +3/128  | coarse grid
     // |-----+-----|-----+-----|-----+-----|-----+-----|-----+-----|
     // |     |     |     |     |?????|     |     |     |     |     | fine grid
     //
 
-    double r1  = si2*READ(read_ijk-2-dj2-dk2) + si1*READ(read_ijk-1-dj2-dk2) + READ(read_ijk-dj2-dk2) - si1*READ(read_ijk+1-dj2-dk2) - si2*READ(read_ijk+2-dj2-dk2);
-    double r2  = si2*READ(read_ijk-2-dj -dk2) + si1*READ(read_ijk-1-dj -dk2) + READ(read_ijk-dj -dk2) - si1*READ(read_ijk+1-dj -dk2) - si2*READ(read_ijk+2-dj -dk2);
-    double r3  = si2*READ(read_ijk-2    -dk2) + si1*READ(read_ijk-1    -dk2) + READ(read_ijk    -dk2) - si1*READ(read_ijk+1    -dk2) - si2*READ(read_ijk+2    -dk2);
-    double r4  = si2*READ(read_ijk-2+dj -dk2) + si1*READ(read_ijk-1+dj -dk2) + READ(read_ijk+dj -dk2) - si1*READ(read_ijk+1+dj -dk2) - si2*READ(read_ijk+2+dj -dk2);
-    double r5  = si2*READ(read_ijk-2+dj2-dk2) + si1*READ(read_ijk-1+dj2-dk2) + READ(read_ijk+dj2-dk2) - si1*READ(read_ijk+1+dj2-dk2) - si2*READ(read_ijk+2+dj2-dk2);
-    double r6  = si2*READ(read_ijk-2-dj2-dk ) + si1*READ(read_ijk-1-dj2-dk ) + READ(read_ijk-dj2-dk ) - si1*READ(read_ijk+1-dj2-dk ) - si2*READ(read_ijk+2-dj2-dk );
-    double r7  = si2*READ(read_ijk-2-dj -dk ) + si1*READ(read_ijk-1-dj -dk ) + READ(read_ijk-dj -dk ) - si1*READ(read_ijk+1-dj -dk ) - si2*READ(read_ijk+2-dj -dk );
-    double r8  = si2*READ(read_ijk-2    -dk ) + si1*READ(read_ijk-1    -dk ) + READ(read_ijk    -dk ) - si1*READ(read_ijk+1    -dk ) - si2*READ(read_ijk+2    -dk );
-    double r9  = si2*READ(read_ijk-2+dj -dk ) + si1*READ(read_ijk-1+dj -dk ) + READ(read_ijk+dj -dk ) - si1*READ(read_ijk+1+dj -dk ) - si2*READ(read_ijk+2+dj -dk );
-    double r10 = si2*READ(read_ijk-2+dj2-dk ) + si1*READ(read_ijk-1+dj2-dk ) + READ(read_ijk+dj2-dk ) - si1*READ(read_ijk+1+dj2-dk ) - si2*READ(read_ijk+2+dj2-dk );
-    double r11 = si2*READ(read_ijk-2-dj2    ) + si1*READ(read_ijk-1-dj2    ) + READ(read_ijk-dj2    ) - si1*READ(read_ijk+1-dj2    ) - si2*READ(read_ijk+2-dj2    );
-    double r12 = si2*READ(read_ijk-2-dj     ) + si1*READ(read_ijk-1-dj     ) + READ(read_ijk-dj     ) - si1*READ(read_ijk+1-dj     ) - si2*READ(read_ijk+2-dj     );
-    double r13 = si2*READ(read_ijk-2        ) + si1*READ(read_ijk-1        ) + READ(read_ijk        ) - si1*READ(read_ijk+1        ) - si2*READ(read_ijk+2        );
-    double r14 = si2*READ(read_ijk-2+dj     ) + si1*READ(read_ijk-1+dj     ) + READ(read_ijk+dj     ) - si1*READ(read_ijk+1+dj     ) - si2*READ(read_ijk+2+dj     );
-    double r15 = si2*READ(read_ijk-2+dj2    ) + si1*READ(read_ijk-1+dj2    ) + READ(read_ijk+dj2    ) - si1*READ(read_ijk+1+dj2    ) - si2*READ(read_ijk+2+dj2    );
-    double r16 = si2*READ(read_ijk-2-dj2+dk ) + si1*READ(read_ijk-1-dj2+dk ) + READ(read_ijk-dj2+dk ) - si1*READ(read_ijk+1-dj2+dk ) - si2*READ(read_ijk+2-dj2+dk );
-    double r17 = si2*READ(read_ijk-2-dj +dk ) + si1*READ(read_ijk-1-dj +dk ) + READ(read_ijk-dj +dk ) - si1*READ(read_ijk+1-dj +dk ) - si2*READ(read_ijk+2-dj +dk );
-    double r18 = si2*READ(read_ijk-2    +dk ) + si1*READ(read_ijk-1    +dk ) + READ(read_ijk    +dk ) - si1*READ(read_ijk+1    +dk ) - si2*READ(read_ijk+2    +dk );
-    double r19 = si2*READ(read_ijk-2+dj +dk ) + si1*READ(read_ijk-1+dj +dk ) + READ(read_ijk+dj +dk ) - si1*READ(read_ijk+1+dj +dk ) - si2*READ(read_ijk+2+dj +dk );
-    double r20 = si2*READ(read_ijk-2+dj2+dk ) + si1*READ(read_ijk-1+dj2+dk ) + READ(read_ijk+dj2+dk ) - si1*READ(read_ijk+1+dj2+dk ) - si2*READ(read_ijk+2+dj2+dk );
-    double r21 = si2*READ(read_ijk-2-dj2+dk2) + si1*READ(read_ijk-1-dj2+dk2) + READ(read_ijk-dj2+dk2) - si1*READ(read_ijk+1-dj2+dk2) - si2*READ(read_ijk+2-dj2+dk2);
-    double r22 = si2*READ(read_ijk-2-dj +dk2) + si1*READ(read_ijk-1-dj +dk2) + READ(read_ijk-dj +dk2) - si1*READ(read_ijk+1-dj +dk2) - si2*READ(read_ijk+2-dj +dk2);
-    double r23 = si2*READ(read_ijk-2    +dk2) + si1*READ(read_ijk-1    +dk2) + READ(read_ijk    +dk2) - si1*READ(read_ijk+1    +dk2) - si2*READ(read_ijk+2    +dk2);
-    double r24 = si2*READ(read_ijk-2+dj +dk2) + si1*READ(read_ijk-1+dj +dk2) + READ(read_ijk+dj +dk2) - si1*READ(read_ijk+1+dj +dk2) - si2*READ(read_ijk+2+dj +dk2);
-    double r25 = si2*READ(read_ijk-2+dj2+dk2) + si1*READ(read_ijk-1+dj2+dk2) + READ(read_ijk+dj2+dk2) - si1*READ(read_ijk+1+dj2+dk2) - si2*READ(read_ijk+2+dj2+dk2);
+    float r1  = si2*READ(read_ijk-2-dj2-dk2) + si1*READ(read_ijk-1-dj2-dk2) + READ(read_ijk-dj2-dk2) - si1*READ(read_ijk+1-dj2-dk2) - si2*READ(read_ijk+2-dj2-dk2);
+    float r2  = si2*READ(read_ijk-2-dj -dk2) + si1*READ(read_ijk-1-dj -dk2) + READ(read_ijk-dj -dk2) - si1*READ(read_ijk+1-dj -dk2) - si2*READ(read_ijk+2-dj -dk2);
+    float r3  = si2*READ(read_ijk-2    -dk2) + si1*READ(read_ijk-1    -dk2) + READ(read_ijk    -dk2) - si1*READ(read_ijk+1    -dk2) - si2*READ(read_ijk+2    -dk2);
+    float r4  = si2*READ(read_ijk-2+dj -dk2) + si1*READ(read_ijk-1+dj -dk2) + READ(read_ijk+dj -dk2) - si1*READ(read_ijk+1+dj -dk2) - si2*READ(read_ijk+2+dj -dk2);
+    float r5  = si2*READ(read_ijk-2+dj2-dk2) + si1*READ(read_ijk-1+dj2-dk2) + READ(read_ijk+dj2-dk2) - si1*READ(read_ijk+1+dj2-dk2) - si2*READ(read_ijk+2+dj2-dk2);
+    float r6  = si2*READ(read_ijk-2-dj2-dk ) + si1*READ(read_ijk-1-dj2-dk ) + READ(read_ijk-dj2-dk ) - si1*READ(read_ijk+1-dj2-dk ) - si2*READ(read_ijk+2-dj2-dk );
+    float r7  = si2*READ(read_ijk-2-dj -dk ) + si1*READ(read_ijk-1-dj -dk ) + READ(read_ijk-dj -dk ) - si1*READ(read_ijk+1-dj -dk ) - si2*READ(read_ijk+2-dj -dk );
+    float r8  = si2*READ(read_ijk-2    -dk ) + si1*READ(read_ijk-1    -dk ) + READ(read_ijk    -dk ) - si1*READ(read_ijk+1    -dk ) - si2*READ(read_ijk+2    -dk );
+    float r9  = si2*READ(read_ijk-2+dj -dk ) + si1*READ(read_ijk-1+dj -dk ) + READ(read_ijk+dj -dk ) - si1*READ(read_ijk+1+dj -dk ) - si2*READ(read_ijk+2+dj -dk );
+    float r10 = si2*READ(read_ijk-2+dj2-dk ) + si1*READ(read_ijk-1+dj2-dk ) + READ(read_ijk+dj2-dk ) - si1*READ(read_ijk+1+dj2-dk ) - si2*READ(read_ijk+2+dj2-dk );
+    float r11 = si2*READ(read_ijk-2-dj2    ) + si1*READ(read_ijk-1-dj2    ) + READ(read_ijk-dj2    ) - si1*READ(read_ijk+1-dj2    ) - si2*READ(read_ijk+2-dj2    );
+    float r12 = si2*READ(read_ijk-2-dj     ) + si1*READ(read_ijk-1-dj     ) + READ(read_ijk-dj     ) - si1*READ(read_ijk+1-dj     ) - si2*READ(read_ijk+2-dj     );
+    float r13 = si2*READ(read_ijk-2        ) + si1*READ(read_ijk-1        ) + READ(read_ijk        ) - si1*READ(read_ijk+1        ) - si2*READ(read_ijk+2        );
+    float r14 = si2*READ(read_ijk-2+dj     ) + si1*READ(read_ijk-1+dj     ) + READ(read_ijk+dj     ) - si1*READ(read_ijk+1+dj     ) - si2*READ(read_ijk+2+dj     );
+    float r15 = si2*READ(read_ijk-2+dj2    ) + si1*READ(read_ijk-1+dj2    ) + READ(read_ijk+dj2    ) - si1*READ(read_ijk+1+dj2    ) - si2*READ(read_ijk+2+dj2    );
+    float r16 = si2*READ(read_ijk-2-dj2+dk ) + si1*READ(read_ijk-1-dj2+dk ) + READ(read_ijk-dj2+dk ) - si1*READ(read_ijk+1-dj2+dk ) - si2*READ(read_ijk+2-dj2+dk );
+    float r17 = si2*READ(read_ijk-2-dj +dk ) + si1*READ(read_ijk-1-dj +dk ) + READ(read_ijk-dj +dk ) - si1*READ(read_ijk+1-dj +dk ) - si2*READ(read_ijk+2-dj +dk );
+    float r18 = si2*READ(read_ijk-2    +dk ) + si1*READ(read_ijk-1    +dk ) + READ(read_ijk    +dk ) - si1*READ(read_ijk+1    +dk ) - si2*READ(read_ijk+2    +dk );
+    float r19 = si2*READ(read_ijk-2+dj +dk ) + si1*READ(read_ijk-1+dj +dk ) + READ(read_ijk+dj +dk ) - si1*READ(read_ijk+1+dj +dk ) - si2*READ(read_ijk+2+dj +dk );
+    float r20 = si2*READ(read_ijk-2+dj2+dk ) + si1*READ(read_ijk-1+dj2+dk ) + READ(read_ijk+dj2+dk ) - si1*READ(read_ijk+1+dj2+dk ) - si2*READ(read_ijk+2+dj2+dk );
+    float r21 = si2*READ(read_ijk-2-dj2+dk2) + si1*READ(read_ijk-1-dj2+dk2) + READ(read_ijk-dj2+dk2) - si1*READ(read_ijk+1-dj2+dk2) - si2*READ(read_ijk+2-dj2+dk2);
+    float r22 = si2*READ(read_ijk-2-dj +dk2) + si1*READ(read_ijk-1-dj +dk2) + READ(read_ijk-dj +dk2) - si1*READ(read_ijk+1-dj +dk2) - si2*READ(read_ijk+2-dj +dk2);
+    float r23 = si2*READ(read_ijk-2    +dk2) + si1*READ(read_ijk-1    +dk2) + READ(read_ijk    +dk2) - si1*READ(read_ijk+1    +dk2) - si2*READ(read_ijk+2    +dk2);
+    float r24 = si2*READ(read_ijk-2+dj +dk2) + si1*READ(read_ijk-1+dj +dk2) + READ(read_ijk+dj +dk2) - si1*READ(read_ijk+1+dj +dk2) - si2*READ(read_ijk+2+dj +dk2);
+    float r25 = si2*READ(read_ijk-2+dj2+dk2) + si1*READ(read_ijk-1+dj2+dk2) + READ(read_ijk+dj2+dk2) - si1*READ(read_ijk+1+dj2+dk2) - si2*READ(read_ijk+2+dj2+dk2);
 
     // i  j  k
     write[write_ijk] = prescale_f*write[write_ijk] +
@@ -219,13 +219,13 @@ __global__ void interpolation_v4_kernel(level_type level_f, int id_f, double pre
   interpolation_v4_kernel<log_dim,block_type><<<grid,block>>>(level_f,id_f,prescale_f,level_c,id_c,interpolation);
 
 extern "C"
-void cuda_interpolation_v4(level_type level_f, int id_f, double prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
+void cuda_interpolation_v4(level_type level_f, int id_f, float prescale_f, level_type level_c, int id_c, communicator_type interpolation, int block_type)
 {
   int num_blocks = interpolation.num_blocks[block_type]; if(num_blocks<=0) return;
   dim3 block = dim3(min(level_f.box_dim,BLOCKCOPY_TILE_I), BLOCKCOPY_TILE_J, 1);
   dim3 grid = dim3((level_f.box_dim+block.x-1)/block.x, 1, num_blocks);
 
-  int log_dim = (int)log2((double)level_f.dim.i);
+  int log_dim = (int)log2f((float)level_f.dim.i);
   switch(block_type){
     case 0: KERNEL_LEVEL(log_dim,0); CUDA_ERROR break;
     case 1: KERNEL_LEVEL(log_dim,1); CUDA_ERROR break;

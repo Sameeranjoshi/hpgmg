@@ -36,10 +36,10 @@ void apply_BCs_v1(level_type * level, int x_id, int shape){
   else {
   PRAGMA_THREAD_ACROSS_BLOCKS(level,buffer,level->boundary_condition.num_blocks[shape])
   for(buffer=0;buffer<level->boundary_condition.num_blocks[shape];buffer++){
-    double scale = 1.0;
-    if(  faces[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
-    if(  edges[level->boundary_condition.blocks[shape][buffer].subtype])scale= 1.0;
-    if(corners[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
+    float scale = 1.0f;
+    if(  faces[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0f;
+    if(  edges[level->boundary_condition.blocks[shape][buffer].subtype])scale= 1.0f;
+    if(corners[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0f;
 
     int i,j,k;
     const int       box = level->boundary_condition.blocks[shape][buffer].read.box; 
@@ -54,7 +54,7 @@ void apply_BCs_v1(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1);
@@ -135,8 +135,8 @@ void apply_BCs_v2(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x  = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
-    double * __restrict__  xn = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride); // physically the same, but use different pointers for read/write
+    float * __restrict__  x  = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  xn = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride); // physically the same, but use different pointers for read/write
 
     // zero out entire ghost region when not all points will be updated...
     if(box_ghosts>1){
@@ -144,7 +144,7 @@ void apply_BCs_v2(level_type * level, int x_id, int shape){
     for(j=0;j<dim_j;j++){
     for(i=0;i<dim_i;i++){
       int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-      xn[ijk] = 0.0;
+      xn[ijk] = 0.0f;
     }}}}
 
     // apply the appropriate BC subtype (face, edge, corner)...
@@ -171,7 +171,7 @@ void apply_BCs_v2(level_type * level, int x_id, int shape){
       for(s=0;s<dim_s;s++){
       for(r=0;r<dim_r;r++){
         int ijk = (r+rlo)*rStride + (s+slo)*sStride + (t)*tStride;
-        xn[ijk] = -2.5*x[ijk+dt] + 0.5*x[ijk+2*dt];
+        xn[ijk] = -2.5f*x[ijk+dt] + 0.5f*x[ijk+2*dt];
       }}
     }else
     if(edges[subtype]){
@@ -207,10 +207,10 @@ void apply_BCs_v2(level_type * level, int x_id, int shape){
       // FIX... optimize for rStride==1 (unit-stride)
       for(r=0;r<dim_r;r++){
         int ijk = (r+rlo)*rStride + (s)*sStride + (t)*tStride;
-        xn[ijk] =   6.25*x[ijk+  ds+  dt] 
-                  - 1.25*x[ijk+2*ds+  dt]
-                  - 1.25*x[ijk+  ds+2*dt]
-                  + 0.25*x[ijk+2*ds+2*dt];
+        xn[ijk] =   6.25f*x[ijk+  ds+  dt] 
+                  - 1.25f*x[ijk+2*ds+  dt]
+                  - 1.25f*x[ijk+  ds+2*dt]
+                  + 0.25f*x[ijk+2*ds+2*dt];
       }
     }else
     if(corners[subtype]){
@@ -244,14 +244,14 @@ void apply_BCs_v2(level_type * level, int x_id, int shape){
         case 26:i=box_dim;j=box_dim;k=box_dim;di=-1;dj=-jStride;dk=-kStride;break; // high i, high j, high k
       }
       int ijk = (i) + (j)*jStride + (k)*kStride;
-      xn[ijk] =  -15.625*x[ijk+  di+  dj+  dk] 
-                 + 3.125*x[ijk+2*di+  dj+  dk] 
-                 + 3.125*x[ijk+  di+2*dj+  dk] 
-                 + 3.125*x[ijk+  di+  dj+2*dk] 
-                 - 0.625*x[ijk+2*di+2*dj+  dk] 
-                 - 0.625*x[ijk+  di+2*dj+2*dk] 
-                 - 0.625*x[ijk+2*di+  dj+2*dk] 
-                 + 0.125*x[ijk+2*di+2*dj+2*dk];
+      xn[ijk] =  -15.625f*x[ijk+  di+  dj+  dk] 
+                 + 3.125f*x[ijk+2*di+  dj+  dk] 
+                 + 3.125f*x[ijk+  di+2*dj+  dk] 
+                 + 3.125f*x[ijk+  di+  dj+2*dk] 
+                 - 0.625f*x[ijk+2*di+2*dj+  dk] 
+                 - 0.625f*x[ijk+  di+2*dj+2*dk] 
+                 - 0.625f*x[ijk+2*di+  dj+2*dk] 
+                 + 0.125f*x[ijk+2*di+2*dj+2*dk];
     }
   }
   }
@@ -303,10 +303,10 @@ void apply_BCs_v4(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x  = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
-    double * __restrict__  xn = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride); // physically the same, but use different pointers for read/write
+    float * __restrict__  x  = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  xn = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride); // physically the same, but use different pointers for read/write
 
-    double OneTwelfth = 1.0/12.0;
+    float OneTwelfth = 1.0f/12.0f;
 
     // zero out entire ghost region when not all points will be updated...
     if(box_ghosts>2){
@@ -314,7 +314,7 @@ void apply_BCs_v4(level_type * level, int x_id, int shape){
     for(j=0;j<dim_j;j++){
     for(i=0;i<dim_i;i++){
       int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-      xn[ijk] = 0.0;
+      xn[ijk] = 0.0f;
     }}}}
 
     // apply the appropriate BC subtype (face, edge, corner)...
@@ -341,9 +341,9 @@ void apply_BCs_v4(level_type * level, int x_id, int shape){
       for(s=0;s<dim_s;s++){
       for(r=0;r<dim_r;r++){
         int ijk = (r+rlo)*rStride + (s+slo)*sStride + (t)*tStride;
-        double x1=x[ijk+dt], x2=x[ijk+2*dt], x3=x[ijk+3*dt], x4=x[ijk+4*dt];
-        xn[ijk   ] = OneTwelfth*(  -77.0*x1 +  43.0*x2 -  17.0*x3 +  3.0*x4 );
-        xn[ijk-dt] = OneTwelfth*( -505.0*x1 + 335.0*x2 - 145.0*x3 + 27.0*x4 );
+        float x1=x[ijk+dt], x2=x[ijk+2*dt], x3=x[ijk+3*dt], x4=x[ijk+4*dt];
+        xn[ijk   ] = OneTwelfth*(  -77.0f*x1 +  43.0f*x2 -  17.0f*x3 +  3.0f*x4 );
+        xn[ijk-dt] = OneTwelfth*( -505.0f*x1 + 335.0f*x2 - 145.0f*x3 + 27.0f*x4 );
       }}
     }else
     if(edges[subtype]){
@@ -401,22 +401,22 @@ void apply_BCs_v4(level_type * level, int x_id, int shape){
       // FIX... optimize for rStride==1 (unit-stride)
       for(r=0;r<dim_r;r++){
         int ijk = (r+rlo)*rStride + (s)*sStride + (t)*tStride;
-        double x11 = x[ijk+  ds+  dt], x21 = x[ijk+2*ds+  dt], x31 = x[ijk+3*ds+  dt], x41 = x[ijk+4*ds+  dt];
-        double x12 = x[ijk+  ds+2*dt], x22 = x[ijk+2*ds+2*dt], x32 = x[ijk+3*ds+2*dt], x42 = x[ijk+4*ds+2*dt];
-        double x13 = x[ijk+  ds+3*dt], x23 = x[ijk+2*ds+3*dt], x33 = x[ijk+3*ds+3*dt], x43 = x[ijk+4*ds+3*dt];
-        double x14 = x[ijk+  ds+4*dt], x24 = x[ijk+2*ds+4*dt], x34 = x[ijk+3*ds+4*dt], x44 = x[ijk+4*ds+4*dt];
-            double n1 = OneTwelfth*(  -77.0*x11 +  43.0*x21 -  17.0*x31 +  3.0*x41 );
-            double n2 = OneTwelfth*(  -77.0*x12 +  43.0*x22 -  17.0*x32 +  3.0*x42 );
-            double n3 = OneTwelfth*(  -77.0*x13 +  43.0*x23 -  17.0*x33 +  3.0*x43 );
-            double n4 = OneTwelfth*(  -77.0*x14 +  43.0*x24 -  17.0*x34 +  3.0*x44 );
-            double f1 = OneTwelfth*( -505.0*x11 + 335.0*x21 - 145.0*x31 + 27.0*x41 );
-            double f2 = OneTwelfth*( -505.0*x12 + 335.0*x22 - 145.0*x32 + 27.0*x42 );
-            double f3 = OneTwelfth*( -505.0*x13 + 335.0*x23 - 145.0*x33 + 27.0*x43 );
-            double f4 = OneTwelfth*( -505.0*x14 + 335.0*x24 - 145.0*x34 + 27.0*x44 );
-        xn[ijk      ] = OneTwelfth*(  -77.0*n1  +  43.0*n2  -  17.0*n3  +  3.0*n4  );
-        xn[ijk   -dt] = OneTwelfth*( -505.0*n1  + 335.0*n2  - 145.0*n3  + 27.0*n4  );
-        xn[ijk-ds   ] = OneTwelfth*(  -77.0*f1  +  43.0*f2  -  17.0*f3  +  3.0*f4  );
-        xn[ijk-ds-dt] = OneTwelfth*( -505.0*f1  + 335.0*f2  - 145.0*f3  + 27.0*f4  );
+        float x11 = x[ijk+  ds+  dt], x21 = x[ijk+2*ds+  dt], x31 = x[ijk+3*ds+  dt], x41 = x[ijk+4*ds+  dt];
+        float x12 = x[ijk+  ds+2*dt], x22 = x[ijk+2*ds+2*dt], x32 = x[ijk+3*ds+2*dt], x42 = x[ijk+4*ds+2*dt];
+        float x13 = x[ijk+  ds+3*dt], x23 = x[ijk+2*ds+3*dt], x33 = x[ijk+3*ds+3*dt], x43 = x[ijk+4*ds+3*dt];
+        float x14 = x[ijk+  ds+4*dt], x24 = x[ijk+2*ds+4*dt], x34 = x[ijk+3*ds+4*dt], x44 = x[ijk+4*ds+4*dt];
+            float n1 = OneTwelfth*(  -77.0f*x11 +  43.0f*x21 -  17.0f*x31 +  3.0f*x41 );
+            float n2 = OneTwelfth*(  -77.0f*x12 +  43.0f*x22 -  17.0f*x32 +  3.0f*x42 );
+            float n3 = OneTwelfth*(  -77.0f*x13 +  43.0f*x23 -  17.0f*x33 +  3.0f*x43 );
+            float n4 = OneTwelfth*(  -77.0f*x14 +  43.0f*x24 -  17.0f*x34 +  3.0f*x44 );
+            float f1 = OneTwelfth*( -505.0f*x11 + 335.0f*x21 - 145.0f*x31 + 27.0f*x41 );
+            float f2 = OneTwelfth*( -505.0f*x12 + 335.0f*x22 - 145.0f*x32 + 27.0f*x42 );
+            float f3 = OneTwelfth*( -505.0f*x13 + 335.0f*x23 - 145.0f*x33 + 27.0f*x43 );
+            float f4 = OneTwelfth*( -505.0f*x14 + 335.0f*x24 - 145.0f*x34 + 27.0f*x44 );
+        xn[ijk      ] = OneTwelfth*(  -77.0f*n1  +  43.0f*n2  -  17.0f*n3  +  3.0f*n4  );
+        xn[ijk   -dt] = OneTwelfth*( -505.0f*n1  + 335.0f*n2  - 145.0f*n3  + 27.0f*n4  );
+        xn[ijk-ds   ] = OneTwelfth*(  -77.0f*f1  +  43.0f*f2  -  17.0f*f3  +  3.0f*f4  );
+        xn[ijk-ds-dt] = OneTwelfth*( -505.0f*f1  + 335.0f*f2  - 145.0f*f3  + 27.0f*f4  );
       }
     }else
     if(corners[subtype]){
@@ -462,89 +462,89 @@ void apply_BCs_v4(level_type * level, int x_id, int shape){
         case 26:i=box_dim;j=box_dim;k=box_dim;di=-1;dj=-jStride;dk=-kStride;break; // high i, high j, high k
       }
       int ijk = (i) + (j)*jStride + (k)*kStride;
-      double x144 = x[ijk+  di+4*dj+4*dk];double x244 = x[ijk+2*di+4*dj+4*dk];double x344 = x[ijk+3*di+4*dj+4*dk];double x444 = x[ijk+4*di+4*dj+4*dk];
-      double x134 = x[ijk+  di+3*dj+4*dk];double x234 = x[ijk+2*di+3*dj+4*dk];double x334 = x[ijk+3*di+3*dj+4*dk];double x434 = x[ijk+4*di+3*dj+4*dk];
-      double x124 = x[ijk+  di+2*dj+4*dk];double x224 = x[ijk+2*di+2*dj+4*dk];double x324 = x[ijk+3*di+2*dj+4*dk];double x424 = x[ijk+4*di+2*dj+4*dk];
-      double x114 = x[ijk+  di+  dj+4*dk];double x214 = x[ijk+2*di+  dj+4*dk];double x314 = x[ijk+3*di+  dj+4*dk];double x414 = x[ijk+4*di+  dj+4*dk];
+      float x144 = x[ijk+  di+4*dj+4*dk];float x244 = x[ijk+2*di+4*dj+4*dk];float x344 = x[ijk+3*di+4*dj+4*dk];float x444 = x[ijk+4*di+4*dj+4*dk];
+      float x134 = x[ijk+  di+3*dj+4*dk];float x234 = x[ijk+2*di+3*dj+4*dk];float x334 = x[ijk+3*di+3*dj+4*dk];float x434 = x[ijk+4*di+3*dj+4*dk];
+      float x124 = x[ijk+  di+2*dj+4*dk];float x224 = x[ijk+2*di+2*dj+4*dk];float x324 = x[ijk+3*di+2*dj+4*dk];float x424 = x[ijk+4*di+2*dj+4*dk];
+      float x114 = x[ijk+  di+  dj+4*dk];float x214 = x[ijk+2*di+  dj+4*dk];float x314 = x[ijk+3*di+  dj+4*dk];float x414 = x[ijk+4*di+  dj+4*dk];
 
-      double x143 = x[ijk+  di+4*dj+3*dk];double x243 = x[ijk+2*di+4*dj+3*dk];double x343 = x[ijk+3*di+4*dj+3*dk];double x443 = x[ijk+4*di+4*dj+3*dk];
-      double x133 = x[ijk+  di+3*dj+3*dk];double x233 = x[ijk+2*di+3*dj+3*dk];double x333 = x[ijk+3*di+3*dj+3*dk];double x433 = x[ijk+4*di+3*dj+3*dk];
-      double x123 = x[ijk+  di+2*dj+3*dk];double x223 = x[ijk+2*di+2*dj+3*dk];double x323 = x[ijk+3*di+2*dj+3*dk];double x423 = x[ijk+4*di+2*dj+3*dk];
-      double x113 = x[ijk+  di+  dj+3*dk];double x213 = x[ijk+2*di+  dj+3*dk];double x313 = x[ijk+3*di+  dj+3*dk];double x413 = x[ijk+4*di+  dj+3*dk];
+      float x143 = x[ijk+  di+4*dj+3*dk];float x243 = x[ijk+2*di+4*dj+3*dk];float x343 = x[ijk+3*di+4*dj+3*dk];float x443 = x[ijk+4*di+4*dj+3*dk];
+      float x133 = x[ijk+  di+3*dj+3*dk];float x233 = x[ijk+2*di+3*dj+3*dk];float x333 = x[ijk+3*di+3*dj+3*dk];float x433 = x[ijk+4*di+3*dj+3*dk];
+      float x123 = x[ijk+  di+2*dj+3*dk];float x223 = x[ijk+2*di+2*dj+3*dk];float x323 = x[ijk+3*di+2*dj+3*dk];float x423 = x[ijk+4*di+2*dj+3*dk];
+      float x113 = x[ijk+  di+  dj+3*dk];float x213 = x[ijk+2*di+  dj+3*dk];float x313 = x[ijk+3*di+  dj+3*dk];float x413 = x[ijk+4*di+  dj+3*dk];
 
-      double x142 = x[ijk+  di+4*dj+2*dk];double x242 = x[ijk+2*di+4*dj+2*dk];double x342 = x[ijk+3*di+4*dj+2*dk];double x442 = x[ijk+4*di+4*dj+2*dk];
-      double x132 = x[ijk+  di+3*dj+2*dk];double x232 = x[ijk+2*di+3*dj+2*dk];double x332 = x[ijk+3*di+3*dj+2*dk];double x432 = x[ijk+4*di+3*dj+2*dk];
-      double x122 = x[ijk+  di+2*dj+2*dk];double x222 = x[ijk+2*di+2*dj+2*dk];double x322 = x[ijk+3*di+2*dj+2*dk];double x422 = x[ijk+4*di+2*dj+2*dk];
-      double x112 = x[ijk+  di+  dj+2*dk];double x212 = x[ijk+2*di+  dj+2*dk];double x312 = x[ijk+3*di+  dj+2*dk];double x412 = x[ijk+4*di+  dj+2*dk];
+      float x142 = x[ijk+  di+4*dj+2*dk];float x242 = x[ijk+2*di+4*dj+2*dk];float x342 = x[ijk+3*di+4*dj+2*dk];float x442 = x[ijk+4*di+4*dj+2*dk];
+      float x132 = x[ijk+  di+3*dj+2*dk];float x232 = x[ijk+2*di+3*dj+2*dk];float x332 = x[ijk+3*di+3*dj+2*dk];float x432 = x[ijk+4*di+3*dj+2*dk];
+      float x122 = x[ijk+  di+2*dj+2*dk];float x222 = x[ijk+2*di+2*dj+2*dk];float x322 = x[ijk+3*di+2*dj+2*dk];float x422 = x[ijk+4*di+2*dj+2*dk];
+      float x112 = x[ijk+  di+  dj+2*dk];float x212 = x[ijk+2*di+  dj+2*dk];float x312 = x[ijk+3*di+  dj+2*dk];float x412 = x[ijk+4*di+  dj+2*dk];
 
-      double x141 = x[ijk+  di+4*dj+  dk];double x241 = x[ijk+2*di+4*dj+  dk];double x341 = x[ijk+3*di+4*dj+  dk];double x441 = x[ijk+4*di+4*dj+  dk];
-      double x131 = x[ijk+  di+3*dj+  dk];double x231 = x[ijk+2*di+3*dj+  dk];double x331 = x[ijk+3*di+3*dj+  dk];double x431 = x[ijk+4*di+3*dj+  dk];
-      double x121 = x[ijk+  di+2*dj+  dk];double x221 = x[ijk+2*di+2*dj+  dk];double x321 = x[ijk+3*di+2*dj+  dk];double x421 = x[ijk+4*di+2*dj+  dk];
-      double x111 = x[ijk+  di+  dj+  dk];double x211 = x[ijk+2*di+  dj+  dk];double x311 = x[ijk+3*di+  dj+  dk];double x411 = x[ijk+4*di+  dj+  dk];
+      float x141 = x[ijk+  di+4*dj+  dk];float x241 = x[ijk+2*di+4*dj+  dk];float x341 = x[ijk+3*di+4*dj+  dk];float x441 = x[ijk+4*di+4*dj+  dk];
+      float x131 = x[ijk+  di+3*dj+  dk];float x231 = x[ijk+2*di+3*dj+  dk];float x331 = x[ijk+3*di+3*dj+  dk];float x431 = x[ijk+4*di+3*dj+  dk];
+      float x121 = x[ijk+  di+2*dj+  dk];float x221 = x[ijk+2*di+2*dj+  dk];float x321 = x[ijk+3*di+2*dj+  dk];float x421 = x[ijk+4*di+2*dj+  dk];
+      float x111 = x[ijk+  di+  dj+  dk];float x211 = x[ijk+2*di+  dj+  dk];float x311 = x[ijk+3*di+  dj+  dk];float x411 = x[ijk+4*di+  dj+  dk];
 
       // 32 stencils in i...
-      double n11 = OneTwelfth*(  -77.0*x111 +  43.0*x211 -  17.0*x311 +  3.0*x411 );
-      double n21 = OneTwelfth*(  -77.0*x121 +  43.0*x221 -  17.0*x321 +  3.0*x421 );
-      double n31 = OneTwelfth*(  -77.0*x131 +  43.0*x231 -  17.0*x331 +  3.0*x431 );
-      double n41 = OneTwelfth*(  -77.0*x141 +  43.0*x241 -  17.0*x341 +  3.0*x441 );
-      double n12 = OneTwelfth*(  -77.0*x112 +  43.0*x212 -  17.0*x312 +  3.0*x412 );
-      double n22 = OneTwelfth*(  -77.0*x122 +  43.0*x222 -  17.0*x322 +  3.0*x422 );
-      double n32 = OneTwelfth*(  -77.0*x132 +  43.0*x232 -  17.0*x332 +  3.0*x432 );
-      double n42 = OneTwelfth*(  -77.0*x142 +  43.0*x242 -  17.0*x342 +  3.0*x442 );
-      double n13 = OneTwelfth*(  -77.0*x113 +  43.0*x213 -  17.0*x313 +  3.0*x413 );
-      double n23 = OneTwelfth*(  -77.0*x123 +  43.0*x223 -  17.0*x323 +  3.0*x423 );
-      double n33 = OneTwelfth*(  -77.0*x133 +  43.0*x233 -  17.0*x333 +  3.0*x433 );
-      double n43 = OneTwelfth*(  -77.0*x143 +  43.0*x243 -  17.0*x343 +  3.0*x443 );
-      double n14 = OneTwelfth*(  -77.0*x114 +  43.0*x214 -  17.0*x314 +  3.0*x414 );
-      double n24 = OneTwelfth*(  -77.0*x124 +  43.0*x224 -  17.0*x324 +  3.0*x424 );
-      double n34 = OneTwelfth*(  -77.0*x134 +  43.0*x234 -  17.0*x334 +  3.0*x434 );
-      double n44 = OneTwelfth*(  -77.0*x144 +  43.0*x244 -  17.0*x344 +  3.0*x444 );
+      float n11 = OneTwelfth*(  -77.0f*x111 +  43.0f*x211 -  17.0f*x311 +  3.0f*x411 );
+      float n21 = OneTwelfth*(  -77.0f*x121 +  43.0f*x221 -  17.0f*x321 +  3.0f*x421 );
+      float n31 = OneTwelfth*(  -77.0f*x131 +  43.0f*x231 -  17.0f*x331 +  3.0f*x431 );
+      float n41 = OneTwelfth*(  -77.0f*x141 +  43.0f*x241 -  17.0f*x341 +  3.0f*x441 );
+      float n12 = OneTwelfth*(  -77.0f*x112 +  43.0f*x212 -  17.0f*x312 +  3.0f*x412 );
+      float n22 = OneTwelfth*(  -77.0f*x122 +  43.0f*x222 -  17.0f*x322 +  3.0f*x422 );
+      float n32 = OneTwelfth*(  -77.0f*x132 +  43.0f*x232 -  17.0f*x332 +  3.0f*x432 );
+      float n42 = OneTwelfth*(  -77.0f*x142 +  43.0f*x242 -  17.0f*x342 +  3.0f*x442 );
+      float n13 = OneTwelfth*(  -77.0f*x113 +  43.0f*x213 -  17.0f*x313 +  3.0f*x413 );
+      float n23 = OneTwelfth*(  -77.0f*x123 +  43.0f*x223 -  17.0f*x323 +  3.0f*x423 );
+      float n33 = OneTwelfth*(  -77.0f*x133 +  43.0f*x233 -  17.0f*x333 +  3.0f*x433 );
+      float n43 = OneTwelfth*(  -77.0f*x143 +  43.0f*x243 -  17.0f*x343 +  3.0f*x443 );
+      float n14 = OneTwelfth*(  -77.0f*x114 +  43.0f*x214 -  17.0f*x314 +  3.0f*x414 );
+      float n24 = OneTwelfth*(  -77.0f*x124 +  43.0f*x224 -  17.0f*x324 +  3.0f*x424 );
+      float n34 = OneTwelfth*(  -77.0f*x134 +  43.0f*x234 -  17.0f*x334 +  3.0f*x434 );
+      float n44 = OneTwelfth*(  -77.0f*x144 +  43.0f*x244 -  17.0f*x344 +  3.0f*x444 );
 
-      double f11 = OneTwelfth*( -505.0*x111 + 335.0*x211 - 145.0*x311 +  27.0*x411 );
-      double f21 = OneTwelfth*( -505.0*x121 + 335.0*x221 - 145.0*x321 +  27.0*x421 );
-      double f31 = OneTwelfth*( -505.0*x131 + 335.0*x231 - 145.0*x331 +  27.0*x431 );
-      double f41 = OneTwelfth*( -505.0*x141 + 335.0*x241 - 145.0*x341 +  27.0*x441 );
-      double f12 = OneTwelfth*( -505.0*x112 + 335.0*x212 - 145.0*x312 +  27.0*x412 );
-      double f22 = OneTwelfth*( -505.0*x122 + 335.0*x222 - 145.0*x322 +  27.0*x422 );
-      double f32 = OneTwelfth*( -505.0*x132 + 335.0*x232 - 145.0*x332 +  27.0*x432 );
-      double f42 = OneTwelfth*( -505.0*x142 + 335.0*x242 - 145.0*x342 +  27.0*x442 );
-      double f13 = OneTwelfth*( -505.0*x113 + 335.0*x213 - 145.0*x313 +  27.0*x413 );
-      double f23 = OneTwelfth*( -505.0*x123 + 335.0*x223 - 145.0*x323 +  27.0*x423 );
-      double f33 = OneTwelfth*( -505.0*x133 + 335.0*x233 - 145.0*x333 +  27.0*x433 );
-      double f43 = OneTwelfth*( -505.0*x143 + 335.0*x243 - 145.0*x343 +  27.0*x443 );
-      double f14 = OneTwelfth*( -505.0*x114 + 335.0*x214 - 145.0*x314 +  27.0*x414 );
-      double f24 = OneTwelfth*( -505.0*x124 + 335.0*x224 - 145.0*x324 +  27.0*x424 );
-      double f34 = OneTwelfth*( -505.0*x134 + 335.0*x234 - 145.0*x334 +  27.0*x434 );
-      double f44 = OneTwelfth*( -505.0*x144 + 335.0*x244 - 145.0*x344 +  27.0*x444 );
+      float f11 = OneTwelfth*( -505.0f*x111 + 335.0f*x211 - 145.0f*x311 +  27.0f*x411 );
+      float f21 = OneTwelfth*( -505.0f*x121 + 335.0f*x221 - 145.0f*x321 +  27.0f*x421 );
+      float f31 = OneTwelfth*( -505.0f*x131 + 335.0f*x231 - 145.0f*x331 +  27.0f*x431 );
+      float f41 = OneTwelfth*( -505.0f*x141 + 335.0f*x241 - 145.0f*x341 +  27.0f*x441 );
+      float f12 = OneTwelfth*( -505.0f*x112 + 335.0f*x212 - 145.0f*x312 +  27.0f*x412 );
+      float f22 = OneTwelfth*( -505.0f*x122 + 335.0f*x222 - 145.0f*x322 +  27.0f*x422 );
+      float f32 = OneTwelfth*( -505.0f*x132 + 335.0f*x232 - 145.0f*x332 +  27.0f*x432 );
+      float f42 = OneTwelfth*( -505.0f*x142 + 335.0f*x242 - 145.0f*x342 +  27.0f*x442 );
+      float f13 = OneTwelfth*( -505.0f*x113 + 335.0f*x213 - 145.0f*x313 +  27.0f*x413 );
+      float f23 = OneTwelfth*( -505.0f*x123 + 335.0f*x223 - 145.0f*x323 +  27.0f*x423 );
+      float f33 = OneTwelfth*( -505.0f*x133 + 335.0f*x233 - 145.0f*x333 +  27.0f*x433 );
+      float f43 = OneTwelfth*( -505.0f*x143 + 335.0f*x243 - 145.0f*x343 +  27.0f*x443 );
+      float f14 = OneTwelfth*( -505.0f*x114 + 335.0f*x214 - 145.0f*x314 +  27.0f*x414 );
+      float f24 = OneTwelfth*( -505.0f*x124 + 335.0f*x224 - 145.0f*x324 +  27.0f*x424 );
+      float f34 = OneTwelfth*( -505.0f*x134 + 335.0f*x234 - 145.0f*x334 +  27.0f*x434 );
+      float f44 = OneTwelfth*( -505.0f*x144 + 335.0f*x244 - 145.0f*x344 +  27.0f*x444 );
 
       // 16 stencils in j...
-      double nn1 = OneTwelfth*(  -77.0*n11 +  43.0*n21 -  17.0*n31 +  3.0*n41 );
-      double nn2 = OneTwelfth*(  -77.0*n12 +  43.0*n22 -  17.0*n32 +  3.0*n42 );
-      double nn3 = OneTwelfth*(  -77.0*n13 +  43.0*n23 -  17.0*n33 +  3.0*n43 );
-      double nn4 = OneTwelfth*(  -77.0*n14 +  43.0*n24 -  17.0*n34 +  3.0*n44 );
-      double nf1 = OneTwelfth*( -505.0*n11 + 335.0*n21 - 145.0*n31 + 27.0*n41 );
-      double nf2 = OneTwelfth*( -505.0*n12 + 335.0*n22 - 145.0*n32 + 27.0*n42 );
-      double nf3 = OneTwelfth*( -505.0*n13 + 335.0*n23 - 145.0*n33 + 27.0*n43 );
-      double nf4 = OneTwelfth*( -505.0*n14 + 335.0*n24 - 145.0*n34 + 27.0*n44 );
+      float nn1 = OneTwelfth*(  -77.0f*n11 +  43.0f*n21 -  17.0f*n31 +  3.0f*n41 );
+      float nn2 = OneTwelfth*(  -77.0f*n12 +  43.0f*n22 -  17.0f*n32 +  3.0f*n42 );
+      float nn3 = OneTwelfth*(  -77.0f*n13 +  43.0f*n23 -  17.0f*n33 +  3.0f*n43 );
+      float nn4 = OneTwelfth*(  -77.0f*n14 +  43.0f*n24 -  17.0f*n34 +  3.0f*n44 );
+      float nf1 = OneTwelfth*( -505.0f*n11 + 335.0f*n21 - 145.0f*n31 + 27.0f*n41 );
+      float nf2 = OneTwelfth*( -505.0f*n12 + 335.0f*n22 - 145.0f*n32 + 27.0f*n42 );
+      float nf3 = OneTwelfth*( -505.0f*n13 + 335.0f*n23 - 145.0f*n33 + 27.0f*n43 );
+      float nf4 = OneTwelfth*( -505.0f*n14 + 335.0f*n24 - 145.0f*n34 + 27.0f*n44 );
 
-      double fn1 = OneTwelfth*(  -77.0*f11 +  43.0*f21 -  17.0*f31 +  3.0*f41 );
-      double fn2 = OneTwelfth*(  -77.0*f12 +  43.0*f22 -  17.0*f32 +  3.0*f42 );
-      double fn3 = OneTwelfth*(  -77.0*f13 +  43.0*f23 -  17.0*f33 +  3.0*f43 );
-      double fn4 = OneTwelfth*(  -77.0*f14 +  43.0*f24 -  17.0*f34 +  3.0*f44 );
-      double ff1 = OneTwelfth*( -505.0*f11 + 335.0*f21 - 145.0*f31 + 27.0*f41 );
-      double ff2 = OneTwelfth*( -505.0*f12 + 335.0*f22 - 145.0*f32 + 27.0*f42 );
-      double ff3 = OneTwelfth*( -505.0*f13 + 335.0*f23 - 145.0*f33 + 27.0*f43 );
-      double ff4 = OneTwelfth*( -505.0*f14 + 335.0*f24 - 145.0*f34 + 27.0*f44 );
+      float fn1 = OneTwelfth*(  -77.0f*f11 +  43.0f*f21 -  17.0f*f31 +  3.0f*f41 );
+      float fn2 = OneTwelfth*(  -77.0f*f12 +  43.0f*f22 -  17.0f*f32 +  3.0f*f42 );
+      float fn3 = OneTwelfth*(  -77.0f*f13 +  43.0f*f23 -  17.0f*f33 +  3.0f*f43 );
+      float fn4 = OneTwelfth*(  -77.0f*f14 +  43.0f*f24 -  17.0f*f34 +  3.0f*f44 );
+      float ff1 = OneTwelfth*( -505.0f*f11 + 335.0f*f21 - 145.0f*f31 + 27.0f*f41 );
+      float ff2 = OneTwelfth*( -505.0f*f12 + 335.0f*f22 - 145.0f*f32 + 27.0f*f42 );
+      float ff3 = OneTwelfth*( -505.0f*f13 + 335.0f*f23 - 145.0f*f33 + 27.0f*f43 );
+      float ff4 = OneTwelfth*( -505.0f*f14 + 335.0f*f24 - 145.0f*f34 + 27.0f*f44 );
 
       //  8 stencils in k...
-      double nnn = OneTwelfth*(  -77.0*nn1 +  43.0*nn2 -  17.0*nn3 +  3.0*nn4 );
-      double nnf = OneTwelfth*( -505.0*nn1 + 335.0*nn2 - 145.0*nn3 + 27.0*nn4 );
-      double nfn = OneTwelfth*(  -77.0*nf1 +  43.0*nf2 -  17.0*nf3 +  3.0*nf4 );
-      double nff = OneTwelfth*( -505.0*nf1 + 335.0*nf2 - 145.0*nf3 + 27.0*nf4 );
-      double fnn = OneTwelfth*(  -77.0*fn1 +  43.0*fn2 -  17.0*fn3 +  3.0*fn4 );
-      double fnf = OneTwelfth*( -505.0*fn1 + 335.0*fn2 - 145.0*fn3 + 27.0*fn4 );
-      double ffn = OneTwelfth*(  -77.0*ff1 +  43.0*ff2 -  17.0*ff3 +  3.0*ff4 );
-      double fff = OneTwelfth*( -505.0*ff1 + 335.0*ff2 - 145.0*ff3 + 27.0*ff4 );
+      float nnn = OneTwelfth*(  -77.0f*nn1 +  43.0f*nn2 -  17.0f*nn3 +  3.0f*nn4 );
+      float nnf = OneTwelfth*( -505.0f*nn1 + 335.0f*nn2 - 145.0f*nn3 + 27.0f*nn4 );
+      float nfn = OneTwelfth*(  -77.0f*nf1 +  43.0f*nf2 -  17.0f*nf3 +  3.0f*nf4 );
+      float nff = OneTwelfth*( -505.0f*nf1 + 335.0f*nf2 - 145.0f*nf3 + 27.0f*nf4 );
+      float fnn = OneTwelfth*(  -77.0f*fn1 +  43.0f*fn2 -  17.0f*fn3 +  3.0f*fn4 );
+      float fnf = OneTwelfth*( -505.0f*fn1 + 335.0f*fn2 - 145.0f*fn3 + 27.0f*fn4 );
+      float ffn = OneTwelfth*(  -77.0f*ff1 +  43.0f*ff2 -  17.0f*ff3 +  3.0f*ff4 );
+      float fff = OneTwelfth*( -505.0f*ff1 + 335.0f*ff2 - 145.0f*ff3 + 27.0f*ff4 );
 
       // commit to the 8 ghost zones in this corner...
       xn[ijk         ] = nnn;
@@ -600,9 +600,9 @@ void extrapolate_betas(level_type * level){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + level->my_boxes[box].ghosts*(1+jStride+kStride);
-    double * __restrict__  beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + level->my_boxes[box].ghosts*(1+jStride+kStride);
-    double * __restrict__  beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1);
@@ -645,9 +645,9 @@ void extrapolate_betas(level_type * level){
       for(j=0;j<dim_j;j++){
       for(i=0;i<dim_i;i++){
         int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 5.0*beta_i[ijk+biStride] - 10.0*beta_i[ijk+2*biStride] + 10.0*beta_i[ijk+3*biStride] - 5.0*beta_i[ijk+4*biStride] + beta_i[ijk+5*biStride];}
-        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 5.0*beta_j[ijk+bjStride] - 10.0*beta_j[ijk+2*bjStride] + 10.0*beta_j[ijk+3*bjStride] - 5.0*beta_j[ijk+4*bjStride] + beta_j[ijk+5*bjStride];}
-        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 5.0*beta_k[ijk+bkStride] - 10.0*beta_k[ijk+2*bkStride] + 10.0*beta_k[ijk+3*bkStride] - 5.0*beta_k[ijk+4*bkStride] + beta_k[ijk+5*bkStride];}
+        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 5.0f*beta_i[ijk+biStride] - 10.0f*beta_i[ijk+2*biStride] + 10.0f*beta_i[ijk+3*biStride] - 5.0f*beta_i[ijk+4*biStride] + beta_i[ijk+5*biStride];}
+        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 5.0f*beta_j[ijk+bjStride] - 10.0f*beta_j[ijk+2*bjStride] + 10.0f*beta_j[ijk+3*bjStride] - 5.0f*beta_j[ijk+4*bjStride] + beta_j[ijk+5*bjStride];}
+        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 5.0f*beta_k[ijk+bkStride] - 10.0f*beta_k[ijk+2*bkStride] + 10.0f*beta_k[ijk+3*bkStride] - 5.0f*beta_k[ijk+4*bkStride] + beta_k[ijk+5*bkStride];}
       }}}
     }else 
     if(level->box_dim>=4){
@@ -656,9 +656,9 @@ void extrapolate_betas(level_type * level){
       for(j=0;j<dim_j;j++){
       for(i=0;i<dim_i;i++){
         int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 4.0*beta_i[ijk+biStride] - 6.0*beta_i[ijk+2*biStride] + 4.0*beta_i[ijk+3*biStride] - beta_i[ijk+4*biStride];}
-        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 4.0*beta_j[ijk+bjStride] - 6.0*beta_j[ijk+2*bjStride] + 4.0*beta_j[ijk+3*bjStride] - beta_j[ijk+4*bjStride];}
-        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 4.0*beta_k[ijk+bkStride] - 6.0*beta_k[ijk+2*bkStride] + 4.0*beta_k[ijk+3*bkStride] - beta_k[ijk+4*bkStride];}
+        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 4.0f*beta_i[ijk+biStride] - 6.0f*beta_i[ijk+2*biStride] + 4.0f*beta_i[ijk+3*biStride] - beta_i[ijk+4*biStride];}
+        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 4.0f*beta_j[ijk+bjStride] - 6.0f*beta_j[ijk+2*bjStride] + 4.0f*beta_j[ijk+3*bjStride] - beta_j[ijk+4*bjStride];}
+        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 4.0f*beta_k[ijk+bkStride] - 6.0f*beta_k[ijk+2*bkStride] + 4.0f*beta_k[ijk+3*bkStride] - beta_k[ijk+4*bkStride];}
       }}}
     }else 
     if(level->box_dim>=2){
@@ -667,9 +667,9 @@ void extrapolate_betas(level_type * level){
       for(j=0;j<dim_j;j++){
       for(i=0;i<dim_i;i++){
         int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 2.0*beta_i[ijk+biStride] - beta_i[ijk+2*biStride];}
-        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 2.0*beta_j[ijk+bjStride] - beta_j[ijk+2*bjStride];}
-        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 2.0*beta_k[ijk+bkStride] - beta_k[ijk+2*bkStride];}
+        if( (subtype!=14) && (subtype!=12) ){beta_i[ijk] = 2.0f*beta_i[ijk+biStride] - beta_i[ijk+2*biStride];}
+        if( (subtype!=16) && (subtype!=10) ){beta_j[ijk] = 2.0f*beta_j[ijk+bjStride] - beta_j[ijk+2*bjStride];}
+        if( (subtype!=22) && (subtype!= 4) ){beta_k[ijk] = 2.0f*beta_k[ijk+bkStride] - beta_k[ijk+2*bkStride];}
       }}}
     }
   }

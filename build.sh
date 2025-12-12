@@ -8,10 +8,10 @@ NVCC=`which nvcc`
 # set gpu architectures to compile for
 #CUDA_ARCH+="-gencode arch=compute_60,code=sm_60 "
 #CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
-# CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
-CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
-# FOLDER="A100build"
-FOLDER="H100build"
+CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
+# CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
+FOLDER="A100build"
+# FOLDER="H100build"
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
@@ -57,8 +57,8 @@ OPTS+="-DUSE_TEX "
 OPTS+="-DMPICH_IGNORE_CXX_SEEK "
 OPTS+="-DMPICH_SKIP_MPICXX "
 
-# OPTS+="-DUSE_PERIODIC_BC "
-OPTS+="-DUSE_DIRICHLET_BC "
+OPTS+="-DUSE_PERIODIC_BC "
+# OPTS+="-DUSE_DIRICHLET_BC "
 
 rm -rf $FOLDER
 # export MPICH_GPU_SUPPORT_ENABLED=1
@@ -68,7 +68,7 @@ rm -rf $FOLDER
 LDLIBS+="-ldl"
 
 # GSRB smoother (default)
-python ./configure --arch="$FOLDER" --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo $OPTS" --CUDAARCH="$CUDA_ARCH" --LDLIBS="$LDLIBS" --no-fe --no-fv-mpi --fv-cycle="V" --fv-smoother="jacobi" --fv-coarse-solver="cg"
+python ./configure --arch="$FOLDER" --CC=$CC --NVCC=$NVCC --CFLAGS="-O2 -fopenmp $OPTS" --NVCCFLAGS="-O2 -lineinfo $OPTS" --CUDAARCH="$CUDA_ARCH" --LDLIBS="$LDLIBS" --no-fe --no-fv-mpi --fv-cycle="V" --fv-smoother="jacobi"
 
 # Chebyshev smoother
 # ./configure --CC=$CC --NVCC=$NVCC --CFLAGS="-O1 -fopenmp $OPTS" --NVCCFLAGS="-O1 -lineinfo -lnvToolsExt $OPTS" --CUDAARCH="$CUDA_ARCH" --fv-smoother="cheby" --no-fe

@@ -16,7 +16,7 @@
 #define MG_AGGLOMERATION_START  8 // i.e. start the distributed v-cycle when boxes are smaller than 8^3
 #endif
 #ifndef MG_DEFAULT_BOTTOM_NORM
-#define MG_DEFAULT_BOTTOM_NORM  1e-3
+#define MG_DEFAULT_BOTTOM_NORM  1e-3f  // adjusted for single precision
 #endif
 //------------------------------------------------------------------------------------------------------------------------------
 typedef struct {
@@ -26,18 +26,18 @@ typedef struct {
   level_type ** levels;	// array of pointers to levels
 
   struct {
-    double MGBuild; // total time spent building the coefficients...
-    double MGSolve; // total time spent in MGSolve
+    float MGBuild; // total time spent building the coefficients...
+    float MGSolve; // total time spent in MGSolve
   }timers;
   int MGSolves_performed;
 } mg_type;
 
 
 //------------------------------------------------------------------------------------------------------------------------------
-void          MGBuild(mg_type *all_grids, level_type *fine_grid, double a, double b, int minCoarseGridDim);
-void          MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol);
-void         FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, double b, double dtol, double rtol);
-void            MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, double a, double b, double dtol, double rtol);
+void          MGBuild(mg_type *all_grids, level_type *fine_grid, float a, float b, int minCoarseGridDim);
+void          MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float b, float dtol, float rtol);
+void         FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float b, float dtol, float rtol);
+void            MGPCG(mg_type *all_grids, int onLevel, int x_id, int F_id, float a, float b, float dtol, float rtol);
 void        MGDestroy(mg_type *all_grids);
 void    MGPrintTiming(mg_type *all_grids, int fromLevel);
 void    MGResetTimers(mg_type *all_grids);

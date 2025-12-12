@@ -36,10 +36,10 @@ void apply_BCs_p1(level_type * level, int x_id, int shape){
   else {
   PRAGMA_THREAD_ACROSS_BLOCKS(level,buffer,level->boundary_condition.num_blocks[shape])
   for(buffer=0;buffer<level->boundary_condition.num_blocks[shape];buffer++){
-    double scale = 1.0;
-    if(  faces[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
-    if(  edges[level->boundary_condition.blocks[shape][buffer].subtype])scale= 1.0;
-    if(corners[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0;
+    float scale = 1.0f;
+    if(  faces[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0f;
+    if(  edges[level->boundary_condition.blocks[shape][buffer].subtype])scale= 1.0f;
+    if(corners[level->boundary_condition.blocks[shape][buffer].subtype])scale=-1.0f;
 
     int i,j,k;
     const int       box = level->boundary_condition.blocks[shape][buffer].read.box; 
@@ -54,7 +54,7 @@ void apply_BCs_p1(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1);
@@ -125,7 +125,7 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
     // hard code for box to box BC's 
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
-    double * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
+    float * __restrict__  x = level->my_boxes[box].vectors[x_id] + level->my_boxes[box].ghosts*(1+jStride+kStride);
 
     // convert normal vector into pointer offsets...
     const int di = (((normal % 3)  )-1)*1;
@@ -144,7 +144,7 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
       for(j=0;j<dim_j;j++){
       for(i=0;i<dim_i;i++){
         int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-        x[ijk] = -2.0*x[ijk+stride] + 0.333333333333333333*x[ijk+stride2]; // 2pt stencil
+        x[ijk] = -2.0f*x[ijk+stride] + 0.333333333333333333f*x[ijk+stride2]; // 2pt stencil
       }}}
     }else if(edges[normal]){
       //
@@ -166,10 +166,10 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
       for(i=0;i<dim_i;i++){
         // 4pt stencil...
         int ijk = (i+ilo) + (j+jlo)*jStride + (k+klo)*kStride;
-        x[ijk] =   4.000000000000000000*x[ijk+  dr+  ds] 
-                 - 0.666666666666666667*x[ijk+2*dr+  ds]
-                 - 0.666666666666666667*x[ijk+  dr+2*ds]
-                 + 0.111111111111111111*x[ijk+2*dr+2*ds];
+        x[ijk] =   4.000000000000000000f*x[ijk+  dr+  ds] 
+                 - 0.666666666666666667f*x[ijk+2*dr+  ds]
+                 - 0.666666666666666667f*x[ijk+  dr+2*ds]
+                 + 0.111111111111111111f*x[ijk+2*dr+2*ds];
       }}}
     }else if(corners[normal]){
       //
@@ -195,14 +195,14 @@ void apply_BCs_p2(level_type * level, int x_id, int shape){
       //
       // 4pt stencil...
       int ijk = (ilo) + (jlo)*jStride + (klo)*kStride;
-      x[ijk] =  -8.000000000000000000*x[ijk+  di+  dj+  dk] 
-                +1.333333333333333333*x[ijk+2*di+  dj+  dk] 
-                +1.333333333333333333*x[ijk+  di+2*dj+  dk] 
-                +1.333333333333333333*x[ijk+  di+  dj+2*dk] 
-                -0.222222222222222222*x[ijk+2*di+2*dj+  dk] 
-                -0.222222222222222222*x[ijk+  di+2*dj+2*dk] 
-                -0.222222222222222222*x[ijk+2*di+  dj+2*dk] 
-                +0.037037037037037037*x[ijk+2*di+2*dj+2*dk];
+      x[ijk] =  -8.000000000000000000f*x[ijk+  di+  dj+  dk] 
+                +1.333333333333333333f*x[ijk+2*di+  dj+  dk] 
+                +1.333333333333333333f*x[ijk+  di+2*dj+  dk] 
+                +1.333333333333333333f*x[ijk+  di+  dj+2*dk] 
+                -0.222222222222222222f*x[ijk+2*di+2*dj+  dk] 
+                -0.222222222222222222f*x[ijk+  di+2*dj+2*dk] 
+                -0.222222222222222222f*x[ijk+2*di+  dj+2*dk] 
+                +0.037037037037037037f*x[ijk+2*di+2*dj+2*dk];
     }
 
   }

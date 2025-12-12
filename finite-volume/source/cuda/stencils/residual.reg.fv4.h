@@ -29,7 +29,7 @@
 //------------------------------------------------------------------------------------------------------------------------------
 template<int LOG_DIM_I, int BLOCK_I, int BLOCK_J, int BLOCK_K, int REBUILD>
 __launch_bounds__(128, 4) // force 25% occupancy on Kepler/Maxwell
-__global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_id, double a, double b){
+__global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_id, float a, float b){
   const int idim = level.my_blocks[blockIdx.x].dim.i;
   const int jdim = level.my_blocks[blockIdx.x].dim.j;
   const int kdim = min(level.my_blocks[blockIdx.x].dim.k, BLOCK_K);
@@ -46,25 +46,25 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
   const int ghosts  = level.my_boxes[box].ghosts;
   const int jStride = level.my_boxes[box].jStride;
   const int kStride = level.my_boxes[box].kStride;
-  const double h2inv = 1.0/(level.h*level.h);
+  const float h2inv = 1.0f/(level.h*level.h);
 
-        double * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+        float * __restrict__ rhs      = level.my_boxes[box].vectors[       rhs_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #ifdef USE_HELMHOLTZ
-  const double * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const float * __restrict__ alpha    = level.my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   #endif
-  const double * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const float * __restrict__ beta_i   = level.my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const float * __restrict__ beta_j   = level.my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const float * __restrict__ beta_k   = level.my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
 
-        double * __restrict__ res      = level.my_boxes[box].vectors[       res_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
-  const double * __restrict__ x        = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+        float * __restrict__ res      = level.my_boxes[box].vectors[       res_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+  const float * __restrict__ x        = level.my_boxes[box].vectors[         x_id] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
   ////////////////////////////////////////////////////
 
 
   // store k and k-1 planes into registers
   int ijk = threadIdx.x + threadIdx.y*jStride;
-  double xc1,xl1,xr1,xu1,xd1,xc0,xl0,xr0,xu0,xd0,xc2,xl2,xr2,xu2,xd2;
-  double xlu,xld,xru,xrd,xll,xrr,xuu,xdd,xbb,xff;
+  float xc1,xl1,xr1,xu1,xd1,xc0,xl0,xr0,xu0,xd0,xc2,xl2,xr2,xu2,xd2;
+  float xlu,xld,xru,xrd,xll,xrr,xuu,xdd,xbb,xff;
   xc1 = X(ijk);
   xl1 = X(ijk-1);
   xr1 = X(ijk+1);
@@ -83,20 +83,20 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
   xbb = X(ijk-2*kStride);
   xff = X(ijk+2*kStride);
   #endif
-  double bkc1,bkl1,bkr1,bku1,bkd1,bkc2,bkl2,bkr2,bku2,bkd2;
+  float bkc1,bkl1,bkr1,bku1,bkd1,bkc2,bkl2,bkr2,bku2,bkd2;
   bkc1 = BK(ijk);
   bkl1 = BK(ijk-1);
   bkr1 = BK(ijk+1);
   bku1 = BK(ijk-jStride);
   bkd1 = BK(ijk+jStride);
-  double bic1,bir1,bic0,bir0,bic2,bir2;
-  double biu,bid,bird,biru;
+  float bic1,bir1,bic0,bir0,bic2,bir2;
+  float biu,bid,bird,biru;
   bic1 = BI(ijk);
   bir1 = BI(ijk+1);
   bic0 = BI(ijk-kStride);
   bir0 = BI(ijk+1-kStride);
-  double bjc1,bjd1,bjc0,bjd0,bjc2,bjd2;
-  double bjl,bjr,bjld,bjrd;
+  float bjc1,bjd1,bjc0,bjd0,bjc2,bjd2;
+  float bjl,bjr,bjld,bjrd;
   bjc1 = BJ(ijk);
   bjd1 = BJ(ijk+jStride);
   bjc0 = BJ(ijk-kStride);
@@ -145,20 +145,20 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
 
 
     // apply operator
-    const double Ax  =
+    const float Ax  =
     #ifdef USE_HELMHOLTZ
     a*alpha[ijk]*xc1
     #endif
     -b*h2inv*(
     STENCIL_TWELFTH*(
-    + bic1 * ( 15.0*(xl1-xc1) - (xll-xr1) )
-    + bir1 * ( 15.0*(xr1-xc1) - (xrr-xl1) )
-    + bjc1 * ( 15.0*(xu1-xc1) - (xuu-xd1) )
-    + bjd1 * ( 15.0*(xd1-xc1) - (xdd-xu1) )
-    + bkc1 * ( 15.0*(xc0-xc1) - (xbb-xc2) )
-    + bkc2 * ( 15.0*(xc2-xc1) - (xff-xc0) ) )
+    + bic1 * ( 15.0f*(xl1-xc1) - (xll-xr1) )
+    + bir1 * ( 15.0f*(xr1-xc1) - (xrr-xl1) )
+    + bjc1 * ( 15.0f*(xu1-xc1) - (xuu-xd1) )
+    + bjd1 * ( 15.0f*(xd1-xc1) - (xdd-xu1) )
+    + bkc1 * ( 15.0f*(xc0-xc1) - (xbb-xc2) )
+    + bkc2 * ( 15.0f*(xc2-xc1) - (xff-xc0) ) )
 
-    + 0.25*STENCIL_TWELFTH*(
+    + 0.25f*STENCIL_TWELFTH*(
     + (bid  - biu ) * (xld - xd1 - xlu + xu1)
     + (bic2 - bic0) * (xl2 - xc2 - xl0 + xc0)
     + (bjr  - bjl ) * (xru - xr1 - xlu + xl1)
@@ -181,8 +181,8 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
     else {
       // subroutine in rebuild to calculate inverse D
       // repurpose variables: Aii == rhs, sumAbsAij == res
-      rhs[ijk] +=      (    x[ijk])*Ax; // add the effect of setting one grid point (i) to 1.0 to Aii
-      res[ijk] += fabs((1.0-x[ijk])*Ax);
+      rhs[ijk] +=      (    x[ijk])*Ax; // add the effect of setting one grid point (i) to 1.0f to Aii
+      res[ijk] += fabsf((1.0f-x[ijk])*Ax);
     }
 
     // store k+1 plane into registers
@@ -223,10 +223,10 @@ __global__ void residual_kernel(level_type level, int res_id, int x_id, int rhs_
   residual_kernel<log_dim_i, block_i, block_j, block_k, 0><<<num_blocks, dim3(block_i, block_j)>>>(level, res_id, x_id, rhs_id, a, b);
 
 extern "C"
-void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, double a, double b)
+void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, float a, float b)
 {
   int num_blocks = level.num_my_blocks; if(num_blocks<=0) return;
-  int log_dim_i = (int)log2((double)level.dim.i);
+  int log_dim_i = (int)log2f((float)level.dim.i);
   int block_dim_i = min(level.box_dim, BLOCKCOPY_TILE_I);
   int block_dim_k = min(level.box_dim, BLOCKCOPY_TILE_K);
 
@@ -239,10 +239,10 @@ void cuda_residual(level_type level, int res_id, int x_id, int rhs_id, double a,
   residual_kernel<log_dim_i, block_i, block_j, block_k, 1><<<num_blocks, dim3(block_i, block_j)>>>(level, sumAbsAij_id, x_id, Aii_id, a, b);
 
 extern "C"
-void cuda_rebuild(level_type level, int x_id, int Aii_id, int sumAbsAij_id, double a, double b)
+void cuda_rebuild(level_type level, int x_id, int Aii_id, int sumAbsAij_id, float a, float b)
 {
   int num_blocks = level.num_my_blocks; if(num_blocks<=0) return;
-  int log_dim_i = (int)log2((double)level.dim.i);
+  int log_dim_i = (int)log2f((float)level.dim.i);
   int block_dim_i = min(level.box_dim, BLOCKCOPY_TILE_I);
   int block_dim_k = min(level.box_dim, BLOCKCOPY_TILE_K);
 

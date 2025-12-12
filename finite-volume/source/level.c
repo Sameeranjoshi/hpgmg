@@ -176,9 +176,9 @@ void decompose_level_bisection_special(int *rank_of_box, int jStride, int kStrid
 
   // try and bisect the domain in the i-dimension
   if( (idim>=jdim)&&(idim>=kdim) ){
-    int dim0 = (int)(0.5*(double)idim + 0.50);
+    int dim0 = (int)(0.5f*(float)idim + 0.50f);
     int dim1 = idim-dim0;
-    int r0 = (int)( 0.5 + (double)ranks*(double)dim0/(double)idim );
+    int r0 = (int)( 0.5f + (float)ranks*(float)dim0/(float)idim );
     int r1 = ranks-r0;
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo     ,jlo,klo,dim0,jdim,kdim,rank_lo   ,r0); // lo
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo+dim0,jlo,klo,dim1,jdim,kdim,rank_lo+r0,r1); // hi
@@ -186,9 +186,9 @@ void decompose_level_bisection_special(int *rank_of_box, int jStride, int kStrid
   }
   // try and bisect the domain in the j-dimension
   if( (jdim>=idim)&&(jdim>=kdim) ){
-    int dim0 = (int)(0.5*(double)jdim + 0.50);
+    int dim0 = (int)(0.5f*(float)jdim + 0.50f);
     int dim1 = jdim-dim0;
-    int r0 = (int)( 0.5 + (double)ranks*(double)dim0/(double)jdim );
+    int r0 = (int)( 0.5f + (float)ranks*(float)dim0/(float)jdim );
     int r1 = ranks-r0;
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo,jlo     ,klo,idim,dim0,kdim,rank_lo   ,r0); // lo
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo,jlo+dim0,klo,idim,dim1,kdim,rank_lo+r0,r1); // hi
@@ -196,9 +196,9 @@ void decompose_level_bisection_special(int *rank_of_box, int jStride, int kStrid
   }
   // try and bisect the domain in the k-dimension
   if( (kdim>=idim)&&(kdim>=jdim) ){
-    int dim0 = (int)(0.5*(double)kdim + 0.50);
+    int dim0 = (int)(0.5f*(float)kdim + 0.50f);
     int dim1 = kdim-dim0;
-    int r0 = (int)( 0.5 + (double)ranks*(double)dim0/(double)kdim );
+    int r0 = (int)( 0.5f + (float)ranks*(float)dim0/(float)kdim );
     int r1 = ranks-r0;
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo,jlo,klo     ,idim,jdim,dim0,rank_lo   ,r0); // lo
     decompose_level_bisection_special(rank_of_box,jStride,kStride,ilo,jlo,klo+dim0,idim,jdim,dim1,rank_lo+r0,r1); // hi
@@ -220,7 +220,7 @@ void decompose_level_bisection(int *rank_of_box, int jStride, int kStride, int i
 
   // try and bisect the domain in the i-dimension
   if( (idim>=jdim)&&(idim>=kdim) ){
-    int dim0 = (int)(0.5*(double)idim + 0.50);
+    int dim0 = (int)(0.5f*(float)idim + 0.50f);
     int dim1 = idim-dim0;
     int sfc_delta = dim0*jdim*kdim;
     decompose_level_bisection(rank_of_box,jStride,kStride,ilo     ,jlo,klo,dim0,jdim,kdim,ranks,sfc_offset          ,sfc_max_length); // lo
@@ -230,7 +230,7 @@ void decompose_level_bisection(int *rank_of_box, int jStride, int kStride, int i
 
   // try and bisect the domain in the j-dimension
   if( (jdim>=idim)&&(jdim>=kdim) ){
-    int dim0 = (int)(0.5*(double)jdim + 0.50);
+    int dim0 = (int)(0.5f*(float)jdim + 0.50f);
     int dim1 = jdim-dim0;
     int sfc_delta = idim*dim0*kdim;
     decompose_level_bisection(rank_of_box,jStride,kStride,ilo,jlo     ,klo,idim,dim0,kdim,ranks,sfc_offset          ,sfc_max_length); // lo
@@ -240,7 +240,7 @@ void decompose_level_bisection(int *rank_of_box, int jStride, int kStride, int i
 
   // try and bisect the domain in the k-dimension
   if( (kdim>=idim)&&(kdim>=jdim) ){
-    int dim0 = (int)(0.5*(double)kdim + 0.50);
+    int dim0 = (int)(0.5f*(float)kdim + 0.50f);
     int dim1 = kdim-dim0;
     int sfc_delta = idim*jdim*dim0;
     decompose_level_bisection(rank_of_box,jStride,kStride,ilo,jlo,klo     ,idim,jdim,dim0,ranks,sfc_offset          ,sfc_max_length); // lo
@@ -333,8 +333,8 @@ void print_decomposition(level_type *level){
 #endif
 void append_block_to_list(blockCopy_type ** blocks, int *allocated_blocks, int *num_blocks,
                           int dim_i, int dim_j, int dim_k,
-                          int  read_box, double*  read_ptr, int  read_i, int  read_j, int  read_k, int  read_jStride, int  read_kStride, int  read_scale,
-                          int write_box, double* write_ptr, int write_i, int write_j, int write_k, int write_jStride, int write_kStride, int write_scale,
+                          int  read_box, float*  read_ptr, int  read_i, int  read_j, int  read_k, int  read_jStride, int  read_kStride, int  read_scale,
+                          int write_box, float* write_ptr, int write_i, int write_j, int write_k, int write_jStride, int write_kStride, int write_scale,
                           int blockcopy_tile_i, int blockcopy_tile_j, int blockcopy_tile_k, 
                           int subtype, int um_access_policy
                          ){
@@ -705,7 +705,7 @@ void build_exchange_ghosts(level_type *level, int shape){
   level->exchange_ghosts[shape].num_sends     =                  numSendRanks;
   level->exchange_ghosts[shape].send_ranks    =     (int*)malloc(numSendRanks*sizeof(int));
   level->exchange_ghosts[shape].send_sizes    =     (int*)malloc(numSendRanks*sizeof(int));
-  level->exchange_ghosts[shape].send_buffers  = (double**)malloc(numSendRanks*sizeof(double*));
+  level->exchange_ghosts[shape].send_buffers  = (float**)malloc(numSendRanks*sizeof(float*));
   if(numSendRanks>0){
   if(level->exchange_ghosts[shape].send_ranks  ==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].send_ranks\n",shape);exit(0);}
   if(level->exchange_ghosts[shape].send_sizes  ==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].send_sizes\n",shape);exit(0);}
@@ -724,19 +724,19 @@ void build_exchange_ghosts(level_type *level, int shape){
     for(neighbor=0;neighbor<numSendRanks;neighbor++){
       if(stage==1){
 #if defined(MPI_ALLOC_PINNED)
-             level->exchange_ghosts[shape].send_buffers[neighbor] = (double*)um_malloc_pinned(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double), level->um_access_policy);
+             level->exchange_ghosts[shape].send_buffers[neighbor] = (float*)um_malloc_pinned(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float), level->um_access_policy);
 	if (level->um_access_policy == UM_ACCESS_GPU)
           CUCHK( cudaMemset(level->exchange_ghosts[shape].send_buffers[neighbor],
                             0,
-                            level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double)) );
+                            level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float)) );
 	else
-      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double));
+      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float));
 #elif defined(MPI_ALLOC_ZERO_COPY)
-             level->exchange_ghosts[shape].send_buffers[neighbor] = (double*)um_malloc(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double), UM_ACCESS_BOTH);
-      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double));
+             level->exchange_ghosts[shape].send_buffers[neighbor] = (float*)um_malloc(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float), UM_ACCESS_BOTH);
+      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float));
 #else
-             level->exchange_ghosts[shape].send_buffers[neighbor] = (double*)um_malloc(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double), level->um_access_policy);
-      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(double));
+             level->exchange_ghosts[shape].send_buffers[neighbor] = (float*)um_malloc(level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float), level->um_access_policy);
+      memset(level->exchange_ghosts[shape].send_buffers[neighbor],                0,level->exchange_ghosts[shape].send_sizes[neighbor]*sizeof(float));
 #endif
           if(level->exchange_ghosts[shape].send_sizes[neighbor]>0)
           if(level->exchange_ghosts[shape].send_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].send_buffers[neighbor]\n",shape);exit(0);}
@@ -907,7 +907,7 @@ void build_exchange_ghosts(level_type *level, int shape){
   level->exchange_ghosts[shape].num_recvs     =                  numRecvRanks;
   level->exchange_ghosts[shape].recv_ranks    =     (int*)malloc(numRecvRanks*sizeof(int));
   level->exchange_ghosts[shape].recv_sizes    =     (int*)malloc(numRecvRanks*sizeof(int));
-  level->exchange_ghosts[shape].recv_buffers  = (double**)malloc(numRecvRanks*sizeof(double*));
+  level->exchange_ghosts[shape].recv_buffers  = (float**)malloc(numRecvRanks*sizeof(float*));
   if(numRecvRanks>0){
   if(level->exchange_ghosts[shape].recv_ranks  ==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].recv_ranks\n",shape);exit(0);}
   if(level->exchange_ghosts[shape].recv_sizes  ==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].recv_sizes\n",shape);exit(0);}
@@ -923,19 +923,19 @@ void build_exchange_ghosts(level_type *level, int shape){
     for(neighbor=0;neighbor<numRecvRanks;neighbor++){
       if(stage==1){
 #if defined(MPI_ALLOC_PINNED)
-             level->exchange_ghosts[shape].recv_buffers[neighbor] = (double*)um_malloc_pinned(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double), level->um_access_policy);
+             level->exchange_ghosts[shape].recv_buffers[neighbor] = (float*)um_malloc_pinned(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float), level->um_access_policy);
 	if (level->um_access_policy == UM_ACCESS_GPU)
           CUCHK( cudaMemset(level->exchange_ghosts[shape].recv_buffers[neighbor],
                             0,
-                            level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double)) );
+                            level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float)) );
 	else
-      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double));
+      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float));
 #elif defined(MPI_ALLOC_ZERO_COPY)
-             level->exchange_ghosts[shape].recv_buffers[neighbor] = (double*)um_malloc(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double), UM_ACCESS_BOTH);
-      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double));
+             level->exchange_ghosts[shape].recv_buffers[neighbor] = (float*)um_malloc(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float), UM_ACCESS_BOTH);
+      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float));
 #else
-             level->exchange_ghosts[shape].recv_buffers[neighbor] = (double*)um_malloc(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double), level->um_access_policy);
-      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(double));
+             level->exchange_ghosts[shape].recv_buffers[neighbor] = (float*)um_malloc(level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float), level->um_access_policy);
+      memset(level->exchange_ghosts[shape].recv_buffers[neighbor],                0,level->exchange_ghosts[shape].recv_sizes[neighbor]*sizeof(float));
 #endif
           if(level->exchange_ghosts[shape].recv_sizes[neighbor]>0)
           if(level->exchange_ghosts[shape].recv_buffers[neighbor]==NULL){fprintf(stderr,"malloc failed - exchange_ghosts[%d].recv_buffers[neighbor]\n",shape);exit(0);}
@@ -1035,8 +1035,8 @@ void build_exchange_ghosts(level_type *level, int shape){
 // if( (level->numVectors > 0) && (numVectors > level->numVectors) ) then allocate additional space for (numVectors-level->numVectors) and copy old leve->numVectors data
 void create_vectors(level_type *level, int numVectors){
   if(numVectors <= level->numVectors)return; // already have enough space
-  double          * old_vectors_base = level->vectors_base; // save a pointer to the originally allocated data for subsequent free()
-  double               * old_vector0 = NULL;
+  float          * old_vectors_base = level->vectors_base; // save a pointer to the originally allocated data for subsequent free()
+  float               * old_vector0 = NULL;
   if(level->numVectors>0)old_vector0 = level->vectors[0];   // save a pointer to old FP data to copy
 
 
@@ -1048,42 +1048,42 @@ void create_vectors(level_type *level, int numVectors){
 
   //#define VECTOR_MALLOC_BULK
   #ifdef  VECTOR_MALLOC_BULK
-    // allocate one aligned, double-precision array and divide it among vectors...
-    uint64_t malloc_size = (uint64_t)numVectors*level->num_my_boxes*level->box_volume*sizeof(double) + 4096;
-    level->vectors_base = (double*)um_malloc(malloc_size, level->um_access_policy);
+    // allocate one aligned, float-precision array and divide it among vectors...
+    uint64_t malloc_size = (uint64_t)numVectors*level->num_my_boxes*level->box_volume*sizeof(float) + 4096;
+    level->vectors_base = (float*)um_malloc(malloc_size, level->um_access_policy);
     if((numVectors>0)&&(level->vectors_base==NULL)){fprintf(stderr,"malloc failed - level->vectors_base\n");exit(0);}
-    double * tmpbuf = level->vectors_base;
+    float * tmpbuf = level->vectors_base;
     while( (uint64_t)(tmpbuf+level->box_ghosts*(1+level->box_jStride+level->box_kStride)) & 0xff ){tmpbuf++;} // align first *non-ghost* zone element of first component to a 256-Byte boundary
     uint64_t ofs;
     #ifdef _OPENMP
     #pragma omp parallel for
     #endif
-    for(ofs=0;ofs<(uint64_t)numVectors*level->num_my_boxes*level->box_volume;ofs++){tmpbuf[ofs]=0.0;} // Faster in MPI+OpenMP environments, but not NUMA-aware
+    for(ofs=0;ofs<(uint64_t)numVectors*level->num_my_boxes*level->box_volume;ofs++){tmpbuf[ofs]=0.0f;} // Faster in MPI+OpenMP environments, but not NUMA-aware
     // if there is existing FP data... copy it, then free old data and pointer array
     if(level->numVectors>0){
-      memcpy(tmpbuf,old_vector0,(uint64_t)level->numVectors*level->num_my_boxes*level->box_volume*sizeof(double)); // FIX... omp thread ???
+      memcpy(tmpbuf,old_vector0,(uint64_t)level->numVectors*level->num_my_boxes*level->box_volume*sizeof(float)); // FIX... omp thread ???
       if(old_vectors_base)um_free(old_vectors_base, level->um_access_policy); // free old data...
     }
     // allocate an array of pointers which point to the union of boxes for each vector
     // NOTE, this requires just one copyin per vector to an accelerator rather than requiring one copyin per box per vector
     if(level->numVectors>0)um_free(level->vectors, level->um_access_policy); // free any previously allocated vector array
-    level->vectors = (double **)um_malloc(numVectors*sizeof(double*), level->um_access_policy);
+    level->vectors = (float **)um_malloc(numVectors*sizeof(float*), level->um_access_policy);
     if((numVectors>0)&&(level->vectors==NULL)){fprintf(stderr,"malloc failed - level->vectors\n");exit(0);}
     uint64_t c;for(c=0;c<numVectors;c++){level->vectors[c] = tmpbuf + (uint64_t)c*level->num_my_boxes*level->box_volume;}
   #else
     // allocate vectors individually (simple, but may cause conflict misses)
-    double ** old_vectors = level->vectors;
-    level->vectors = (double **)um_malloc(numVectors*sizeof(double*), level->um_access_policy);
+    float ** old_vectors = level->vectors;
+    level->vectors = (float **)um_malloc(numVectors*sizeof(float*), level->um_access_policy);
     CUCHK( cudaDeviceSynchronize() );
     uint64_t c;
     for(c=                0;c<level->numVectors;c++){level->vectors[c] = old_vectors[c];}
     for(c=level->numVectors;c<       numVectors;c++){
-      level->vectors[c] = (double*)um_malloc((uint64_t)level->num_my_boxes*level->box_volume*sizeof(double), level->um_access_policy);
+      level->vectors[c] = (float*)um_malloc((uint64_t)level->num_my_boxes*level->box_volume*sizeof(float), level->um_access_policy);
       uint64_t ofs;
       #ifdef _OPENMP
       #pragma omp parallel for
       #endif
-      for(ofs=0;ofs<(uint64_t)level->num_my_boxes*level->box_volume;ofs++){level->vectors[c][ofs]=0.0;} // Faster in MPI+OpenMP environments, but not NUMA-aware
+      for(ofs=0;ofs<(uint64_t)level->num_my_boxes*level->box_volume;ofs++){level->vectors[c][ofs]=0.0f;} // Faster in MPI+OpenMP environments, but not NUMA-aware
     }
     um_free(old_vectors, level->um_access_policy);
   #endif
@@ -1100,7 +1100,7 @@ void create_vectors(level_type *level, int numVectors){
     int b=i + j*jStride + k*kStride;
     if(level->rank_of_box[b]==level->my_rank){
       if(level->numVectors>0)um_free(level->my_boxes[box].vectors, level->um_access_policy); // free previously allocated vector array
-      level->my_boxes[box].vectors = (double **)um_malloc(numVectors*sizeof(double*), level->um_access_policy);
+      level->my_boxes[box].vectors = (float **)um_malloc(numVectors*sizeof(float*), level->um_access_policy);
       if((numVectors>0)&&(level->my_boxes[box].vectors==NULL)){fprintf(stderr,"malloc failed - level->my_boxes[box].vectors\n");exit(0);}
       uint64_t c;for(c=0;c<numVectors;c++){level->my_boxes[box].vectors[c] = level->vectors[c] + (uint64_t)box*level->box_volume;}
       level->my_boxes[box].numVectors = numVectors;
@@ -1176,7 +1176,7 @@ void create_level(level_type *level, int boxes_in_i, int box_dim, int box_ghosts
   level->num_my_blocks    = 0;
   level->allocated_blocks = 0;
   level->use_cuda         = 0;
-  level->tag              = log2(level->dim.i);
+  level->tag              = log2f(level->dim.i);
   level->um_access_policy = UM_ACCESS_CPU;
 
   // determine if this level is big enough so that it makes sense to run on GPU
@@ -1298,16 +1298,16 @@ void create_level(level_type *level, int boxes_in_i, int box_dim, int box_ghosts
     int i,j;
     int kStride = level->my_boxes[0].kStride;
     int jStride = level->my_boxes[0].jStride;
-    level->RedBlack_FP = (double*)um_malloc(2*kStride*sizeof(double), level->um_access_policy);
+    level->RedBlack_FP = (float*)um_malloc(2*kStride*sizeof(float), level->um_access_policy);
     for(j=0-level->box_ghosts;j<level->box_dim+level->box_ghosts;j++){
     for(i=0-level->box_ghosts;i<level->box_dim+level->box_ghosts;i++){
       int ij = (i+level->box_ghosts) + (j+level->box_ghosts)*jStride;
       if((i^j^1)&0x1){
-        level->RedBlack_FP[ij        ]=1.0;
-        level->RedBlack_FP[ij+kStride]=0.0;
+        level->RedBlack_FP[ij        ]=1.0f;
+        level->RedBlack_FP[ij+kStride]=0.0f;
       }else{
-        level->RedBlack_FP[ij        ]=0.0;
-        level->RedBlack_FP[ij+kStride]=1.0;
+        level->RedBlack_FP[ij        ]=0.0f;
+        level->RedBlack_FP[ij+kStride]=1.0f;
       }
     }}
   }
@@ -1323,12 +1323,12 @@ void create_level(level_type *level, int boxes_in_i, int box_dim, int box_ghosts
   // duplicate MPI_COMM_WORLD to be the communicator for each level
   #ifdef USE_MPI
   if(my_rank==0){fprintf(stdout,"  Duplicating MPI_COMM_WORLD... ");fflush(stdout);}
-  double time_start = MPI_Wtime();
+  float time_start = MPI_Wtime();
   MPI_Comm_dup(MPI_COMM_WORLD,&level->MPI_COMM_ALLREDUCE);
-  double time_end = MPI_Wtime();
-  double time_in_comm_dup = 0;
-  double time_in_comm_dup_send = time_end-time_start;
-  MPI_Allreduce(&time_in_comm_dup_send,&time_in_comm_dup,1,MPI_DOUBLE,MPI_MAX,MPI_COMM_WORLD);
+  float time_end = MPI_Wtime();
+  float time_in_comm_dup = 0;
+  float time_in_comm_dup_send = time_end-time_start;
+  MPI_Allreduce(&time_in_comm_dup_send,&time_in_comm_dup,1,MPI_FLOAT,MPI_MAX,MPI_COMM_WORLD);
   if(my_rank==0){fprintf(stdout,"done (%0.6f seconds)\n",time_in_comm_dup);fflush(stdout);}
   #endif
 
@@ -1338,7 +1338,7 @@ void create_level(level_type *level, int boxes_in_i, int box_dim, int box_ghosts
   int BoxesPerProcessSend = level->num_my_boxes;
   MPI_Allreduce(&BoxesPerProcessSend,&BoxesPerProcess,1,MPI_INT,MPI_MAX,MPI_COMM_WORLD);
   #endif
-  if(my_rank==0){fprintf(stdout,"  Calculating boxes per process... target=%0.3f, max=%d\n",(double)TotalBoxes/(double)num_ranks,BoxesPerProcess);}
+  if(my_rank==0){fprintf(stdout,"  Calculating boxes per process... target=%0.3f, max=%d\n",(float)TotalBoxes/(float)num_ranks,BoxesPerProcess);}
 }
 
 

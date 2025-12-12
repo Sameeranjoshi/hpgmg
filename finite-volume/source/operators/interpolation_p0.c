@@ -3,7 +3,7 @@
 // SWWilliams@lbl.gov
 // Lawrence Berkeley National Lab
 //------------------------------------------------------------------------------------------------------------------------------
-static inline void interpolation_p0_block(level_type *level_f, int id_f, double prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
+static inline void interpolation_p0_block(level_type *level_f, int id_f, float prescale_f, level_type *level_c, int id_c, blockCopy_type *block){
   // interpolate 3D array from read_i,j,k of read[] to write_i,j,k in write[]
   int   dim_i       = block->dim.i<<1; // calculate the dimensions of the resultant fine block
   int   dim_j       = block->dim.j<<1;
@@ -21,8 +21,8 @@ static inline void interpolation_p0_block(level_type *level_f, int id_f, double 
   int write_jStride = block->write.jStride;
   int write_kStride = block->write.kStride;
 
-  double * __restrict__  read = block->read.ptr;
-  double * __restrict__ write = block->write.ptr;
+  float * __restrict__  read = block->read.ptr;
+  float * __restrict__ write = block->write.ptr;
   if(block->read.box >=0){
      read = level_c->my_boxes[ block->read.box].vectors[id_c] + level_c->my_boxes[ block->read.box].ghosts*(1+level_c->my_boxes[ block->read.box].jStride+level_c->my_boxes[ block->read.box].kStride);
      read_jStride = level_c->my_boxes[block->read.box ].jStride;
@@ -41,7 +41,7 @@ static inline void interpolation_p0_block(level_type *level_f, int id_f, double 
   for(i=0;i<dim_i;i++){
     int write_ijk = ((i   )+write_i) + (((j   )+write_j)*write_jStride) + (((k   )+write_k)*write_kStride);
     int  read_ijk = ((i>>1)+ read_i) + (((j>>1)+ read_j)* read_jStride) + (((k>>1)+ read_k)* read_kStride);
-    write[write_ijk] = prescale_f*write[write_ijk] + read[read_ijk]; // CAREFUL !!!  you must guarantee you zero'd the MPI buffers(write[]) and destination boxes at some point to avoid 0.0*NaN or 0.0*inf
+    write[write_ijk] = prescale_f*write[write_ijk] + read[read_ijk]; // CAREFUL !!!  you must guarantee you zero'd the MPI buffers(write[]) and destination boxes at some point to avoid 0.0f*NaN or 0.0f*inf
   }}}
 
 }
@@ -49,7 +49,7 @@ static inline void interpolation_p0_block(level_type *level_f, int id_f, double 
 
 //------------------------------------------------------------------------------------------------------------------------------
 // perform a (inter-level) piecewise constant interpolation
-void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){
+void interpolation_p0(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){
   double _timeCommunicationStart = getTime();
   double _timeStart,_timeEnd;
   int my_tag = (level_f->tag<<4) | 0x6;
@@ -73,7 +73,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_f->interpolation.num_recvs;n++){
       MPI_Irecv(level_f->interpolation.recv_buffers[n],
                 level_f->interpolation.recv_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_f->interpolation.recv_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -81,7 +81,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
       );
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_recv += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_recv += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -89,18 +89,18 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
   if(level_c->interpolation.num_blocks[0]>0){
     _timeStart = getTime();
     if(level_f->use_cuda) {
-      cuda_interpolation_p0(*level_f,id_f,0.0,*level_c,id_c,level_c->interpolation,0);
+      cuda_interpolation_p0(*level_f,id_f,0.0f,*level_c,id_c,level_c->interpolation,0);
       CUCHK( cudaDeviceSynchronize() ); // synchronize so the CPU/NIC sees the updated buffers
     }
     else {
     PRAGMA_THREAD_ACROSS_BLOCKS(level_f,buffer,level_c->interpolation.num_blocks[0])
     for(buffer=0;buffer<level_c->interpolation.num_blocks[0];buffer++){
       // !!! prescale==0 because you don't want to increment the MPI buffer
-      interpolation_p0_block(level_f,id_f,0.0,level_c,id_c,&level_c->interpolation.blocks[0][buffer]);
+      interpolation_p0_block(level_f,id_f,0.0f,level_c,id_c,&level_c->interpolation.blocks[0][buffer]);
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_pack += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_pack += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -113,7 +113,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
     for(n=0;n<level_c->interpolation.num_sends;n++){
       MPI_Isend(level_c->interpolation.send_buffers[n],
                 level_c->interpolation.send_sizes[n],
-                MPI_DOUBLE,
+                MPI_FLOAT,
                 level_c->interpolation.send_ranks[n],
                 my_tag,
                 MPI_COMM_WORLD,
@@ -121,7 +121,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
       );
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_send += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_send += (double)(_timeEnd-_timeStart);
   }
   #endif
 
@@ -139,7 +139,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_local += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_local += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -150,7 +150,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
     MPI_Waitall(nMessages,level_f->interpolation.requests,level_f->interpolation.status);
     //cudaDeviceSynchronize();  // this is not necessary
     _timeEnd = getTime();
-    level_f->timers.interpolation_wait += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_wait += (double)(_timeEnd-_timeStart);
   }
 
 
@@ -167,7 +167,7 @@ void interpolation_p0(level_type * level_f, int id_f, double prescale_f, level_t
     }
     }
     _timeEnd = getTime();
-    level_f->timers.interpolation_unpack += (_timeEnd-_timeStart);
+    level_f->timers.interpolation_unpack += (double)(_timeEnd-_timeStart);
   }
   #endif 
  

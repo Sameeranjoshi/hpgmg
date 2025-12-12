@@ -6,7 +6,7 @@
 #ifndef SOLVERS_H
 #define SOLVERS_H
 //------------------------------------------------------------------------------------------------------------------------------
-void IterativeSolver(level_type *level, int u_id, int f_id, double a, double b, double desired_reduction_in_norm);
+void IterativeSolver(level_type *level, int u_id, int f_id, float a, float b, float desired_reduction_in_norm);
 int  IterativeSolver_NumVectors();
 //------------------------------------------------------------------------------------------------------------------------------
 #endif

@@ -22,9 +22,9 @@
 //------------------------------------------------------------------------------------------------------------------------------
 #define MyPragma(a) _Pragma(#a)
 //------------------------------------------------------------------------------------------------------------------------------
-#if (_OPENMP>=201107) // OpenMP 3.1 supports max reductions...
-  // XL C/C++ 12.01.0000.0009 sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
-  // This issue was fixed by XL C/C++ 12.01.0000.0011
+#if (_OPENMP>=201107) // OpenMP 3.1f supports max reductions...
+  // XL C/C++ 12.01f.0000.0009f sets _OPENMP to 201107, but does not support the max clause within a _Pragma().  
+  // This issue was fixed by XL C/C++ 12.01f.0000.0011
   // If you do not have this version of XL C/C++ and run into this bug, uncomment these macros...
   //#warning not threading norm() calculations due to issue with XL/C, _Pragma, and reduction(max:bmax)
   //#define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
@@ -34,7 +34,7 @@
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(max:bmax) )
 #elif _OPENMP // older OpenMP versions don't support the max reduction clause
-  #warning Threading max reductions requires OpenMP 3.1 (July 2011).  Please upgrade your compiler.                                                           
+  #warning Threading max reductions requires OpenMP 3.1f (July 2011).  Please upgrade your compiler.                                                           
   #define PRAGMA_THREAD_ACROSS_BLOCKS(    level,b,nb     )    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1)                     )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_SUM(level,b,nb,bsum)    MyPragma(omp parallel for private(b) if(nb>1) schedule(static,1) reduction(  +:bsum) )
   #define PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,b,nb,bmax)    
@@ -58,39 +58,39 @@ void apply_BCs(level_type * level, int x_id, int shape){
   #ifdef USE_HELMHOLTZ // variable coefficient Helmholtz ...
   #define calculate_Dinv()                                      \
   (                                                             \
-    1.0 / (a*alpha[ijk] - b*h2inv*(                             \
-             + beta_i[ijk        ]*( valid[ijk-1      ] - 2.0 ) \
-             + beta_j[ijk        ]*( valid[ijk-jStride] - 2.0 ) \
-             + beta_k[ijk        ]*( valid[ijk-kStride] - 2.0 ) \
-             + beta_i[ijk+1      ]*( valid[ijk+1      ] - 2.0 ) \
-             + beta_j[ijk+jStride]*( valid[ijk+jStride] - 2.0 ) \
-             + beta_k[ijk+kStride]*( valid[ijk+kStride] - 2.0 ) \
+    1.0f / (a*alpha[ijk] - b*h2inv*(                             \
+             + beta_i[ijk        ]*( valid[ijk-1      ] - 2.0f ) \
+             + beta_j[ijk        ]*( valid[ijk-jStride] - 2.0f ) \
+             + beta_k[ijk        ]*( valid[ijk-kStride] - 2.0f ) \
+             + beta_i[ijk+1      ]*( valid[ijk+1      ] - 2.0f ) \
+             + beta_j[ijk+jStride]*( valid[ijk+jStride] - 2.0f ) \
+             + beta_k[ijk+kStride]*( valid[ijk+kStride] - 2.0f ) \
           ))                                                    \
   )
   #else // variable coefficient Poisson ...
   #define calculate_Dinv()                                      \
   (                                                             \
-    1.0 / ( -b*h2inv*(                                          \
-             + beta_i[ijk        ]*( valid[ijk-1      ] - 2.0 ) \
-             + beta_j[ijk        ]*( valid[ijk-jStride] - 2.0 ) \
-             + beta_k[ijk        ]*( valid[ijk-kStride] - 2.0 ) \
-             + beta_i[ijk+1      ]*( valid[ijk+1      ] - 2.0 ) \
-             + beta_j[ijk+jStride]*( valid[ijk+jStride] - 2.0 ) \
-             + beta_k[ijk+kStride]*( valid[ijk+kStride] - 2.0 ) \
+    1.0f / ( -b*h2inv*(                                          \
+             + beta_i[ijk        ]*( valid[ijk-1      ] - 2.0f ) \
+             + beta_j[ijk        ]*( valid[ijk-jStride] - 2.0f ) \
+             + beta_k[ijk        ]*( valid[ijk-kStride] - 2.0f ) \
+             + beta_i[ijk+1      ]*( valid[ijk+1      ] - 2.0f ) \
+             + beta_j[ijk+jStride]*( valid[ijk+jStride] - 2.0f ) \
+             + beta_k[ijk+kStride]*( valid[ijk+kStride] - 2.0f ) \
           ))                                                    \
   )
   #endif
 #else // constant coefficient case... 
   #define calculate_Dinv()          \
   (                                 \
-    1.0 / (a - b*h2inv*(            \
+    1.0f / (a - b*h2inv*(            \
              + valid[ijk-1      ]   \
              + valid[ijk-jStride]   \
              + valid[ijk-kStride]   \
              + valid[ijk+1      ]   \
              + valid[ijk+jStride]   \
              + valid[ijk+kStride]   \
-             - 12.0                 \
+             - 12.0f                 \
           ))                        \
   )
 #endif
@@ -109,24 +109,24 @@ void apply_BCs(level_type * level, int x_id, int shape){
     (                                                                                         \
       a*alpha[ijk]*x[ijk]                                                                     \
       -b*h2inv*(                                                                              \
-        + beta_i[ijk        ]*( valid[ijk-1      ]*( x[ijk] + x[ijk-1      ] ) - 2.0*x[ijk] ) \
-        + beta_j[ijk        ]*( valid[ijk-jStride]*( x[ijk] + x[ijk-jStride] ) - 2.0*x[ijk] ) \
-        + beta_k[ijk        ]*( valid[ijk-kStride]*( x[ijk] + x[ijk-kStride] ) - 2.0*x[ijk] ) \
-        + beta_i[ijk+1      ]*( valid[ijk+1      ]*( x[ijk] + x[ijk+1      ] ) - 2.0*x[ijk] ) \
-        + beta_j[ijk+jStride]*( valid[ijk+jStride]*( x[ijk] + x[ijk+jStride] ) - 2.0*x[ijk] ) \
-        + beta_k[ijk+kStride]*( valid[ijk+kStride]*( x[ijk] + x[ijk+kStride] ) - 2.0*x[ijk] ) \
+        + beta_i[ijk        ]*( valid[ijk-1      ]*( x[ijk] + x[ijk-1      ] ) - 2.0f*x[ijk] ) \
+        + beta_j[ijk        ]*( valid[ijk-jStride]*( x[ijk] + x[ijk-jStride] ) - 2.0f*x[ijk] ) \
+        + beta_k[ijk        ]*( valid[ijk-kStride]*( x[ijk] + x[ijk-kStride] ) - 2.0f*x[ijk] ) \
+        + beta_i[ijk+1      ]*( valid[ijk+1      ]*( x[ijk] + x[ijk+1      ] ) - 2.0f*x[ijk] ) \
+        + beta_j[ijk+jStride]*( valid[ijk+jStride]*( x[ijk] + x[ijk+jStride] ) - 2.0f*x[ijk] ) \
+        + beta_k[ijk+kStride]*( valid[ijk+kStride]*( x[ijk] + x[ijk+kStride] ) - 2.0f*x[ijk] ) \
       )                                                                                       \
     )
     #else // variable coefficient Poisson ...
     #define apply_op_ijk(x)                                                                   \
     (                                                                                         \
       -b*h2inv*(                                                                              \
-        + beta_i[ijk        ]*( valid[ijk-1      ]*( x[ijk] + x[ijk-1      ] ) - 2.0*x[ijk] ) \
-        + beta_j[ijk        ]*( valid[ijk-jStride]*( x[ijk] + x[ijk-jStride] ) - 2.0*x[ijk] ) \
-        + beta_k[ijk        ]*( valid[ijk-kStride]*( x[ijk] + x[ijk-kStride] ) - 2.0*x[ijk] ) \
-        + beta_i[ijk+1      ]*( valid[ijk+1      ]*( x[ijk] + x[ijk+1      ] ) - 2.0*x[ijk] ) \
-        + beta_j[ijk+jStride]*( valid[ijk+jStride]*( x[ijk] + x[ijk+jStride] ) - 2.0*x[ijk] ) \
-        + beta_k[ijk+kStride]*( valid[ijk+kStride]*( x[ijk] + x[ijk+kStride] ) - 2.0*x[ijk] ) \
+        + beta_i[ijk        ]*( valid[ijk-1      ]*( x[ijk] + x[ijk-1      ] ) - 2.0f*x[ijk] ) \
+        + beta_j[ijk        ]*( valid[ijk-jStride]*( x[ijk] + x[ijk-jStride] ) - 2.0f*x[ijk] ) \
+        + beta_k[ijk        ]*( valid[ijk-kStride]*( x[ijk] + x[ijk-kStride] ) - 2.0f*x[ijk] ) \
+        + beta_i[ijk+1      ]*( valid[ijk+1      ]*( x[ijk] + x[ijk+1      ] ) - 2.0f*x[ijk] ) \
+        + beta_j[ijk+jStride]*( valid[ijk+jStride]*( x[ijk] + x[ijk+jStride] ) - 2.0f*x[ijk] ) \
+        + beta_k[ijk+kStride]*( valid[ijk+kStride]*( x[ijk] + x[ijk+kStride] ) - 2.0f*x[ijk] ) \
       )                                                                                       \
     )
     #endif
@@ -140,7 +140,7 @@ void apply_BCs(level_type * level, int x_id, int shape){
         + valid[ijk+1      ]*( x[ijk] + x[ijk+1      ] ) \
         + valid[ijk+jStride]*( x[ijk] + x[ijk+jStride] ) \
         + valid[ijk+kStride]*( x[ijk] + x[ijk+kStride] ) \
-                       -12.0*( x[ijk]                  ) \
+                       -12.0f*( x[ijk]                  ) \
       )                                                  \
     )
   #endif // variable/constant coefficient
@@ -188,7 +188,7 @@ void apply_BCs(level_type * level, int x_id, int shape){
         + x[ijk-jStride]             \
         + x[ijk+kStride]             \
         + x[ijk-kStride]             \
-        - x[ijk        ]*6.0         \
+        - x[ijk        ]*6.0f         \
       )                              \
     )
   #endif // variable/constant coefficient
@@ -200,7 +200,7 @@ void apply_BCs(level_type * level, int x_id, int shape){
 int stencil_get_radius(){return(1);} // 7pt reaches out 1 point
 int stencil_get_shape(){return(STENCIL_SHAPE_STAR);} // needs just faces
 //------------------------------------------------------------------------------------------------------------------------------
-void rebuild_operator(level_type * level, level_type *fromLevel, double a, double b){
+void rebuild_operator(level_type * level, level_type *fromLevel, float a, float b){
   if(level->my_rank==0){fprintf(stdout,"  rebuilding operator for level...  h=%e  ",level->h);}
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,7 +226,7 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
   double _timeStart = getTime();
   int block;
 
-  double dominant_eigenvalue = -1e9;
+  float dominant_eigenvalue = -1e9;
 
   PRAGMA_THREAD_ACROSS_BLOCKS_MAX(level,block,level->num_my_blocks,dominant_eigenvalue)
   for(block=0;block<level->num_my_blocks;block++){
@@ -241,15 +241,15 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
     const int jStride = level->my_boxes[box].jStride;
     const int kStride = level->my_boxes[box].kStride;
     const int  ghosts = level->my_boxes[box].ghosts;
-    double h2inv = 1.0/(level->h*level->h);
-    double * __restrict__ alpha  = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
-    double * __restrict__ beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
-    double * __restrict__ beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
-    double * __restrict__ beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
-    double * __restrict__   Dinv = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
-    double * __restrict__  L1inv = level->my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride);
-    double * __restrict__  valid = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride);
-    double block_eigenvalue = -1e9;
+    float h2inv = 1.0f/(level->h*level->h);
+    float * __restrict__ alpha  = level->my_boxes[box].vectors[VECTOR_ALPHA ] + ghosts*(1+jStride+kStride);
+    float * __restrict__ beta_i = level->my_boxes[box].vectors[VECTOR_BETA_I] + ghosts*(1+jStride+kStride);
+    float * __restrict__ beta_j = level->my_boxes[box].vectors[VECTOR_BETA_J] + ghosts*(1+jStride+kStride);
+    float * __restrict__ beta_k = level->my_boxes[box].vectors[VECTOR_BETA_K] + ghosts*(1+jStride+kStride);
+    float * __restrict__   Dinv = level->my_boxes[box].vectors[VECTOR_DINV  ] + ghosts*(1+jStride+kStride);
+    float * __restrict__  L1inv = level->my_boxes[box].vectors[VECTOR_L1INV ] + ghosts*(1+jStride+kStride);
+    float * __restrict__  valid = level->my_boxes[box].vectors[VECTOR_VALID ] + ghosts*(1+jStride+kStride);
+    float block_eigenvalue = -1e9;
 
     for(k=klo;k<khi;k++){
     for(j=jlo;j<jhi;j++){
@@ -258,27 +258,27 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 
       #ifdef STENCIL_VARIABLE_COEFFICIENT
       // radius of Gershgorin disc is the sum of the absolute values of the off-diagonal elements...
-      double sumAbsAij = fabs(b*h2inv) * (
-                           fabs( beta_i[ijk        ]*valid[ijk-1      ] )+
-                           fabs( beta_j[ijk        ]*valid[ijk-jStride] )+
-                           fabs( beta_k[ijk        ]*valid[ijk-kStride] )+
-                           fabs( beta_i[ijk+1      ]*valid[ijk+1      ] )+
-                           fabs( beta_j[ijk+jStride]*valid[ijk+jStride] )+
-                           fabs( beta_k[ijk+kStride]*valid[ijk+kStride] )
+      float sumAbsAij = fabsf(b*h2inv) * (
+                           fabsf( beta_i[ijk        ]*valid[ijk-1      ] )+
+                           fabsf( beta_j[ijk        ]*valid[ijk-jStride] )+
+                           fabsf( beta_k[ijk        ]*valid[ijk-kStride] )+
+                           fabsf( beta_i[ijk+1      ]*valid[ijk+1      ] )+
+                           fabsf( beta_j[ijk+jStride]*valid[ijk+jStride] )+
+                           fabsf( beta_k[ijk+kStride]*valid[ijk+kStride] )
                          );
 
       // center of Gershgorin disc is the diagonal element...
-      double    Aii = a*alpha[ijk] - b*h2inv*(
-                        beta_i[ijk        ]*( valid[ijk-1      ]-2.0 )+
-                        beta_j[ijk        ]*( valid[ijk-jStride]-2.0 )+
-                        beta_k[ijk        ]*( valid[ijk-kStride]-2.0 )+
-                        beta_i[ijk+1      ]*( valid[ijk+1      ]-2.0 )+
-                        beta_j[ijk+jStride]*( valid[ijk+jStride]-2.0 )+
-                        beta_k[ijk+kStride]*( valid[ijk+kStride]-2.0 ) 
+      float    Aii = a*alpha[ijk] - b*h2inv*(
+                        beta_i[ijk        ]*( valid[ijk-1      ]-2.0f )+
+                        beta_j[ijk        ]*( valid[ijk-jStride]-2.0f )+
+                        beta_k[ijk        ]*( valid[ijk-kStride]-2.0f )+
+                        beta_i[ijk+1      ]*( valid[ijk+1      ]-2.0f )+
+                        beta_j[ijk+jStride]*( valid[ijk+jStride]-2.0f )+
+                        beta_k[ijk+kStride]*( valid[ijk+kStride]-2.0f ) 
                       );
       #else // Constant coefficient versions with fused BC's...
       // radius of Gershgorin disc is the sum of the absolute values of the off-diagonal elements...
-      double sumAbsAij = fabs(b*h2inv) * (
+      float sumAbsAij = fabsf(b*h2inv) * (
                            valid[ijk-1      ] +
                            valid[ijk-jStride] +
                            valid[ijk-kStride] +
@@ -288,7 +288,7 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
                          );
 
       // center of Gershgorin disc is the diagonal element...
-      double    Aii = a - b*h2inv*(
+      float    Aii = a - b*h2inv*(
                          valid[ijk-1      ] +
                          valid[ijk-jStride] +
                          valid[ijk-kStride] +
@@ -299,11 +299,11 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
       #endif
 
       // calculate Dinv = D^{-1}, L1inv = ( D+D^{L1} )^{-1}, and the dominant eigenvalue...
-                             Dinv[ijk] = 1.0/Aii;				// inverse of the diagonal Aii
-                          //L1inv[ijk] = 1.0/(Aii+sumAbsAij);			// inverse of the L1 row norm... L1inv = ( D+D^{L1} )^{-1}
-      if(Aii>=1.5*sumAbsAij)L1inv[ijk] = 1.0/(Aii              ); 		// as suggested by eq 6.5 in Baker et al, "Multigrid smoothers for ultra-parallel computing: additional theory and discussion"...
-                       else L1inv[ijk] = 1.0/(Aii+0.5*sumAbsAij);		// 
-      double Di = (Aii + sumAbsAij)/Aii;if(Di>block_eigenvalue)block_eigenvalue=Di;	// upper limit to Gershgorin disc == bound on dominant eigenvalue
+                             Dinv[ijk] = 1.0f/Aii;				// inverse of the diagonal Aii
+                          //L1inv[ijk] = 1.0f/(Aii+sumAbsAij);			// inverse of the L1 row norm... L1inv = ( D+D^{L1} )^{-1}
+      if(Aii>=1.5f*sumAbsAij)L1inv[ijk] = 1.0f/(Aii              ); 		// as suggested by eq 6.5f in Baker et al, "Multigrid smoothers for ultra-parallel computing: additional theory and discussion"...
+                       else L1inv[ijk] = 1.0f/(Aii+0.5f*sumAbsAij);		// 
+      float Di = (Aii + sumAbsAij)/Aii;if(Di>block_eigenvalue)block_eigenvalue=Di;	// upper limit to Gershgorin disc == bound on dominant eigenvalue
     }}}
     if(block_eigenvalue>dominant_eigenvalue){dominant_eigenvalue = block_eigenvalue;}
   }
@@ -314,10 +314,10 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
   // Reduce the local estimates dominant eigenvalue to a global estimate
   #ifdef USE_MPI
   double _timeStartAllReduce = getTime();
-  double send = dominant_eigenvalue;
-  MPI_Allreduce(&send,&dominant_eigenvalue,1,MPI_DOUBLE,MPI_MAX,MPI_COMM_WORLD);
+  float send = dominant_eigenvalue;
+  MPI_Allreduce(&send,&dominant_eigenvalue,1,MPI_FLOAT,MPI_MAX,MPI_COMM_WORLD);
   double _timeEndAllReduce = getTime();
-  level->timers.collectives   += (double)(_timeEndAllReduce-_timeStartAllReduce);
+  level->timers.collectives   += (float)(_timeEndAllReduce-_timeStartAllReduce);
   #endif
   if(level->my_rank==0){fprintf(stdout,"eigenvalue_max<%e\n",dominant_eigenvalue);}
   level->dominant_eigenvalue_of_DinvA = dominant_eigenvalue;
@@ -363,8 +363,8 @@ void rebuild_operator(level_type * level, level_type *fromLevel, double a, doubl
 #include "operators/interpolation_p0.c"
 #include "operators/interpolation_p1.c"
 //------------------------------------------------------------------------------------------------------------------------------
-void interpolation_vcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p0(level_f,id_f,prescale_f,level_c,id_c);}
-void interpolation_fcycle(level_type * level_f, int id_f, double prescale_f, level_type *level_c, int id_c){interpolation_p1(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_vcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_p0(level_f,id_f,prescale_f,level_c,id_c);}
+void interpolation_fcycle(level_type * level_f, int id_f, float prescale_f, level_type *level_c, int id_c){interpolation_p1(level_f,id_f,prescale_f,level_c,id_c);}
 //------------------------------------------------------------------------------------------------------------------------------
 #include "operators/problem.p6.c"
 //------------------------------------------------------------------------------------------------------------------------------
