@@ -1110,7 +1110,7 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, double a, doub
   int e_id = u_id; // __u FIX
   int R_id = VECTOR_F_MINUS_AV;
   int v;
-  int maxVCycles = 20;
+  int maxVCycles = 100;
 
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
   #ifdef _OPENMP

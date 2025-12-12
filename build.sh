@@ -8,10 +8,10 @@ NVCC=`which nvcc`
 # set gpu architectures to compile for
 #CUDA_ARCH+="-gencode arch=compute_60,code=sm_60 "
 #CUDA_ARCH+="-gencode arch=compute_70,code=sm_70 "
-# CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
-CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
-# FOLDER="A100build"
-FOLDER="H100build"
+CUDA_ARCH+="-gencode arch=compute_80,code=sm_80 "
+# CUDA_ARCH+="-gencode arch=compute_90,code=sm_90 "
+FOLDER="A100build_fp64"
+# FOLDER="H100build"
 
 # main tile size
 OPTS+="-DBLOCKCOPY_TILE_I=32 "
