@@ -12,5 +12,5 @@ PETSC_ARCH =
 PYTHON = /uufs/chpc.utah.edu/sys/installdir/r8/python/3.11.3/bin/python
 SRCDIR = /uufs/chpc.utah.edu/common/home/u1418973/hpgmg/hpgmg-cuda
 CONFIG_FV = y
-CONFIG_FV_CPPFLAGS = -DUSE_BICGSTAB=1 -DUSE_SUBCOMM=1 -DUSE_VCYCLES=1 -DUSE_JACOBI=1
+CONFIG_FV_CPPFLAGS = -DUSE_CG=1 -DUSE_SUBCOMM=1 -DUSE_VCYCLES=1 -DUSE_JACOBI=1
 include $(SRCDIR)/base.mk
