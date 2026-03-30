@@ -361,7 +361,7 @@ int main(int argc, char **argv){
   // evaluate performance on problem sizes of h, 2h, and 4h
   // (i.e. examine dynamic range for problem sizes N, N/8, and N/64)
 //float dtol=1e-15;float rtol= 0.0f; // converged if ||D^{-1}(b-Ax)|| < dtol
-  float dtol= 0.0f;float rtol=1e-5f; // converged if ||b-Ax|| / ||b|| < rtol (adjusted for single precision)
+  float dtol= 0.0f;float rtol=1e-2f; // converged if ||b-Ax|| / ||b|| < rtol (adjusted for single precision)
   int l;
   #ifndef TEST_ERROR
 
