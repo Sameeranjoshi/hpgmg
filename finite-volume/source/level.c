@@ -1376,6 +1376,7 @@ void reset_level_timers(level_type *level){
   level->timers.ghostZone_send          = 0;
   level->timers.ghostZone_wait          = 0;
   level->timers.collectives             = 0;
+  level->timers.convergence             = 0;
   level->timers.Total                   = 0;
   // solver events information...
   level->Krylov_iterations              = 0;

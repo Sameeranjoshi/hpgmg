@@ -106,6 +106,7 @@ void MGPrintTiming(mg_type *all_grids, int fromLevel){
   #ifdef USE_MPI
   total=0;printf("MPI_collectives           ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.collectives;          total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   #endif
+  total=0;printf("Convergence check         ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.convergence;          total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
   total=0;printf("------------------        ");for(level=fromLevel;level<(num_levels+1);level++){printf("------------ ");}printf("\n");
   total=0;printf("Total by level            ");for(level=fromLevel;level<(num_levels  );level++){time=scale*(float)all_grids->levels[level]->timers.Total;                total+=time;printf("%12.6f ",time);}printf("%12.6f\n",total);
 
@@ -1151,7 +1152,7 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float
     // do the v-cycle...
     MGVCycle(all_grids,e_id,R_id,a,b,level);
 
-    // now calculate the norm of the residual...
+    // now calculate the norm of the residual (convergence check - not counted in Total)...
     double _timeStart = getTime();
     if(all_grids->levels[level]->must_subtract_mean == 1){
       float average_value_of_e = mean(all_grids->levels[level],e_id);
@@ -1161,7 +1162,7 @@ void MGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, float
     if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0f,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
     float norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
     double _timeNorm = getTime();
-    all_grids->levels[level]->timers.Total += (double)(_timeNorm-_timeStart);
+    all_grids->levels[level]->timers.convergence += (double)(_timeNorm-_timeStart);
     if(all_grids->levels[level]->my_rank==0){
       float rel = 0.0f;
       if(rtol>0){
@@ -1288,7 +1289,7 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, floa
     MGVCycle(all_grids,e_id,R_id,a,b,level);
     }
 
-    // now calculate the norm of the residual...
+    // now calculate the norm of the residual (convergence check - not counted in Total)...
     double _timeStart = getTime();
     if(all_grids->levels[level]->must_subtract_mean == 1){
       float average_value_of_e = mean(all_grids->levels[level],e_id);
@@ -1298,7 +1299,7 @@ void FMGSolve(mg_type *all_grids, int onLevel, int u_id, int F_id, float a, floa
     if(dtol>0)mul_vectors(all_grids->levels[level],VECTOR_TEMP,1.0f,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
     float norm_of_residual = norm(all_grids->levels[level],VECTOR_TEMP);
     double _timeNorm = getTime();
-    all_grids->levels[level]->timers.Total += (double)(_timeNorm-_timeStart);
+    all_grids->levels[level]->timers.convergence += (double)(_timeNorm-_timeStart);
     if(all_grids->levels[level]->my_rank==0){
       float rel = 0.0f;
       if(rtol>0){
