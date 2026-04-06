@@ -182,8 +182,6 @@ typedef struct {
     double     ghostZone_wait;
     // Collectives...
     double   collectives;
-    // Convergence checking (residual+norm after each v-cycle, excluded from Total)
-    double   convergence;
     double         Total;
   }timers;
   int Krylov_iterations;        // total number of bottom solver iterations

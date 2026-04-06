@@ -64,7 +64,7 @@ void IterativeSolver(level_type * level, int u_id, int f_id, float a, float b, f
     residual(level,VECTOR_TEMP,u_id,f_id,a,b);
     //mul_vectors(level,VECTOR_TEMP,1.0f,VECTOR_TEMP,VECTOR_DINV); //  Using ||D^{-1}(b-Ax)||_{inf} as convergence criteria...
     float norm_of_r0 = norm(level,VECTOR_TEMP);
-    int s=0,maxSmoothsBottom=6,converged=0;
+    int s=0,maxSmoothsBottom=100,converged=0;
     while( (s<maxSmoothsBottom) ){
       s++;
       level->Krylov_iterations++;
