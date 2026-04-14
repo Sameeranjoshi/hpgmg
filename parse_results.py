@@ -1,155 +1,111 @@
 #!/usr/bin/env python3
-"""Parse HPGMG output file and generate summary table."""
-import sys
-import re
+"""Parse HPGMG result files from paper_results_sc/{with,without}_convergence
+and print summary tables: Total solve time, v-cycles, time per v-cycle."""
 
-def parse_results(filename):
-    with open(filename, 'r') as f:
-        lines = f.readlines()
+import sys, re, os
 
-    results = []
-    current_grid = None
-    solves = []
-    in_richardson = False
+def parse_results(filepath):
+    """For each grid size, get MGSolve time and vcycles from the FIRST 'Running' block only."""
+    data = {}
+    with open(filepath) as f:
+        text = f.read()
 
-    i = 0
-    while i < len(lines):
-        line = lines[i].strip()
+    grid_sections = re.split(r'={3,}\s*2\^(\d+)\s*=\s*\d+x\d+x\d+\s*grid\s*={3,}', text)
 
-        # Grid header
-        m = re.match(r'=+ 2\^(\d+) = (\d+)x(\d+)x(\d+) grid =+', line)
-        if m:
-            if current_grid and solves:
-                results.append((current_grid, solves))
-            log2 = int(m.group(1))
-            dim = int(m.group(2))
-            current_grid = {'log2': log2, 'dim': dim, 'levels': log2 - 1}
-            solves = []
-            in_richardson = False
-            i += 1
+    for i in range(1, len(grid_sections), 2):
+        log2 = int(grid_sections[i])
+        section = grid_sections[i + 1]
+
+        running_blocks = re.split(r'={3,}\s*Running\s+\d+\s+solves\s*={3,}', section)
+
+        if len(running_blocks) < 2:
             continue
 
-        # Detect Richardson section
-        if 'Richardson error analysis' in line:
-            in_richardson = True
-            i += 1
-            continue
+        first_run = running_blocks[1]
 
-        # MGSolve time + v-cycles + bottom solver iterations
-        m = re.match(r'Total time in MGSolve\s+([\d.]+) seconds', line)
-        if m:
-            solve_time = float(m.group(1))
-            vcycles = 0
-            bottom_iters = 0
-            if i + 1 < len(lines):
-                m2 = re.match(r'number of v-cycles\s+(\d+)', lines[i+1].strip())
-                if m2:
-                    vcycles = int(m2.group(1))
-            if i + 2 < len(lines):
-                m3 = re.match(r'Bottom solver iterations\s+(\d+)', lines[i+2].strip())
-                if m3:
-                    bottom_iters = int(m3.group(1))
-            solves.append({'time': solve_time, 'vcycles': vcycles, 'bottom_iters': bottom_iters})
-            i += 1
-            continue
+        mg_match = re.search(r'Total time in MGSolve\s+([\d.]+)', first_run)
+        vc_match = re.search(r'number of v-cycles\s+(\d+)', first_run)
+        bi_match = re.search(r'Bottom solver iterations\s+(\d+)', first_run)
 
-        # "done" lines in Richardson section only
-        # Handles: iter= N norm=... rel=... done  AND  v-cycle= N norm=... rel=... done
-        if in_richardson and 'done' in line:
-            m = re.search(r'(?:iter|v-cycle)=\s*(\d+)\s+norm=([\d.e+-]+)\s+rel=([\d.e+-]+)\s+done', line)
-            if m and current_grid:
-                current_grid.setdefault('richardson_solves', [])
-                current_grid['richardson_solves'].append({
-                    'iters': int(m.group(1)),
-                    'norm': float(m.group(2)),
-                    'rel': float(m.group(3)),
-                })
-                i += 1
-                continue
-
-        # Richardson error value
-        m = re.match(r'h=([\d.e+-]+)\s+\|\|error\|\|=([\d.e+-]+)', line)
-        if m and current_grid:
-            current_grid['h'] = float(m.group(1))
-            current_grid['error'] = float(m.group(2))
-            i += 1
-            continue
-
-        # Order
-        m = re.match(r'order=([\d.]+)', line)
-        if m and current_grid:
-            current_grid['order'] = float(m.group(1))
-            i += 1
-            continue
-
-        i += 1
-
-    if current_grid and solves:
-        results.append((current_grid, solves))
-
-    return results
+        if mg_match and vc_match:
+            mgsolve = float(mg_match.group(1))
+            vcycles = int(vc_match.group(1))
+            bottom = int(bi_match.group(1)) if bi_match else 0
+            data[log2] = {
+                'mgsolve': mgsolve,
+                'vcycles': vcycles,
+                'bottom_iters': bottom,
+                'time_per_vcycle': mgsolve / vcycles if vcycles > 0 else 0,
+            }
+    return data
 
 
-def print_table(results):
+def print_tables(label, all_data, ordered_keys, display_names, log2_sizes):
+    print(f"\n{'='*120}")
+    print(f"  {label}")
+    print(f"{'='*120}")
+
+    header = f"{'Grid':>12}"
+    for cn in ordered_keys:
+        header += f" | {'TTS':>10} {'Iter':>5} {'1-cycle':>10}"
     print()
-    print("HPGMG FP32 Results Summary (h solve only)")
-    w = 130
-    print("=" * w)
-    fmt = "{:<8} {:>6} {:>8} {:>10} {:>13} {:>8} {:>13} {:>14} {:>11} {:>7} {:>9}"
-    print(fmt.format(
-        "Grid", "Levels", "V-cycles", "Bot.Iters", "||r||/||F||", "Stalled",
-        "MGSolve(s)", "Time/Vcyc(s)", "||error||", "Order", "Converged"
-    ))
-    print("-" * w)
+    # Sub-header with config names
+    name_header = f"{'':>12}"
+    for cn in ordered_keys:
+        name_header += f" | {display_names[cn]:^27}"
+    print(name_header)
+    print(header)
+    print("-" * len(header))
+    for log2 in log2_sizes:
+        gs = 1 << log2
+        row = f"{gs:>5}^3 ({log2})"
+        for cn in ordered_keys:
+            d = all_data[cn].get(log2)
+            if d:
+                row += f" | {d['mgsolve']:>10.6f} {d['vcycles']:>5d} {d['time_per_vcycle']:>10.6f}"
+            else:
+                row += f" | {'N/A':>10} {'N/A':>5} {'N/A':>10}"
+        print(row)
+    print()
 
-    for grid, solves in results:
-        dim = grid['dim']
-        levels = grid.get('levels', '?')
 
-        # First solve = finest (h)
-        if solves:
-            s = solves[0]
-            vcycles = s['vcycles']
-            total_time = s['time']
-            bottom_iters = s.get('bottom_iters', 0)
-            time_per_vc = total_time / vcycles if vcycles > 0 else 0
-            stalled = "YES" if vcycles >= 20 else "No"
+def process_folder(folder_path, label):
+    config_order = ["6_6_100", "4_4_6", "6_6_6", "4_4_100"]
+    display_names = {
+        "6_6_100": "GH200(6/6/100)",
+        "4_4_6":   "GH200(4/4/6)",
+        "6_6_6":   "GH200(6/6/6)",
+        "4_4_100": "GH200(4/4/100)",
+    }
+    log2_sizes = [4, 5, 6, 7, 8, 9]
+
+    all_data = {}
+    for config in config_order:
+        # Try multiple naming patterns
+        for pat in [f"glow_{config}.txt", f"glow_{config}_conv.txt", f"glow_{config}_no_conv.txt"]:
+            fp = os.path.join(folder_path, pat)
+            if os.path.exists(fp):
+                all_data[config] = parse_results(fp)
+                break
         else:
-            vcycles = 0
-            total_time = 0
-            time_per_vc = 0
-            bottom_iters = 0
-            stalled = "?"
+            print(f"WARNING: No file found for config {config} in {folder_path}")
 
-        # Final rel from Richardson first solve (finest)
-        rel = "?"
-        if 'richardson_solves' in grid and grid['richardson_solves']:
-            rel_val = grid['richardson_solves'][0]['rel']
-            rel = f"{rel_val:.2e}"
+    if not all_data:
+        print(f"No results found in {folder_path}!")
+        return
 
-        error = f"{grid['error']:.2e}" if 'error' in grid else "?"
-        order = f"{grid['order']:.2f}" if 'order' in grid else "?"
-        converged = "No" if stalled == "YES" else "Yes"
-
-        print(fmt.format(
-            f"{dim}^3", str(levels), str(vcycles), str(bottom_iters), rel,
-            stalled, f"{total_time:.4f}", f"{time_per_vc:.4f}",
-            error, order, converged
-        ))
-
-    print("=" * w)
-    print()
-    print("Notes:")
-    print("  - Stalled = hit max v-cycles (20 for MGPCG, 100 for MGSolve)")
-    print("  - Bot.Iters = total bottom solver iterations across all v-cycles")
-    print("  - ||r||/||F|| = infinity norm of residual / infinity norm of RHS")
-    print("  - Order should be ~2.0 for 2nd-order scheme (7-point Laplacian)")
-    print()
+    ordered_keys = [c for c in config_order if c in all_data]
+    print_tables(label, all_data, ordered_keys, display_names, log2_sizes)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <results_file>")
-        sys.exit(1)
-    results = parse_results(sys.argv[1])
-    print_table(results)
+base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper_results_sc")
+
+for subfolder, label in [
+    ("with_convergence",    "WITH convergence check"),
+    ("without_convergence", "WITHOUT convergence check"),
+]:
+    folder = os.path.join(base_dir, subfolder)
+    if os.path.isdir(folder):
+        process_folder(folder, label)
+    else:
+        print(f"Folder not found: {folder}")

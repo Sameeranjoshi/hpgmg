@@ -1,0 +1,267 @@
+Starting HPGMG experiments: 4_4_6 4_4_100 6_6_6 6_6_100
+Results directory: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc
+
+============================================================
+  Config: pre/post=4, bottom=6
+  Build dir: build_4_4_6
+  Results: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc/glow_4_4_6.txt
+============================================================
+[1/4] Patching NUM_SMOOTHS=4, maxSmoothsBottom=6...
+[2/4] Building in build_4_4_6...
+Configuration complete in: /home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_6
+To build: make -j3 -C build_4_4_6
+make: Entering directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_6'
+Use "make V=1" to see the verbose compile lines.
+          CC obj/finite-volume/source/timers.o
+          CC obj/finite-volume/source/level.o
+          CC obj/finite-volume/source/operators.fv2.o
+          CC obj/finite-volume/source/mg.o
+          CC obj/finite-volume/source/solvers.o
+          CC obj/finite-volume/source/hpgmg-fv.o
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o.dlink
+        CCLD bin/hpgmg-fv
+make: Leaving directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_6'
+[3/4] Running experiments...
+  Running 4^3 grid...
+  Running 8^3 grid...
+  Running 16^3 grid...
+  Running 32^3 grid...
+  Running 64^3 grid...
+  Running 128^3 grid...
+  Running 256^3 grid...
+  Running 512^3 grid...
+[4/4] Done with config 4_4_6.
+
+============================================================
+  Config: pre/post=4, bottom=100
+  Build dir: build_4_4_100
+  Results: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc/glow_4_4_100.txt
+============================================================
+[1/4] Patching NUM_SMOOTHS=4, maxSmoothsBottom=100...
+[2/4] Building in build_4_4_100...
+Configuration complete in: /home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_100
+To build: make -j3 -C build_4_4_100
+make: Entering directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_100'
+Use "make V=1" to see the verbose compile lines.
+          CC obj/finite-volume/source/timers.o
+          CC obj/finite-volume/source/level.o
+          CC obj/finite-volume/source/operators.fv2.o
+          CC obj/finite-volume/source/mg.o
+          CC obj/finite-volume/source/solvers.o
+          CC obj/finite-volume/source/hpgmg-fv.o
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o.dlink
+        CCLD bin/hpgmg-fv
+make: Leaving directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_4_4_100'
+[3/4] Running experiments...
+  Running 4^3 grid...
+  Running 8^3 grid...
+  Running 16^3 grid...
+  Running 32^3 grid...
+  Running 64^3 grid...
+  Running 128^3 grid...
+  Running 256^3 grid...
+  Running 512^3 grid...
+[4/4] Done with config 4_4_100.
+
+============================================================
+  Config: pre/post=6, bottom=6
+  Build dir: build_6_6_6
+  Results: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc/glow_6_6_6.txt
+============================================================
+[1/4] Patching NUM_SMOOTHS=6, maxSmoothsBottom=6...
+[2/4] Building in build_6_6_6...
+Configuration complete in: /home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_6
+To build: make -j3 -C build_6_6_6
+make: Entering directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_6'
+Use "make V=1" to see the verbose compile lines.
+          CC obj/finite-volume/source/timers.o
+          CC obj/finite-volume/source/level.o
+          CC obj/finite-volume/source/operators.fv2.o
+          CC obj/finite-volume/source/mg.o
+          CC obj/finite-volume/source/solvers.o
+          CC obj/finite-volume/source/hpgmg-fv.o
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o.dlink
+        CCLD bin/hpgmg-fv
+make: Leaving directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_6'
+[3/4] Running experiments...
+  Running 4^3 grid...
+  Running 8^3 grid...
+  Running 16^3 grid...
+  Running 32^3 grid...
+  Running 64^3 grid...
+  Running 128^3 grid...
+  Running 256^3 grid...
+  Running 512^3 grid...
+[4/4] Done with config 6_6_6.
+
+============================================================
+  Config: pre/post=6, bottom=100
+  Build dir: build_6_6_100
+  Results: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc/glow_6_6_100.txt
+============================================================
+[1/4] Patching NUM_SMOOTHS=6, maxSmoothsBottom=100...
+[2/4] Building in build_6_6_100...
+Configuration complete in: /home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_100
+To build: make -j3 -C build_6_6_100
+make: Entering directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_100'
+Use "make V=1" to see the verbose compile lines.
+          CC obj/finite-volume/source/timers.o
+          CC obj/finite-volume/source/level.o
+          CC obj/finite-volume/source/operators.fv2.o
+          CC obj/finite-volume/source/mg.o
+          CC obj/finite-volume/source/solvers.o
+          CC obj/finite-volume/source/hpgmg-fv.o
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/smooth.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(54): warning #177-D: variable "beta_i" was declared but never referenced
+    const float * __restrict__ beta_i = level.my_boxes[box].vectors[6] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(55): warning #177-D: variable "beta_j" was declared but never referenced
+    const float * __restrict__ beta_j = level.my_boxes[box].vectors[7] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+/home1/10594/oantepara/sameeran/6apr26/hpgmg/finite-volume/source/cuda/stencils/residual.reg.fv2.h(56): warning #177-D: variable "beta_k" was declared but never referenced
+    const float * __restrict__ beta_k = level.my_boxes[box].vectors[8] + ghosts*(1+jStride+kStride) + (ilo + jlo*jStride + klo*kStride);
+                               ^
+
+        NVCC obj/finite-volume/source/cuda/operators.fv2.cu.o.dlink
+        CCLD bin/hpgmg-fv
+make: Leaving directory '/home1/10594/oantepara/sameeran/6apr26/hpgmg/build_6_6_100'
+[3/4] Running experiments...
+  Running 4^3 grid...
+  Running 8^3 grid...
+  Running 16^3 grid...
+  Running 32^3 grid...
+  Running 64^3 grid...
+  Running 128^3 grid...
+  Running 256^3 grid...
+  Running 512^3 grid...
+[4/4] Done with config 6_6_100.
+
+
+============================================================
+  Extracting results and building summary table
+============================================================
+
+====================================================================================================
+Time per V-cycle = MGSolve / vcycles (first sub-run per grid)
+====================================================================================================
+        Grid |    H200(6/6/100) |      H200(4/4/6) |      H200(6/6/6) |    H200(4/4/100)
+----------------------------------------------------------------------------------------
+   16^3 (4) |         0.003529 |         0.000465 |         0.000643 |         0.002482
+   32^3 (5) |         0.003781 |         0.000644 |         0.000847 |         0.002664
+   64^3 (6) |         0.004378 |         0.000892 |         0.001210 |         0.002906
+  128^3 (7) |         0.004610 |         0.001269 |         0.001735 |         0.003171
+  256^3 (8) |         0.006805 |         0.002914 |         0.003883 |         0.004802
+  512^3 (9) |         0.020284 |         0.012993 |         0.017361 |         0.014943
+
+====================================================================================================
+Detail: MGSolve(s) / vcycles / bottom_iters (first sub-run per grid)
+====================================================================================================
+        Grid |    MGSolve  Vc   Bot |    MGSolve  Vc   Bot |    MGSolve  Vc   Bot |    MGSolve  Vc   Bot
+--------------------------------------------------------------------------------------------------------
+   16^3 (4) |   0.007058   2   200 |   0.000930   2    12 |   0.001287   2    12 |   0.004963   2   200
+   32^3 (5) |   0.007561   2   200 |   0.001288   2    12 |   0.001695   2    12 |   0.005327   2   200
+   64^3 (6) |   0.008756   2   200 |   0.001785   2    12 |   0.002420   2    12 |   0.005811   2   200
+  128^3 (7) |   0.009220   2   200 |   0.002538   2    12 |   0.003470   2    12 |   0.006342   2   200
+  256^3 (8) |   0.013611   2   200 |   0.005828   2    12 |   0.007767   2    12 |   0.009604   2   200
+  512^3 (9) |   0.040568   2   200 |   0.025986   2    12 |   0.034722   2    12 |   0.029886   2   200
+
+
+All done. Raw results are in: /home1/10594/oantepara/sameeran/6apr26/hpgmg/paper_results_sc/
+

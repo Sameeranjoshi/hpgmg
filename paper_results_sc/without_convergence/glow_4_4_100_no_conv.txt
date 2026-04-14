@@ -1,0 +1,1993 @@
+==================== 2^2 = 4x4x4 grid ====================
+log2_box_dim must be at least 4
+==================== 2^3 = 8x8x8 grid ====================
+log2_box_dim must be at least 4
+==================== 2^4 = 16x16x16 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.006261 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004711 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004724 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004714 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004720 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004713 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004717 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004709 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004716 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004709 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004724 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004714 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004722 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004715 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004719 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004714 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004714 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004703 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004720 seconds)
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.005800 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3 
+level dimension                   16^3          8^3          4^3          2^3 
+box dimension                     16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000031     0.000031     0.001513     0.001607
+residual                      0.000008     0.000004     0.000004     0.000004     0.000021
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001243     0.000004     0.000004     0.000167     0.001418
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000039     0.001506     0.001624
+Restriction                   0.000005     0.000005     0.000005     0.000000     0.000015
+  local restriction           0.000005     0.000005     0.000005     0.000000     0.000015
+Interpolation                 0.000004     0.000005     0.000005     0.000000     0.000014
+  local interpolation         0.000004     0.000004     0.000005     0.000000     0.000014
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000025     0.000027
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001227     0.000000     0.000000     0.000000     0.001227
+------------------        ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000093     0.000089     0.000092     0.003297     0.003572
+
+   Total time in MGBuild      0.001907 seconds
+   Total time in MGSolve      0.004824 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004472 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004505 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004487 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004476 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004478 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004490 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004480 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004472 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004477 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004484 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004487 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004473 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004478 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004644 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004626 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004471 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004472 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004487 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004475 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004477 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2 
+level dimension                    8^3          4^3          2^3 
+box dimension                      8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.001507     0.001570
+residual                      0.000008     0.000004     0.000004     0.000016
+applyOp                       0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001080     0.000004     0.000110     0.001195
+BLAS3                         0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.001507     0.001586
+Restriction                   0.000005     0.000005     0.000000     0.000010
+  local restriction           0.000005     0.000005     0.000000     0.000010
+Interpolation                 0.000005     0.000005     0.000000     0.000009
+  local interpolation         0.000004     0.000005     0.000000     0.000009
+Ghost Zone Exchange           0.000001     0.000001     0.000026     0.000027
+  local exchange              0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001057     0.000000     0.000000     0.001057
+------------------        ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000090     0.003237     0.003421
+
+   Total time in MGBuild      0.001907 seconds
+   Total time in MGSolve      0.004509 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002164 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002151 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002148 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002151 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002163 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002152 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002152 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002149 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002891 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002157 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002157 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002152 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002165 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002152 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002154 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002150 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002154 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002157 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002150 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002154 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1 
+level dimension                    4^3          2^3 
+box dimension                      4^3          2^3        total
+------------------        ------------ ------------ ------------ 
+smooth                        0.000016     0.000757     0.000773
+residual                      0.000004     0.000002     0.000006
+applyOp                       0.000000     0.000000     0.000000
+BLAS1                         0.000514     0.000027     0.000541
+BLAS3                         0.000000     0.000000     0.000000
+Boundary Conditions           0.000020     0.000751     0.000771
+Restriction                   0.000002     0.000000     0.000002
+  local restriction           0.000002     0.000000     0.000002
+Interpolation                 0.000002     0.000000     0.000002
+  local interpolation         0.000002     0.000000     0.000002
+Ghost Zone Exchange           0.000000     0.000013     0.000013
+  local exchange              0.000000     0.000000     0.000000
+Convergence check             0.000495     0.000000     0.000495
+------------------        ------------ ------------ ------------ 
+Total by level                0.000046     0.001591     0.001637
+
+   Total time in MGBuild      0.001907 seconds
+   Total time in MGSolve      0.002154 seconds
+      number of v-cycles             1
+Bottom solver iterations           100
+
+
+
+
+===== Performance Summary ======================================================
+  h=6.250000000000000e-02  DOF=4.096000000000000e+03  time=0.004824  DOF/s=8.490e+05  MPI=1  OMP=4  ACC=1
+  h=1.250000000000000e-01  DOF=5.120000000000000e+02  time=0.004509  DOF/s=1.136e+05  MPI=1  OMP=4  ACC=1
+  h=2.500000000000000e-01  DOF=6.400000000000000e+01  time=0.002154  DOF/s=2.971e+04  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=2.426755428314209e-02  rel=2.622754499316216e-02  
+           v-cycle= 2  norm=9.923577308654785e-04  rel=1.072506420314312e-03  done (0.004716 seconds)
+MGSolve... v-cycle= 1  norm=8.642315864562988e-03  rel=1.184447016566992e-02  
+           v-cycle= 2  norm=2.892017364501953e-04  rel=3.963568888138980e-04  done (0.004487 seconds)
+MGSolve... v-cycle= 1  norm=5.474984645843506e-04  rel=2.122332109138370e-03  done (0.002161 seconds)
+  h=6.250000000000000e-02  ||error||=2.020257525146008e-04
+  order=0.490
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+
+
+===== Done =====================================================================
+==================== 2^5 = 32x32x32 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 32^3 level from 1 x 32^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=3.125000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.006059 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005028 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005033 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.006255 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005048 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005035 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005030 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005028 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005043 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005031 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005031 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005026 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005037 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005021 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005027 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005027 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005040 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005020 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005026 seconds)
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005030 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4 
+level dimension                   32^3         16^3          8^3          4^3          2^3 
+box dimension                     32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.000032     0.000031     0.001518     0.001644
+residual                      0.000008     0.000004     0.000004     0.000004     0.000004     0.000025
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001226     0.000004     0.000004     0.000004     0.000280     0.001518
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000038     0.000038     0.001516     0.001672
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000000     0.000020
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000000     0.000020
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000000     0.000019
+  local interpolation         0.000005     0.000005     0.000004     0.000005     0.000000     0.000019
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000025     0.000028
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001210     0.000000     0.000000     0.000000     0.000000     0.001210
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000090     0.000091     0.000091     0.003427     0.003793
+
+   Total time in MGBuild      0.003272 seconds
+   Total time in MGSolve      0.005028 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004697 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004703 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004700 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004710 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004699 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.005527 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004701 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004715 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004693 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004704 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004701 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004748 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004791 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004695 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004695 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004702 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004701 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004701 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004700 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004706 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3 
+level dimension                   16^3          8^3          4^3          2^3 
+box dimension                     16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.000031     0.001489     0.001583
+residual                      0.000008     0.000004     0.000004     0.000004     0.000021
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001167     0.000004     0.000004     0.000170     0.001345
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000037     0.001491     0.001606
+Restriction                   0.000005     0.000005     0.000005     0.000000     0.000015
+  local restriction           0.000005     0.000005     0.000005     0.000000     0.000014
+Interpolation                 0.000005     0.000005     0.000005     0.000000     0.000014
+  local interpolation         0.000005     0.000004     0.000005     0.000000     0.000014
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000026     0.000028
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001144     0.000000     0.000000     0.000000     0.001144
+------------------        ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000088     0.000089     0.003266     0.003538
+
+   Total time in MGBuild      0.003272 seconds
+   Total time in MGSolve      0.004714 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004463 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004459 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004476 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004462 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004464 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004457 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004464 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004457 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004464 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004461 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004472 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004478 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004461 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004456 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004467 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004458 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004460 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004463 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004478 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004464 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2 
+level dimension                    8^3          4^3          2^3 
+box dimension                      8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000030     0.001494     0.001556
+residual                      0.000008     0.000004     0.000004     0.000017
+applyOp                       0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001080     0.000004     0.000100     0.001184
+BLAS3                         0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.001486     0.001563
+Restriction                   0.000005     0.000005     0.000000     0.000010
+  local restriction           0.000005     0.000005     0.000000     0.000010
+Interpolation                 0.000005     0.000005     0.000000     0.000009
+  local interpolation         0.000004     0.000004     0.000000     0.000009
+Ghost Zone Exchange           0.000001     0.000001     0.000026     0.000027
+  local exchange              0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001064     0.000000     0.000000     0.001064
+------------------        ------------ ------------ ------------ ------------ 
+Total by level                0.000093     0.000089     0.003195     0.003376
+
+   Total time in MGBuild      0.003272 seconds
+   Total time in MGSolve      0.004465 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Performance Summary ======================================================
+  h=3.125000000000000e-02  DOF=3.276800000000000e+04  time=0.005028  DOF/s=6.517e+06  MPI=1  OMP=4  ACC=1
+  h=6.250000000000000e-02  DOF=4.096000000000000e+03  time=0.004714  DOF/s=8.689e+05  MPI=1  OMP=4  ACC=1
+  h=1.250000000000000e-01  DOF=5.120000000000000e+02  time=0.004465  DOF/s=1.147e+05  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=2.881503105163574e-02  rel=2.937689982354641e-02  
+           v-cycle= 2  norm=2.592295408248901e-03  rel=2.642842940986156e-03  done (0.005025 seconds)
+MGSolve... v-cycle= 1  norm=2.427160739898682e-02  rel=2.622790448367596e-02  
+           v-cycle= 2  norm=9.917020797729492e-04  rel=1.071633421815932e-03  done (0.004708 seconds)
+MGSolve... v-cycle= 1  norm=8.643567562103271e-03  rel=1.184437144547701e-02  
+           v-cycle= 2  norm=2.893805503845215e-04  rel=3.965412033721805e-04  done (0.004468 seconds)
+  h=3.125000000000000e-02  ||error||=6.714276969432831e-05
+  order=1.589
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+attempting to free the    32^3 level... done
+
+
+===== Done =====================================================================
+==================== 2^6 = 64x64x64 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 64^3 level from 1 x 64^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=1.562500e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 32^3 level from 1 x 32^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=3.125000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.007622 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.006311 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.006124 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005945 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005928 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005943 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005849 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005780 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005785 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005783 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005790 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005783 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005784 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005777 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005778 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005783 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005777 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005780 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005778 seconds)
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005785 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5 
+level dimension                   64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                     64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000031     0.000031     0.000031     0.000031     0.001494     0.001651
+residual                      0.000008     0.000004     0.000005     0.000004     0.000004     0.000004     0.000030
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001728     0.000004     0.000004     0.000004     0.000004     0.000486     0.002230
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000039     0.000039     0.000038     0.001493     0.001688
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000025
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000024
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000023
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000023
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000029
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001710     0.000000     0.000000     0.000000     0.000000     0.000000     0.001710
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000091     0.000091     0.000091     0.000090     0.003587     0.004044
+
+   Total time in MGBuild      0.005796 seconds
+   Total time in MGSolve      0.005781 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005340 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005294 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005289 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005297 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005287 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005295 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005288 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005300 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005295 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005399 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005466 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005457 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005469 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005456 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005481 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005532 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005450 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005346 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005290 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005284 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4 
+level dimension                   32^3         16^3          8^3          4^3          2^3 
+box dimension                     32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.000031     0.000031     0.001508     0.001634
+residual                      0.000008     0.000004     0.000004     0.000004     0.000004     0.000025
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001558     0.000004     0.000004     0.000004     0.000363     0.001933
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000038     0.000038     0.001507     0.001662
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000000     0.000020
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000000     0.000020
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000000     0.000019
+  local interpolation         0.000005     0.000004     0.000005     0.000005     0.000000     0.000018
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000026     0.000028
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001531     0.000000     0.000000     0.000000     0.000000     0.001531
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000090     0.000091     0.000091     0.003489     0.003855
+
+   Total time in MGBuild      0.005796 seconds
+   Total time in MGSolve      0.005423 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004972 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004952 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004947 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004956 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004955 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004955 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004960 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004953 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004954 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004956 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004956 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004951 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004962 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004952 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004960 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004954 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004957 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004951 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004954 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004952 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3 
+level dimension                   16^3          8^3          4^3          2^3 
+box dimension                     16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.000031     0.001503     0.001598
+residual                      0.000008     0.000004     0.000004     0.000004     0.000021
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001385     0.000004     0.000004     0.000178     0.001571
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000041     0.000038     0.000038     0.001494     0.001611
+Restriction                   0.000005     0.000005     0.000005     0.000000     0.000015
+  local restriction           0.000005     0.000004     0.000005     0.000000     0.000014
+Interpolation                 0.000004     0.000005     0.000005     0.000000     0.000014
+  local interpolation         0.000004     0.000004     0.000005     0.000000     0.000013
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000026     0.000028
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001368     0.000000     0.000000     0.000000     0.001368
+------------------        ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000094     0.000090     0.000090     0.003287     0.003561
+
+   Total time in MGBuild      0.005796 seconds
+   Total time in MGSolve      0.004955 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Performance Summary ======================================================
+  h=1.562500000000000e-02  DOF=2.621440000000000e+05  time=0.005781  DOF/s=4.534e+07  MPI=1  OMP=4  ACC=1
+  h=3.125000000000000e-02  DOF=3.276800000000000e+04  time=0.005423  DOF/s=6.043e+06  MPI=1  OMP=4  ACC=1
+  h=6.250000000000000e-02  DOF=4.096000000000000e+03  time=0.004955  DOF/s=8.267e+05  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=2.754169702529907e-02  rel=2.767480351030827e-02  
+           v-cycle= 2  norm=4.042387008666992e-03  rel=4.061923362314701e-03  done (0.005782 seconds)
+MGSolve... v-cycle= 1  norm=2.881640195846558e-02  rel=2.937801741063595e-02  
+           v-cycle= 2  norm=2.593785524368286e-03  rel=2.644337015226483e-03  done (0.005295 seconds)
+MGSolve... v-cycle= 1  norm=2.427148818969727e-02  rel=2.622752450406551e-02  
+           v-cycle= 2  norm=9.915232658386230e-04  rel=1.071430044248700e-03  done (0.004966 seconds)
+  h=1.562500000000000e-02  ||error||=1.786835491657257e-05
+  order=1.910
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+attempting to free the    32^3 level... done
+attempting to free the    64^3 level... done
+
+
+===== Done =====================================================================
+==================== 2^7 = 128x128x128 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 128^3 level from 1 x 128^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=7.812500e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 64^3 level from 1 x 64^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 32^3 level from 1 x 32^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=1.562500e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=3.125000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.014371 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.007430 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006422 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006435 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006418 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006422 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006421 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006426 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006419 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006416 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006422 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.015106 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006408 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006426 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006414 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006429 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006420 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006431 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006410 seconds)
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006426 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6 
+level dimension                  128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000042     0.000043     0.000043     0.000044     0.000043     0.000042     0.001964     0.002222
+residual                      0.000010     0.000006     0.000006     0.000006     0.000006     0.000006     0.000006     0.000046
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001719     0.000005     0.000005     0.000005     0.000005     0.000005     0.000775     0.002520
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000053     0.000053     0.000054     0.000054     0.000054     0.000053     0.001969     0.002290
+Restriction                   0.000006     0.000007     0.000007     0.000007     0.000007     0.000007     0.000000     0.000039
+  local restriction           0.000006     0.000006     0.000007     0.000007     0.000006     0.000007     0.000000     0.000039
+Interpolation                 0.000006     0.000006     0.000006     0.000006     0.000006     0.000006     0.000000     0.000037
+  local interpolation         0.000006     0.000006     0.000006     0.000006     0.000006     0.000006     0.000000     0.000036
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000025     0.000029
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001692     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.001692
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000120     0.000124     0.000125     0.000125     0.000125     0.000121     0.004818     0.005558
+
+   Total time in MGBuild      0.014693 seconds
+   Total time in MGSolve      0.007289 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005769 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005616 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005626 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005614 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005624 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005670 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.006044 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005611 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005620 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005620 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005626 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005618 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005629 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005619 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005619 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005614 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005621 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005613 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005634 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005619 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5 
+level dimension                   64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                     64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000031     0.000031     0.000031     0.000031     0.001515     0.001673
+residual                      0.000009     0.000004     0.000004     0.000004     0.000004     0.000004     0.000030
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001535     0.000004     0.000004     0.000004     0.000004     0.000464     0.002015
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000041     0.000038     0.000039     0.000039     0.000039     0.001521     0.001717
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000027
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000026
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000024
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000023
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000029
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001517     0.000000     0.000000     0.000000     0.000000     0.000000     0.001517
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000096     0.000092     0.000092     0.000091     0.000092     0.003615     0.004077
+
+   Total time in MGBuild      0.014693 seconds
+   Total time in MGSolve      0.005621 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005136 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005136 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005132 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005140 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005133 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005137 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005128 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005143 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005134 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005142 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005139 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005138 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005135 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005140 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005130 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005188 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005409 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005139 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005135 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005139 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4 
+level dimension                   32^3         16^3          8^3          4^3          2^3 
+box dimension                     32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000033     0.000032     0.000031     0.000031     0.001525     0.001653
+residual                      0.000009     0.000004     0.000004     0.000004     0.000004     0.000026
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001339     0.000004     0.000004     0.000004     0.000290     0.001641
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000041     0.000039     0.000038     0.000039     0.001522     0.001679
+Restriction                   0.000006     0.000005     0.000005     0.000005     0.000000     0.000021
+  local restriction           0.000006     0.000005     0.000005     0.000005     0.000000     0.000021
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000000     0.000020
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000000     0.000019
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000025     0.000028
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001317     0.000000     0.000000     0.000000     0.000000     0.001317
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000097     0.000092     0.000091     0.000092     0.003449     0.003821
+
+   Total time in MGBuild      0.014693 seconds
+   Total time in MGSolve      0.005169 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Performance Summary ======================================================
+  h=7.812500000000000e-03  DOF=2.097152000000000e+06  time=0.007289  DOF/s=2.877e+08  MPI=1  OMP=4  ACC=1
+  h=1.562500000000000e-02  DOF=2.621440000000000e+05  time=0.005621  DOF/s=4.664e+07  MPI=1  OMP=4  ACC=1
+  h=3.125000000000000e-02  DOF=3.276800000000000e+04  time=0.005169  DOF/s=6.339e+06  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=2.986520528793335e-02  rel=2.990121208131313e-02  
+           v-cycle= 2  norm=4.953086376190186e-03  rel=4.959058016538620e-03  done (0.006500 seconds)
+MGSolve... v-cycle= 1  norm=2.753388881683350e-02  rel=2.766694128513336e-02  
+           v-cycle= 2  norm=4.044592380523682e-03  rel=4.064137116074562e-03  done (0.005654 seconds)
+MGSolve... v-cycle= 1  norm=2.881622314453125e-02  rel=2.937781997025013e-02  
+           v-cycle= 2  norm=2.592951059341431e-03  rel=2.643484855070710e-03  done (0.005132 seconds)
+  h=7.812500000000000e-03  ||error||=4.447996616363525e-06
+  order=2.006
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+attempting to free the    32^3 level... done
+attempting to free the    64^3 level... done
+attempting to free the   128^3 level... done
+
+
+===== Done =====================================================================
+==================== 2^8 = 256x256x256 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 256^3 level from 1 x 256^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=3.906250e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 128^3 level from 1 x 128^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 64^3 level from 1 x 64^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 32^3 level from 1 x 32^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=7.812500e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.562500e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=3.125000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.047782 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009942 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009883 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009870 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009878 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009879 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009889 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009892 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009903 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009869 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009873 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009892 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009874 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009867 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009875 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009864 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009936 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.010050 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009865 seconds)
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009873 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6            7 
+level dimension                  256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000032     0.000032     0.000032     0.000032     0.000031     0.000030     0.001492     0.001713
+residual                      0.000009     0.000004     0.000005     0.000005     0.000004     0.000004     0.000004     0.000004     0.000039
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.003808     0.000004     0.000004     0.000004     0.000004     0.000004     0.000004     0.002331     0.006162
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000042     0.000039     0.000039     0.000039     0.000039     0.000038     0.000038     0.001496     0.001770
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000036
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000035
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000034
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000033
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000031
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.003693     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.003693
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000095     0.000093     0.000094     0.000093     0.000092     0.000089     0.000089     0.005433     0.006079
+
+   Total time in MGBuild      0.053942 seconds
+   Total time in MGSolve      0.009897 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.007534 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006632 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006635 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006650 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006631 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006642 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006631 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006627 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006623 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006639 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006642 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006647 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006647 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006644 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006636 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006634 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006623 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006635 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006670 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006754 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6 
+level dimension                  128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000032     0.000031     0.000031     0.000031     0.000030     0.001483     0.001670
+residual                      0.000008     0.000004     0.000004     0.000004     0.000004     0.000004     0.000004     0.000034
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.002138     0.000004     0.000004     0.000004     0.000004     0.000004     0.000879     0.003036
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000040     0.000038     0.000039     0.000038     0.000038     0.000037     0.001486     0.001716
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000030
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000029
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000029
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000028
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000030
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.002105     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.002105
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000092     0.000091     0.000091     0.000090     0.000090     0.000088     0.003962     0.004506
+
+   Total time in MGBuild      0.053942 seconds
+   Total time in MGSolve      0.006653 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.006000 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005831 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005830 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005830 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005835 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005831 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005829 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005825 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005836 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005831 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005828 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005823 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005831 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005827 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005837 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005832 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005829 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005825 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005831 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005842 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5 
+level dimension                   64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                     64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000031     0.000031     0.000031     0.000030     0.001487     0.001641
+residual                      0.000008     0.000004     0.000004     0.000004     0.000004     0.000004     0.000029
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.001798     0.000004     0.000004     0.000004     0.000004     0.000485     0.002298
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000039     0.000038     0.000038     0.000038     0.000038     0.001489     0.001680
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000025
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000024
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000023
+  local interpolation         0.000004     0.000005     0.000004     0.000004     0.000005     0.000000     0.000022
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000029
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.001781     0.000000     0.000000     0.000000     0.000000     0.000000     0.001781
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000093     0.000089     0.000090     0.000089     0.000089     0.003574     0.004023
+
+   Total time in MGBuild      0.053942 seconds
+   Total time in MGSolve      0.005830 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Performance Summary ======================================================
+  h=3.906250000000000e-03  DOF=1.677721600000000e+07  time=0.009897  DOF/s=1.695e+09  MPI=1  OMP=4  ACC=1
+  h=7.812500000000000e-03  DOF=2.097152000000000e+06  time=0.006653  DOF/s=3.152e+08  MPI=1  OMP=4  ACC=1
+  h=1.562500000000000e-02  DOF=2.621440000000000e+05  time=0.005830  DOF/s=4.496e+07  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=3.039759397506714e-02  rel=3.040675073862076e-02  
+           v-cycle= 2  norm=5.322456359863281e-03  rel=5.324059631675482e-03  done (0.009878 seconds)
+MGSolve... v-cycle= 1  norm=2.986514568328857e-02  rel=2.990115061402321e-02  
+           v-cycle= 2  norm=4.945397377014160e-03  rel=4.951359704136848e-03  done (0.006653 seconds)
+MGSolve... v-cycle= 1  norm=2.753382921218872e-02  rel=2.766687795519829e-02  
+           v-cycle= 2  norm=4.044562578201294e-03  rel=4.064106848090887e-03  done (0.005879 seconds)
+  h=3.906250000000000e-03  ||error||=1.088716089725494e-06
+  order=2.031
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+attempting to free the    32^3 level... done
+attempting to free the    64^3 level... done
+attempting to free the   128^3 level... done
+attempting to free the   256^3 level... done
+
+
+===== Done =====================================================================
+==================== 2^9 = 512x512x512 grid ====================
+
+
+********************************************************************************
+***                            HPGMG-FV Benchmark                            ***
+********************************************************************************
+1 MPI Tasks of 4 threads
+
+
+===== Benchmark setup ==========================================================
+
+attempting to create a 512^3 level from 1 x 512^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+  Creating Poisson (a=0.000000, b=1.000000) test problem
+  calculating D^{-1} exactly for level h=1.953125e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+
+attempting to create a 256^3 level from 1 x 256^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 128^3 level from 1 x 128^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 64^3 level from 1 x 64^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 32^3 level from 1 x 32^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 16^3 level from 1 x 16^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 8^3 level from 1 x 8^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 4^3 level from 1 x 4^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+attempting to create a 2^3 level from 1 x 2^3 boxes distributed among 1 tasks...
+  boundary condition = BC_DIRICHLET
+  Decomposing level via Z-mort ordering... done
+  This level will be run on the GPU
+  Allocating vectors... done
+  Calculating boxes per process... target=1.000, max=1
+
+  Building restriction and interpolation lists... done
+
+  calculating D^{-1} exactly for level h=3.906250e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=7.812500e-03 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.562500e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=3.125000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=6.250000e-02 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=1.250000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=2.500000e-01 using 8 colors...  done
+  estimating  lambda_max... <2.000000000000000e+00
+  calculating D^{-1} exactly for level h=5.000000e-01 using 8 colors...  done
+  estimating  lambda_max... <1.333333373069763e+00
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.267363 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030033 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029967 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029987 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029973 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029978 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030242 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030345 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030035 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029998 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029994 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029995 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029969 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030271 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030325 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030042 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029987 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030007 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029996 seconds)
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.029991 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6            7            8 
+level dimension                  512^3        256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    512^3        256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000034     0.000032     0.000031     0.000031     0.000031     0.000031     0.000031     0.000031     0.001486     0.001738
+residual                      0.000009     0.000005     0.000005     0.000005     0.000004     0.000004     0.000005     0.000006     0.000004     0.000046
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.014748     0.000004     0.000004     0.000004     0.000004     0.000004     0.000004     0.000004     0.011474     0.026249
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000041     0.000039     0.000039     0.000039     0.000039     0.000038     0.000038     0.000038     0.001485     0.001795
+Restriction                   0.000006     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000042
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000041
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000042
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000041
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000031
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.014056     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.014056
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000098     0.000093     0.000093     0.000093     0.000092     0.000091     0.000090     0.000091     0.014559     0.015300
+
+   Total time in MGBuild      0.356059 seconds
+   Total time in MGSolve      0.030057 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.015240 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009895 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009853 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009854 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009851 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009850 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009860 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009837 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009850 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009843 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009853 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009836 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009875 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009847 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009841 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009835 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009910 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.010033 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009862 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.009865 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6            7 
+level dimension                  256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    256^3        128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000031     0.000031     0.000031     0.000032     0.000030     0.000030     0.001489     0.001707
+residual                      0.000008     0.000005     0.000005     0.000004     0.000004     0.000004     0.000004     0.000004     0.000039
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.003800     0.000004     0.000004     0.000004     0.000004     0.000004     0.000003     0.002334     0.006158
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000039     0.000039     0.000038     0.000039     0.000038     0.000038     0.000037     0.001491     0.001759
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000036
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000035
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000036
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000035
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000030
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.003689     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.003689
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000093     0.000091     0.000092     0.000093     0.000091     0.000090     0.000088     0.005427     0.006065
+
+   Total time in MGBuild      0.356059 seconds
+   Total time in MGSolve      0.009876 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Warming up by running 10 solves ==========================================
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.007432 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006638 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006626 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006613 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006623 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006622 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006615 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006608 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006610 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006621 seconds)
+
+
+===== Running 10 solves ========================================================
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006621 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006617 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006613 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006613 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006613 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006623 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006611 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006631 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006596 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006809 seconds)
+
+
+===== Timing Breakdown =========================================================
+
+
+level                                0            1            2            3            4            5            6 
+level dimension                  128^3         64^3         32^3         16^3          8^3          4^3          2^3 
+box dimension                    128^3         64^3         32^3         16^3          8^3          4^3          2^3        total
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+smooth                        0.000032     0.000031     0.000031     0.000032     0.000031     0.000030     0.001491     0.001677
+residual                      0.000009     0.000005     0.000004     0.000004     0.000004     0.000004     0.000004     0.000035
+applyOp                       0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+BLAS1                         0.002106     0.000004     0.000004     0.000004     0.000004     0.000004     0.000878     0.003003
+BLAS3                         0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Boundary Conditions           0.000039     0.000039     0.000038     0.000038     0.000038     0.000038     0.001490     0.001721
+Restriction                   0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000030
+  local restriction           0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000030
+Interpolation                 0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000031
+  local interpolation         0.000005     0.000005     0.000005     0.000005     0.000005     0.000005     0.000000     0.000030
+Ghost Zone Exchange           0.000001     0.000001     0.000001     0.000001     0.000001     0.000001     0.000026     0.000029
+  local exchange              0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000
+Convergence check             0.002081     0.000000     0.000000     0.000000     0.000000     0.000000     0.000000     0.002081
+------------------        ------------ ------------ ------------ ------------ ------------ ------------ ------------ ------------ 
+Total by level                0.000093     0.000092     0.000092     0.000092     0.000090     0.000089     0.003971     0.004518
+
+   Total time in MGBuild      0.356059 seconds
+   Total time in MGSolve      0.006634 seconds
+      number of v-cycles             2
+Bottom solver iterations           200
+
+
+
+
+===== Performance Summary ======================================================
+  h=1.953125000000000e-03  DOF=1.342177280000000e+08  time=0.030057  DOF/s=4.465e+09  MPI=1  OMP=4  ACC=1
+  h=3.906250000000000e-03  DOF=1.677721600000000e+07  time=0.009876  DOF/s=1.699e+09  MPI=1  OMP=4  ACC=1
+  h=7.812500000000000e-03  DOF=2.097152000000000e+06  time=0.006634  DOF/s=3.161e+08  MPI=1  OMP=4  ACC=1
+
+
+===== Richardson error analysis ================================================
+MGSolve... v-cycle= 1  norm=3.116410970687866e-02  rel=3.116645663976669e-02  
+           v-cycle= 2  norm=6.378233432769775e-03  rel=6.378713529556990e-03  done (0.030377 seconds)
+MGSolve... v-cycle= 1  norm=3.039765357971191e-02  rel=3.040680848062038e-02  
+           v-cycle= 2  norm=5.296289920806885e-03  rel=5.297884810715914e-03  done (0.010059 seconds)
+MGSolve... v-cycle= 1  norm=2.986490726470947e-02  rel=2.990090847015381e-02  
+           v-cycle= 2  norm=4.952877759933472e-03  rel=4.958848468959332e-03  done (0.006640 seconds)
+  h=1.953125000000000e-03  ||error||=2.849847078323364e-07
+  order=1.934
+
+
+===== Deallocating memory ======================================================
+attempting to free the restriction and interpolation lists... done
+attempting to free the     2^3 level... done
+attempting to free the     4^3 level... done
+attempting to free the     8^3 level... done
+attempting to free the    16^3 level... done
+attempting to free the    32^3 level... done
+attempting to free the    64^3 level... done
+attempting to free the   128^3 level... done
+attempting to free the   256^3 level... done
+attempting to free the   512^3 level... done
+
+
+===== Done =====================================================================
