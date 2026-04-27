@@ -2,7 +2,7 @@
 """Parse HPGMG result files from paper_results_sc/{with,without}_convergence
 and print summary tables: Total solve time, v-cycles, time per v-cycle."""
 
-import sys, re, os
+import re, os
 
 def parse_results(filepath):
     """For each grid size, get MGSolve time and vcycles from the FIRST 'Running' block only."""
@@ -100,12 +100,7 @@ def process_folder(folder_path, label):
 
 base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "paper_results_sc")
 
-for subfolder, label in [
-    ("with_convergence",    "WITH convergence check"),
-    ("without_convergence", "WITHOUT convergence check"),
-]:
-    folder = os.path.join(base_dir, subfolder)
-    if os.path.isdir(folder):
-        process_folder(folder, label)
-    else:
-        print(f"Folder not found: {folder}")
+if os.path.isdir(base_dir):
+    process_folder(base_dir, "WITH convergence check")
+else:
+    print(f"Folder not found: {base_dir}")

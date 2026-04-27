@@ -26,6 +26,21 @@ corresponding [finite-volume readme](finite-volume/source/README).
 
 ## Running
 
+### GLOW-HPGMG experiments
+
+To reproduce the GLOW-HPGMG results, allocate a GH200 node and run:
+
+```bash
+# allocate gh200 and then
+module load cuda/12.8.1 python/3.11.3 openmpi
+git clone https://github.com/Sameeranjoshi/hpgmg.git
+cd hpgmg/
+git checkout fp32
+./run_experiments.sh
+```
+
+Once the run completes, the parsed summary table will be written to `gpu_numbers.txt` in the repository root (and also printed to the screen).
+
 For multi-GPU configurations it is recommended to run as many MPI ranks as you
 have GPUs in your system.  Please note that if peer mappings are not available
 between GPUs then the system will fall back to using zero-copy memory which can

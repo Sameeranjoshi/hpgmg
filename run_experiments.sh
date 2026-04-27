@@ -248,3 +248,5 @@ PYEOF
 
 echo ""
 echo "All done. Raw results are in: $RESULTS_DIR/"
+
+python3 "$SCRIPT_DIR/parse_results.py" 2>&1 | tee "$SCRIPT_DIR/gpu_numbers.txt"
